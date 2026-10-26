@@ -8,25 +8,29 @@ logging, and GDPR compliance tracking.
 ## Purpose & Boundary
 
 SysAdmin provides the administrative tooling for managing user accounts across the system (CRUD,
-status toggles, archiving), broadcasting system-wide announcements, monitoring system health via
-Laravel Pulse, and ensuring GDPR compliance through deletion logging. It is the operational control
-panel for superadmin and admin users.
+status toggles, archiving), broadcasting system-wide announcements, running and retaining backups,
+monitoring system health via Laravel Pulse, and ensuring GDPR compliance through deletion logging.
+It is the operational control panel for superadmin and admin users.
 
 Out of scope: individual user profiles (User), authentication logic (Auth), system configuration
-key-value store (Settings).
+key-value store (Settings). The account CRUD screens themselves ship inside the User module's
+user-management submodule; SysAdmin owns the super-admin integrity rules and the audit trail those
+screens depend on.
 
 ## Submodules
-
-### Account
-
-User account lifecycle management: create, read, update, lock, suspend, archive, and delete user
-accounts (with super admin integrity safeguards). Includes recovery key generation for admin-level
-account recovery. All mutations are audit-logged via SmartLogger.
 
 ### Announcement
 
 System-wide message broadcasting with scheduling support. Announcements can target specific roles or
 all users (`scheduled_at`, `target_roles`, status flow).
+
+### Backup
+
+On-demand database and storage snapshots with a retention policy the administrator can see and
+adjust. Every run is tracked through a status lifecycle (database, storage, or both), kept in the
+backup history with its size and outcome, and either completes or fails loudly with a notification
+instead of silently producing an unusable archive. Completed archives older than the retention
+window are purged on a schedule, and both creation and purge are audit-logged.
 
 ### Observability
 

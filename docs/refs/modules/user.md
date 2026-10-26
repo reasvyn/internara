@@ -11,8 +11,9 @@ User is the identity hub of the application. It owns the `User` model (authentic
 `Profile` model (personal data), the notification system (in-app + email), and role-specific
 dashboards. Every module references users via `morphToMany` or `foreignIdFor` relationships.
 
-Out of scope: authentication logic (Auth), account CRUD and lifecycle management (SysAdmin), RBAC
-permission definitions (Auth).
+Out of scope: authentication logic (Auth), RBAC permission definitions (Auth). Account CRUD and
+lifecycle administration ship as the `UserManagement` submodule described below, while the
+super-admin integrity rules and audit trail around them belong to SysAdmin.
 
 ## Submodules
 
@@ -21,6 +22,15 @@ permission definitions (Auth).
 Eight-state account lifecycle machine: `provisioned` → `activated` → `verified` → `restricted` /
 `suspended` / `inactive` / `archived` / `protected`. State transitions are guarded — a suspended
 account cannot be archived without reactivation. All transitions are immutably logged for audit.
+
+### UserManagement
+
+Administrative account screens for every role — admins, teachers, supervisors, and students. Covers
+create, update, status toggles, archiving, and deletion, plus the recovery key an admin uses when
+the school would otherwise be locked out, batch-delete for a whole role, and account-slip generation
+(single and batch) for handing credentials to students. Archiving a whole student cohort is
+dispatched to a queued job so a large batch does not block the request, and every mutation is
+audit-logged.
 
 ### Profile
 
