@@ -19,23 +19,28 @@ Out of scope: domain logic, Actions, Models, Policies, Livewire business compone
 
 ## Submodules
 
-UI has no submodules. Code is organized by presentation layer:
+UI has no submodules. Its code is organized by presentation layer:
 
-**Layouts** (`resources/views/ui/layouts` → `x-ui::layouts.*`):
-`layouts/app.blade.php` (app shell: `x-ts-layout` + menu/header/footer slots), `layouts/base.blade.php` (HTML shell, `data-theme`, branding CSS vars, `skip-to-content`, toast/dialog), `layouts/base/head.blade.php`, `layouts/base/footer.blade.php`, `layouts/header.blade.php`, `layouts/sidebar.blade.php`, `layouts/guest.blade.php`.
+**Layouts** — the app shell and guest shell, plus the header, sidebar, and page chrome they
+compose. Every page renders inside one of these, so shell behaviour (theme bootstrap, skip link,
+toast and dialog mount points, focus reset on navigation) is defined once.
 
-**UI primitives** (`resources/views/ui/components` → `x-ui::components.*`):
-`navbar.blade.php`, `navbar-actions.blade.php`, `page-header.blade.php`, `breadcrumbs.blade.php`, `record-manager.blade.php`, `selection-bar.blade.php`, `table.blade.php`, `table-actions.blade.php`, `button.blade.php`, `card.blade.php`, `badge.blade.php`, `alert.blade.php`, `confirm.blade.php`, `modal.blade.php`, `dialog.blade.php`, `dropdown.blade.php`, `dropdown-item.blade.php`, `input.blade.php`, `select.blade.php`, `textarea.blade.php`, `checkbox.blade.php`, `toggle.blade.php`, `tooltip.blade.php`, `icon.blade.php`, `loading.blade.php`, `markdown-editor.blade.php`, `display-field.blade.php`, `brand.blade.php`, `logo.blade.php`, `avatar.blade.php`, `app-signature.blade.php`, `credit.blade.php`, `credits.blade.php`.
+**UI primitives** — the design-system vocabulary: navigation, page header, tables and selection
+bars, buttons, cards, badges, alerts, confirmations, modals, form inputs, tooltips, icons,
+loading states, and the markdown editor. Each primitive wraps TallStackUI or plain Blade and
+exposes a props-driven API.
 
-Theme and language switches are **not** UI primitives — they render from Setting (`resources/views/setting/locale/theme-switch.blade.php` and `lang-switch.blade.php`) because they persist to settings.
+**Widgets** — composable blocks for dashboards and landing pages: stat tiles, action buttons,
+empty states, profile summary, quick links, and the build-info card.
 
-**Widgets** (`resources/views/ui/widgets` → `x-ui::widgets.*`):
-`stat-card.blade.php`, `action-button.blade.php`, `empty-state.blade.php`, `profile-summary.blade.php`, `quick-link.blade.php`, `app-info.blade.php`.
+**Livewire base classes** — the list, form, entry, and wizard scaffolds that business modules
+extend, plus the selection and sorting concerns they compose. This is the only place a UI class
+carries behaviour, and it is presentation behaviour only.
 
-**Livewire Base Classes & Concerns** (`app/Modules/UI/Livewire/`):
-`BaseRecordManager.php`, `BaseRecordList.php`, `BaseFormView.php`, `BaseRecordEntry.php`, `BaseWizard.php`, `AboutPage.php`, and concerns `Concerns/WithRecordSelection.php`, `Concerns/WithSorting.php`.
+**Support** — helpers for semantic colour resolution and view detection.
 
-**PHP support**: Helper utilities (`Support/UiHelper.php`) for semantic color resolution and UI view detection. No business code.
+Concrete file names, component inventories, and class tables live in
+[ui-reference.md](ui-reference.md).
 
 ## Key Concepts
 
@@ -61,10 +66,10 @@ Components accept `items`, `links`, `breadcrumbs`, `title`, `actions` via `@prop
 
 ## Technical Notes
 
-- **View namespace:** `resources/views/ui` registered via `ModuleService::registerBladeNamespaces()` as `x-ui::` / `ui::` (from `config/module.php` `UI` entry)
-- **Livewire layout:** `config/livewire.php` `component_layout = 'ui::layouts.app'`; 34 Livewire components use `#[Layout('ui::layouts.app')]`
-- **Discovery:** UI is a presentation module (no `Actions`/`Models`); view discovery excludes top-level `layouts` but not `ui/*` subdirectories, so UI views are registered correctly
-- **Styling:** Tailwind v4 `@theme` tokens injected in `layouts/base.blade.php` via `Theme::cssVariables()` (from `Settings/Theme`); dark mode via `data-theme` cookie + `tallstackui_darkTheme()`
+- **View namespace:** the module service registers the UI view directory as `x-ui::` / `ui::` from the `UI` entry in `config/module.php`
+- **Livewire layout:** the configured component layout is the UI app shell; business components declare it explicitly via `#[Layout]`
+- **Discovery:** UI is a presentation module (no Actions or Models); view discovery treats the `ui` subdirectories as component namespaces
+- **Styling:** Tailwind v4 `@theme` tokens are injected by the base layout from the Setting module's theme variables; dark mode is driven by the `data-theme` cookie and TallStackUI's dark-theme helper
 
 ## Related Docs
 

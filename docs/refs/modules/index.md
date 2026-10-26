@@ -23,7 +23,7 @@ Each module has two files:
 Reusable app shell and design primitives (layouts, navbar, sidebar, header, footer, theme/lang switches, widgets). Pure presentation, depends only on Core.
 
 - Overview: [ui.md](ui.md)
-- Reference: *(colocated with overview — components are Blade anonymous)*
+- Reference: [ui-reference.md](ui-reference.md)
 
 **Key Concepts:** App Shell, Navbar, Sidebar, Header, Footer, ThemeSwitch, LangSwitch, Props-Driven
 
