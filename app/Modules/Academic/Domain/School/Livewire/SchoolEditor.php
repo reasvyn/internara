@@ -49,14 +49,14 @@ class SchoolEditor extends BaseFormView
     }
 
     public function updatedLogoFile(
-        mixed $uploadBrand = null,
+        ?UploadBrandAssetAction $uploadBrand = null,
         ?SetSettingAction $setSetting = null,
     ): void {
         $this->authorize('update', Setting::class);
         $this->validate(['logo_file' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048']]);
 
-        $uploadBrand = ($uploadBrand instanceof UploadBrandAssetAction) ? $uploadBrand : ($this->uploadBrand ?? app(UploadBrandAssetAction::class));
-        $setSetting = ($setSetting instanceof SetSettingAction) ? $setSetting : ($this->setSetting ?? app(SetSettingAction::class));
+        $uploadBrand ??= $this->uploadBrand;
+        $setSetting ??= $this->setSetting;
 
         $this->handleSave(function () use ($uploadBrand, $setSetting): void {
             if (! $this->logo_file) {
