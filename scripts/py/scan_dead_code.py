@@ -100,19 +100,41 @@ def relative_path(path: Path) -> str:
         return str(path)
 
 
-def build_all_content(files: list[Path]) -> dict[Path, str]:
-    """Map each file to its content, plus a per-file 'rest' reference string.
+class ReferenceIndex:
+    """Memory-efficient reference index that evaluates whether a symbol is referenced
 
-    `rest[path]` is the concatenation of every file's content except `path`
-    itself, so a class declared in `path` that is referenced elsewhere appears
-    in `rest[path]`.
+    outside a specific file on demand, without duplicating the full codebase string.
     """
+
+    def __init__(self, contents: dict[Path, str]):
+        self.contents = contents
+        self.joined = "\n".join(contents.values())
+
+    class _FileRest:
+        def __init__(self, index: "ReferenceIndex", fp: Path):
+            self.index = index
+            self.fp = fp
+
+        def __contains__(self, symbol: object) -> bool:
+            if not isinstance(symbol, str):
+                return False
+            # Fast rejection: if the symbol is not present in the combined codebase at all
+            if symbol not in self.index.joined:
+                return False
+            # Scan files other than the current file for references
+            for other_fp, other_content in self.index.contents.items():
+                if other_fp != self.fp and symbol in other_content:
+                    return True
+            return False
+
+    def __getitem__(self, fp: Path) -> "_FileRest":
+        return self._FileRest(self, fp)
+
+
+def build_all_content(files: list[Path]) -> ReferenceIndex:
+    """Map files to a memory-efficient ReferenceIndex."""
     contents = {fp: read_file(fp) for fp in files}
-    joined = "\n".join(contents.values())
-    rest: dict[Path, str] = {}
-    for fp, content in contents.items():
-        rest[fp] = joined.replace(content, "", 1)
-    return rest
+    return ReferenceIndex(contents)
 
 
 # ─── Reference-based dead code ──────────────────────────────────────────────
