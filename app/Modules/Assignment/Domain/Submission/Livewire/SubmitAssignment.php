@@ -61,7 +61,7 @@ class SubmitAssignment extends BaseFormView
 
         $action = ($actionOrId instanceof SubmitAssignmentAction)
             ? $actionOrId
-            : ($action ?? ($this->submitAction ?? app(SubmitAssignmentAction::class)));
+            : ($action ?? $this->submitAction);
 
         $this->validate([
             'content' => 'required|string|min:20',
