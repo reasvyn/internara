@@ -27,7 +27,7 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent.parent
-OUTPUT_DIR = ROOT / "tools" / "outputs"
+OUTPUT_DIR = Path(__file__).parent / "outputs"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # Test suites from phpunit.xml (module dependency order; specs live as GitHub issues, label:spec).
