@@ -35,24 +35,32 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 MODULES = [
     "Core",
     "Setup",
-    "Settings",
-    "Academics",
+    "Setting",
+    "Academic",
     "Auth",
     "User",
     "SysAdmin",
-    "Partners",
+    "Partner",
     "Program",
     "Enrollment",
-    "Journals",
+    "Journal",
     "Incident",
     "Assessment",
     "Evaluation",
     "Assignment",
     "Document",
     "Certification",
-    "Reports",
+    "Report",
     "UI",
 ]
+
+MODULE_ALIASES: dict[str, str] = {
+    "Settings": "Setting",
+    "Academics": "Academic",
+    "Partners": "Partner",
+    "Journals": "Journal",
+    "Reports": "Report",
+}
 
 
 @dataclass
@@ -318,10 +326,11 @@ def main() -> int:
     modules_to_run = MODULES
 
     if args.module:
-        if args.module not in MODULES:
+        target_mod = MODULE_ALIASES.get(args.module, args.module)
+        if target_mod not in MODULES:
             print(f"Error: Unknown module '{args.module}'. Use --list to see available.")
             return 1
-        modules_to_run = [args.module]
+        modules_to_run = [target_mod]
     elif args.failed_only:
         failed = load_last_run()
         if not failed:
