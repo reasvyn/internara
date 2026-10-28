@@ -15,39 +15,40 @@
                     <x-ui::components.brand size="lg" :with-tagline="false" :invert="false" />
                 </div>
 
-                {{-- Feature pills --}}
-                <div class="mb-4 flex flex-wrap items-center justify-center gap-1.5 sm:mb-5 sm:gap-2">
+                {{-- Tagline --}}
+                <h1 class="from-base-content to-base-content/60 mb-3 bg-gradient-to-br bg-clip-text text-2xl font-black tracking-tight text-transparent sm:mb-4 sm:text-3xl lg:text-4xl">
+                    {{ brand('tagline') ?: __('common.app_tagline') }}
+                </h1>
+
+                {{-- Description --}}
+                <p class="text-base-content/65 mx-auto max-w-2xl text-xs leading-relaxed sm:text-sm lg:text-base">
+                    {{ __('user.home.hero_desc') }}
+                </p>
+
+                {{-- Target Audience Pills --}}
+                <div class="mt-4 flex flex-wrap items-center justify-center gap-1.5 sm:mt-5 sm:gap-2">
                     <x-ts-badge
                         color="primary"
                         round
                         text="{{ __('user.home.hero_secure') }}"
-                        icon="shield-check"
-                        class="text-xs"
-                    />
-                    <x-ts-badge
-                        color="primary"
-                        round
-                        text="{{ __('user.home.hero_academic') }}"
                         icon="academic-cap"
                         class="text-xs"
                     />
                     <x-ts-badge
                         color="primary"
                         round
+                        text="{{ __('user.home.hero_academic') }}"
+                        icon="user-group"
+                        class="text-xs"
+                    />
+                    <x-ts-badge
+                        color="primary"
+                        round
                         text="{{ __('user.home.hero_global') }}"
-                        icon="globe-alt"
+                        icon="building-office-2"
                         class="text-xs"
                     />
                 </div>
-
-                {{-- Tagline --}}
-                <h1 class="from-base-content to-base-content/60 mb-3 bg-gradient-to-br bg-clip-text text-2xl font-black tracking-tight text-transparent sm:mb-4 sm:text-3xl lg:text-4xl">
-                    {{ brand('tagline') ?: __('common.app_tagline') }}
-                </h1>
-
-                <p class="text-base-content/65 mx-auto max-w-xl text-xs leading-relaxed sm:text-sm lg:text-base">
-                    {{ __('user.home.hero_desc') }}
-                </p>
             </div>
         </div>
 
@@ -65,114 +66,120 @@
             {{-- Registration + Login cards --}}
             <div class="mx-auto grid max-w-4xl grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2">
                 {{-- Registration Card --}}
-                <div class="group bg-base-100 border-base-content/10 hover:border-primary/30 flex flex-col items-center rounded-2xl border p-5 text-center shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md sm:p-6 lg:p-7">
-                    <div class="from-primary/15 to-primary/5 ring-base-content/10 mx-auto mb-3.5 flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br ring-1 transition-transform duration-500 ring-inset group-hover:scale-105 sm:mb-4 sm:size-14">
-                        <x-ts-icon name="clipboard-document-list" class="text-primary size-6 sm:size-7" />
+                <div class="group bg-base-100 border-base-content/10 hover:border-primary/30 flex flex-col items-center justify-between rounded-2xl border p-5 text-center shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md sm:p-6 lg:p-7">
+                    <div class="flex w-full flex-col items-center">
+                        <div class="from-primary/15 to-primary/5 ring-base-content/10 mx-auto mb-3.5 flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br ring-1 transition-transform duration-500 ring-inset group-hover:scale-105 sm:mb-4 sm:size-14">
+                            <x-ts-icon name="clipboard-document-list" class="text-primary size-6 sm:size-7" />
+                        </div>
+
+                        <h2 class="mb-1.5 text-lg font-bold sm:text-xl">{{ __('user.home.registration_title') }}</h2>
+
+                        <p class="text-base-content/65 mb-4 max-w-sm text-xs leading-relaxed sm:text-sm">
+                            {{ __('user.home.registration_desc') }}
+                        </p>
                     </div>
 
-                    <h2 class="mb-1.5 text-lg font-bold sm:text-xl">{{ __('user.home.registration_title') }}</h2>
+                    <div class="flex w-full flex-col items-center">
+                        @if ($registration['status'] === 'open')
+                            <x-ts-badge
+                                color="success"
+                                round
+                                text="{{ __('user.home.registration_open') }}"
+                                icon="check-circle"
+                                class="mb-2.5 px-3 py-1.5 text-xs font-semibold"
+                            />
+                            <p class="text-base-content/50 mb-4 text-xs">
+                                {{
+                                    __('user.home.registration_period', [
+                                        'start' => \Carbon\Carbon::parse($registration['start_date'])->translatedFormat('j F Y'),
+                                        'end' => \Carbon\Carbon::parse($registration['end_date'])->translatedFormat('j F Y'),
+                                    ])
+                                }}
+                            </p>
+                            <x-ts-button
+                                wire:navigate
+                                href="{{ route('apply') }}"
+                                :text="__('user.home.register_now')"
+                                icon="arrow-right"
+                                icon-right
+                                color="primary"
+                                class="w-full sm:w-auto"
+                            />
+                        @elseif ($registration['status'] === 'upcoming')
+                            <x-ts-badge
+                                color="info"
+                                round
+                                text="{{ __('user.home.registration_upcoming') }}"
+                                icon="clock"
+                                class="mb-2.5 px-3 py-1.5 text-xs font-semibold"
+                            />
+                            <p class="text-base-content/50 mb-4 text-xs">
+                                {{
+                                    __('user.home.registration_upcoming_period', [
+                                        'start' => \Carbon\Carbon::parse($registration['start_date'])->translatedFormat('j F Y'),
+                                        'end' => \Carbon\Carbon::parse($registration['end_date'])->translatedFormat('j F Y'),
+                                    ])
+                                }}
+                            </p>
+                            <x-ts-alert
+                                color="info"
+                                :text="__('user.home.registration_not_open_yet')"
+                                class="w-full rounded-xl text-xs"
+                            />
+                        @elseif ($registration['status'] === 'closed')
+                            <x-ts-badge
+                                color="warning"
+                                round
+                                text="{{ __('user.home.registration_closed') }}"
+                                icon="x-circle"
+                                class="mb-2.5 px-3 py-1.5 text-xs font-semibold"
+                            />
+                            <x-ts-alert
+                                color="warning"
+                                :text="__('user.home.registration_closed_desc')"
+                                class="w-full rounded-xl text-xs"
+                            />
+                        @else
+                            <x-ts-badge
+                                round
+                                text="{{ __('user.home.registration_unavailable') }}"
+                                icon="question-mark-circle"
+                                class="mb-2.5 px-3 py-1.5 text-xs font-semibold"
+                            />
+                            <x-ts-alert
+                                :text="__('user.home.registration_unavailable_desc')"
+                                class="w-full rounded-xl text-xs"
+                            />
+                        @endif
+                    </div>
+                </div>
 
-                    <p class="text-base-content/65 mb-4 max-w-sm text-xs leading-relaxed sm:text-sm">
-                        {{ __('user.home.registration_desc') }}
-                    </p>
+                {{-- Login Card --}}
+                <div class="group bg-base-100 border-base-content/10 hover:border-primary/30 flex flex-col items-center justify-between rounded-2xl border p-5 text-center shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md sm:p-6 lg:p-7">
+                    <div class="flex w-full flex-col items-center">
+                        <div class="from-primary/15 to-primary/5 ring-base-content/10 mx-auto mb-3.5 flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br ring-1 transition-transform duration-500 ring-inset group-hover:scale-105 sm:mb-4 sm:size-14">
+                            <x-ts-icon name="arrow-right-on-rectangle" class="text-primary size-6 sm:size-7" />
+                        </div>
 
-                    @if ($registration['status'] === 'open')
-                        <x-ts-badge
-                            color="success"
-                            round
-                            text="{{ __('user.home.registration_open') }}"
-                            icon="check-circle"
-                            class="mb-2.5 px-3 py-1.5 text-xs font-semibold"
-                        />
-                        <p class="text-base-content/50 mb-4 text-xs">
-                            {{
-                                __('user.home.registration_period', [
-                                    'start' => \Carbon\Carbon::parse($registration['start_date'])->translatedFormat('j F Y'),
-                                    'end' => \Carbon\Carbon::parse($registration['end_date'])->translatedFormat('j F Y'),
-                                ])
-                            }}
+                        <h2 class="mb-1.5 text-lg font-bold sm:text-xl">{{ __('user.home.login_title') }}</h2>
+
+                        <p class="text-base-content/65 mb-4 max-w-sm text-xs leading-relaxed sm:text-sm">
+                            {{ __('user.home.login_desc') }}
                         </p>
+
                         <x-ts-button
                             wire:navigate
-                            href="{{ route('apply') }}"
-                            :text="__('user.home.register_now')"
+                            href="{{ route('login') }}"
+                            :text="__('user.home.login_action')"
                             icon="arrow-right"
                             icon-right
                             color="primary"
                             class="w-full sm:w-auto"
                         />
-                    @elseif ($registration['status'] === 'upcoming')
-                        <x-ts-badge
-                            color="info"
-                            round
-                            text="{{ __('user.home.registration_upcoming') }}"
-                            icon="clock"
-                            class="mb-2.5 px-3 py-1.5 text-xs font-semibold"
-                        />
-                        <p class="text-base-content/50 mb-4 text-xs">
-                            {{
-                                __('user.home.registration_upcoming_period', [
-                                    'start' => \Carbon\Carbon::parse($registration['start_date'])->translatedFormat('j F Y'),
-                                    'end' => \Carbon\Carbon::parse($registration['end_date'])->translatedFormat('j F Y'),
-                                ])
-                            }}
-                        </p>
-                        <x-ts-alert
-                            color="info"
-                            :text="__('user.home.registration_not_open_yet')"
-                            class="w-full rounded-xl text-xs"
-                        />
-                    @elseif ($registration['status'] === 'closed')
-                        <x-ts-badge
-                            color="warning"
-                            round
-                            text="{{ __('user.home.registration_closed') }}"
-                            icon="x-circle"
-                            class="mb-2.5 px-3 py-1.5 text-xs font-semibold"
-                        />
-                        <x-ts-alert
-                            color="warning"
-                            :text="__('user.home.registration_closed_desc')"
-                            class="w-full rounded-xl text-xs"
-                        />
-                    @else
-                        <x-ts-badge
-                            round
-                            text="{{ __('user.home.registration_unavailable') }}"
-                            icon="question-mark-circle"
-                            class="mb-2.5 px-3 py-1.5 text-xs font-semibold"
-                        />
-                        <x-ts-alert
-                            :text="__('user.home.registration_unavailable_desc')"
-                            class="w-full rounded-xl text-xs"
-                        />
-                    @endif
-                </div>
-
-                {{-- Login Card --}}
-                <div class="group bg-base-100 border-base-content/10 hover:border-primary/30 flex flex-col items-center rounded-2xl border p-5 text-center shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md sm:p-6 lg:p-7">
-                    <div class="from-primary/15 to-primary/5 ring-base-content/10 mx-auto mb-3.5 flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br ring-1 transition-transform duration-500 ring-inset group-hover:scale-105 sm:mb-4 sm:size-14">
-                        <x-ts-icon name="user-circle" class="text-primary size-6 sm:size-7" />
                     </div>
 
-                    <h2 class="mb-1.5 text-lg font-bold sm:text-xl">{{ __('user.home.login_title') }}</h2>
-
-                    <p class="text-base-content/65 mb-4 max-w-sm text-xs leading-relaxed sm:text-sm">
-                        {{ __('user.home.login_desc') }}
-                    </p>
-
-                    <x-ts-button
-                        wire:navigate
-                        href="{{ route('login') }}"
-                        :text="__('user.home.login_action')"
-                        icon="arrow-right"
-                        icon-right
-                        color="primary"
-                        class="w-full sm:w-auto"
-                    />
-
-                    <div class="border-base-content/10 mt-4 w-full border-t pt-3.5">
-                        <p class="text-base-content/50 text-xs">{{ __('user.home.no_account') }}</p>
+                    <div class="border-base-content/10 mt-6 w-full border-t pt-3.5">
+                        <p class="text-base-content/50 text-xs leading-relaxed">{{ __('user.home.no_account') }}</p>
                     </div>
                 </div>
             </div>
@@ -205,7 +212,7 @@
                     {{-- Supervision --}}
                     <div class="bg-base-100 border-base-content/10 rounded-2xl border p-4 text-center shadow-xs transition-all duration-200 hover:shadow-sm sm:p-5">
                         <div class="from-primary/10 to-primary/5 mx-auto mb-3 flex size-10 items-center justify-center rounded-2xl bg-gradient-to-br">
-                            <x-ts-icon name="users" class="text-primary size-5" />
+                            <x-ts-icon name="user-group" class="text-primary size-5" />
                         </div>
                         <h3 class="mb-1 text-sm font-semibold sm:text-base">
                             {{ __('user.home.feature_guidance_title') }}

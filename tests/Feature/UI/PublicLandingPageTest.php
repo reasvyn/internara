@@ -243,10 +243,10 @@ describe('K8HP1: public landing page lifecycle', function (): void {
 
     test('K8HP1-UC-LAND-006: visitor switches locale or theme with reactive updates', function (): void {
         app()->setLocale('id');
-        expect(__('user.home.hero_secure'))->toBe('Kelola Sekolah');
+        expect(__('user.home.hero_secure'))->toBe('Siswa PKL');
 
         app()->setLocale('en');
-        expect(__('user.home.hero_secure'))->toBe('School Managed');
+        expect(__('user.home.hero_secure'))->toBe('Students');
     });
 
     test('K8HP1-DD-LAND-001: mount time redirects own setup and auth gating', function (): void {
