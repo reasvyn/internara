@@ -295,6 +295,17 @@ return [
         'feature_guidance_desc' => 'Direct coordination and regular progress tracking between students and school mentors.',
         'feature_certificate_title' => 'Evaluation & Certification',
         'feature_certificate_desc' => 'Competency assessment and evaluation through official internship certificate issuance.',
+        'registration_badge' => 'Student Registration',
+        'step_1' => 'Complete profile & account application',
+        'step_2' => 'Select internship program & partner',
+        'step_3' => 'School verification & commence internship',
+        'portal_badge' => 'Portal Access',
+        'portal_auth_type' => 'Registered Account',
+        'accessible_by' => 'Accessible by',
+        'role_student' => 'Student',
+        'role_teacher' => 'Teacher / Mentor',
+        'role_partner' => 'Industry Supervisor',
+        'role_admin' => 'School Admin',
     ],
 
     'user_management' => [

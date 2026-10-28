@@ -39,14 +39,24 @@
     <section class="bg-base-200 flex-1 pb-10 sm:pb-14 lg:pb-16">
         <div class="relative z-10 container mx-auto -mt-4 px-4 sm:-mt-6 sm:px-6 lg:px-12">
             {{-- Registration + Login cards --}}
-            <div class="mx-auto grid max-w-4xl grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2">
+            <div class="mx-auto grid max-w-4xl grid-cols-1 gap-5 lg:grid-cols-2">
                 {{-- Registration Card --}}
-                <div class="group bg-base-100 border-base-content/10 hover:border-primary/30 flex flex-col justify-between rounded-lg border p-5 shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md sm:p-6 lg:p-7">
+                <div class="bg-base-100 border-base-content/10 hover:border-base-content/20 flex flex-col justify-between rounded-lg border p-5 shadow-xs transition-all duration-300 hover:shadow-md sm:p-6 lg:p-7">
                     <div class="flex w-full flex-col">
-                        {{-- Card Header: Icon well + Status Badge --}}
-                        <div class="flex w-full items-start justify-between gap-3">
-                            <div class="from-primary/15 to-primary/5 ring-base-content/10 flex size-12 shrink-0 items-center justify-center rounded-md bg-gradient-to-br ring-1 transition-transform duration-500 ring-inset group-hover:scale-105 sm:size-14">
-                                <x-ts-icon name="clipboard-document-list" class="text-primary size-6 sm:size-7" />
+                        {{-- Top Bar: Identity & Status Badge --}}
+                        <div class="border-base-content/10 flex items-center justify-between gap-3 border-b pb-3.5">
+                            <div class="flex items-center gap-2.5">
+                                <div class="border-base-content/10 bg-base-200/70 text-base-content/75 flex size-10 shrink-0 items-center justify-center rounded-md border shadow-2xs">
+                                    <x-ts-icon name="clipboard-document-list" class="size-5" />
+                                </div>
+                                <div>
+                                    <span class="text-base-content/50 block text-[10px] font-semibold tracking-wider uppercase">
+                                        {{ __('user.home.registration_badge') }}
+                                    </span>
+                                    <h2 class="text-base-content text-base font-bold sm:text-lg">
+                                        {{ __('user.home.registration_title') }}
+                                    </h2>
+                                </div>
                             </div>
 
                             <div>
@@ -86,22 +96,18 @@
                             </div>
                         </div>
 
-                        {{-- Card Heading & Description --}}
-                        <div class="mt-3.5 w-full text-left sm:mt-4">
-                            <h2 class="text-base-content text-base font-bold sm:text-lg lg:text-xl">
-                                {{ __('user.home.registration_title') }}
-                            </h2>
-                            <p class="text-base-content/65 mt-1 text-xs leading-relaxed sm:text-sm">
-                                {{ __('user.home.registration_desc') }}
-                            </p>
-                        </div>
+                        {{-- Main Description --}}
+                        <p class="text-base-content/65 pt-3.5 text-xs leading-relaxed sm:text-sm">
+                            {{ __('user.home.registration_desc') }}
+                        </p>
 
-                        {{-- Status Content / Schedule Capsule --}}
-                        <div class="my-3.5 w-full sm:my-4">
+                        {{-- Dynamic Status & Steps Area --}}
+                        <div class="my-3.5 space-y-3">
                             @if ($registration['status'] === 'open')
-                                <div class="border-base-content/10 bg-base-200/50 flex w-full items-center gap-2.5 rounded-md border px-3 py-2 text-left text-xs sm:px-3.5 sm:py-2.5">
-                                    <x-ts-icon name="calendar-days" class="text-primary size-4 shrink-0 sm:size-4.5" />
-                                    <p class="text-base-content/75 text-xs font-medium">
+                                {{-- Schedule Capsule --}}
+                                <div class="border-base-content/10 bg-base-200/50 flex items-center gap-2.5 rounded-md border px-3 py-2 text-xs">
+                                    <x-ts-icon name="calendar-days" class="text-base-content/60 size-4 shrink-0" />
+                                    <p class="text-base-content/85 text-xs font-medium">
                                         {{
                                             __('user.home.registration_period', [
                                                 'start' => \Carbon\Carbon::parse($registration['start_date'])->translatedFormat('j F Y'),
@@ -110,11 +116,27 @@
                                         }}
                                     </p>
                                 </div>
+
+                                {{-- 3-Step Flow --}}
+                                <div class="border-base-content/10 bg-base-200/30 space-y-2 rounded-md border p-3 text-xs">
+                                    <div class="text-base-content/75 flex items-center gap-2.5">
+                                        <span class="border-base-content/15 bg-base-100 flex size-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold shadow-2xs">1</span>
+                                        <span>{{ __('user.home.step_1') }}</span>
+                                    </div>
+                                    <div class="text-base-content/75 flex items-center gap-2.5">
+                                        <span class="border-base-content/15 bg-base-100 flex size-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold shadow-2xs">2</span>
+                                        <span>{{ __('user.home.step_2') }}</span>
+                                    </div>
+                                    <div class="text-base-content/75 flex items-center gap-2.5">
+                                        <span class="border-base-content/15 bg-base-100 flex size-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold shadow-2xs">3</span>
+                                        <span>{{ __('user.home.step_3') }}</span>
+                                    </div>
+                                </div>
                             @elseif ($registration['status'] === 'upcoming')
-                                <div class="border-info/20 bg-info/5 flex w-full flex-col gap-1.5 rounded-md border p-3 text-left text-xs">
-                                    <div class="flex items-center gap-2">
-                                        <x-ts-icon name="clock" class="text-info size-4 shrink-0" />
-                                        <span class="text-info font-semibold">
+                                <div class="border-info/20 bg-info/5 rounded-md border p-3.5 text-xs">
+                                    <div class="text-info flex items-center gap-2 font-semibold">
+                                        <x-ts-icon name="clock" class="size-4 shrink-0" />
+                                        <span>
                                             {{
                                                 __('user.home.registration_upcoming_period', [
                                                     'start' => \Carbon\Carbon::parse($registration['start_date'])->translatedFormat('j F Y'),
@@ -123,19 +145,19 @@
                                             }}
                                         </span>
                                     </div>
-                                    <p class="text-base-content/70 pl-6 text-xs">
+                                    <p class="text-base-content/70 mt-1 pl-6 text-xs">
                                         {{ __('user.home.registration_not_open_yet') }}
                                     </p>
                                 </div>
                             @elseif ($registration['status'] === 'closed')
-                                <div class="border-warning/20 bg-warning/5 flex w-full items-start gap-2.5 rounded-md border p-3 text-left text-xs">
+                                <div class="border-warning/20 bg-warning/5 flex items-start gap-2.5 rounded-md border p-3.5 text-xs">
                                     <x-ts-icon name="x-circle" class="text-warning mt-0.5 size-4 shrink-0" />
                                     <p class="text-base-content/75 text-xs leading-relaxed">
                                         {{ __('user.home.registration_closed_desc') }}
                                     </p>
                                 </div>
                             @else
-                                <div class="border-base-content/10 bg-base-200/50 flex w-full items-start gap-2.5 rounded-md border p-3 text-left text-xs">
+                                <div class="border-base-content/10 bg-base-200/50 flex items-start gap-2.5 rounded-md border p-3.5 text-xs">
                                     <x-ts-icon
                                         name="question-mark-circle"
                                         class="text-base-content/60 mt-0.5 size-4 shrink-0"
@@ -148,8 +170,8 @@
                         </div>
                     </div>
 
-                    {{-- Action Row --}}
-                    <div class="mt-auto w-full pt-1">
+                    {{-- Action Row (Only Element with Primary Background!) --}}
+                    <div class="mt-auto w-full pt-2">
                         @if ($registration['status'] === 'open')
                             <x-ts-button
                                 wire:navigate
@@ -158,7 +180,7 @@
                                 icon="arrow-right"
                                 icon-right
                                 color="primary"
-                                class="w-full"
+                                class="w-full font-semibold shadow-xs"
                             />
                         @else
                             <x-ts-button
@@ -168,30 +190,60 @@
                                 icon="arrow-right"
                                 icon-right
                                 color="primary"
-                                class="w-full sm:hidden"
+                                class="w-full font-semibold sm:hidden"
                             />
                         @endif
                     </div>
                 </div>
 
                 {{-- Login Card --}}
-                <div class="group bg-base-100 border-base-content/10 hover:border-primary/30 flex flex-col justify-between rounded-lg border p-5 shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md sm:p-6 lg:p-7">
+                <div class="bg-base-100 border-base-content/10 hover:border-base-content/20 flex flex-col justify-between rounded-lg border p-5 shadow-xs transition-all duration-300 hover:shadow-md sm:p-6 lg:p-7">
                     <div class="flex w-full flex-col">
-                        {{-- Card Header: Icon well --}}
-                        <div class="flex w-full items-start justify-between gap-3">
-                            <div class="from-primary/15 to-primary/5 ring-base-content/10 flex size-12 shrink-0 items-center justify-center rounded-md bg-gradient-to-br ring-1 transition-transform duration-500 ring-inset group-hover:scale-105 sm:size-14">
-                                <x-ts-icon name="arrow-right-on-rectangle" class="text-primary size-6 sm:size-7" />
+                        {{-- Top Bar: Identity & Portal Tag --}}
+                        <div class="border-base-content/10 flex items-center justify-between gap-3 border-b pb-3.5">
+                            <div class="flex items-center gap-2.5">
+                                <div class="border-base-content/10 bg-base-200/70 text-base-content/75 flex size-10 shrink-0 items-center justify-center rounded-md border shadow-2xs">
+                                    <x-ts-icon name="arrow-right-on-rectangle" class="size-5" />
+                                </div>
+                                <div>
+                                    <span class="text-base-content/50 block text-[10px] font-semibold tracking-wider uppercase">
+                                        {{ __('user.home.portal_badge') }}
+                                    </span>
+                                    <h2 class="text-base-content text-base font-bold sm:text-lg">
+                                        {{ __('user.home.login_title') }}
+                                    </h2>
+                                </div>
                             </div>
+
+                            <span class="border-base-content/10 bg-base-200/50 text-base-content/60 rounded-sm border px-2 py-0.5 font-mono text-[11px] font-medium">
+                                {{ __('user.home.portal_auth_type') }}
+                            </span>
                         </div>
 
-                        {{-- Card Heading & Description --}}
-                        <div class="mt-3.5 w-full text-left sm:mt-4">
-                            <h2 class="text-base-content text-base font-bold sm:text-lg lg:text-xl">
-                                {{ __('user.home.login_title') }}
-                            </h2>
-                            <p class="text-base-content/65 mt-1 text-xs leading-relaxed sm:text-sm">
-                                {{ __('user.home.login_desc') }}
+                        {{-- Main Description --}}
+                        <p class="text-base-content/65 pt-3.5 text-xs leading-relaxed sm:text-sm">
+                            {{ __('user.home.login_desc') }}
+                        </p>
+
+                        {{-- Role Badges Guidance --}}
+                        <div class="mt-4 mb-2 space-y-2">
+                            <p class="text-base-content/50 text-[10px] font-semibold tracking-wider uppercase">
+                                {{ __('user.home.accessible_by') }}:
                             </p>
+                            <div class="flex flex-wrap gap-1.5">
+                                <span class="border-base-content/10 bg-base-200/50 text-base-content/70 rounded-md border px-2 py-1 text-[11px] font-medium">
+                                    {{ __('user.home.role_student') }}
+                                </span>
+                                <span class="border-base-content/10 bg-base-200/50 text-base-content/70 rounded-md border px-2 py-1 text-[11px] font-medium">
+                                    {{ __('user.home.role_teacher') }}
+                                </span>
+                                <span class="border-base-content/10 bg-base-200/50 text-base-content/70 rounded-md border px-2 py-1 text-[11px] font-medium">
+                                    {{ __('user.home.role_partner') }}
+                                </span>
+                                <span class="border-base-content/10 bg-base-200/50 text-base-content/70 rounded-md border px-2 py-1 text-[11px] font-medium">
+                                    {{ __('user.home.role_admin') }}
+                                </span>
+                            </div>
                         </div>
                     </div>
 
@@ -205,7 +257,7 @@
                             icon-right
                             :color="$registration['status'] === 'open' ? 'secondary' : 'primary'"
                             :outline="$registration['status'] === 'open'"
-                            class="w-full"
+                            class="w-full font-semibold"
                         />
 
                         <div class="border-base-content/10 mt-3.5 w-full border-t pt-2.5 text-center sm:mt-4 sm:pt-3">
@@ -218,8 +270,8 @@
             {{-- PKL Definition Callout --}}
             <div class="mx-auto mt-8 max-w-4xl sm:mt-10">
                 <div class="bg-base-100 border-base-content/10 flex flex-col items-center gap-4 rounded-lg border p-5 text-center shadow-xs sm:flex-row sm:items-start sm:p-6 sm:text-left">
-                    <div class="from-primary/15 to-primary/5 ring-base-content/10 flex size-12 shrink-0 items-center justify-center rounded-md bg-gradient-to-br ring-1 ring-inset sm:size-14">
-                        <x-ts-icon name="academic-cap" class="text-primary size-6 sm:size-7" />
+                    <div class="border-base-content/10 bg-base-200/70 text-base-content/75 flex size-11 shrink-0 items-center justify-center rounded-md border shadow-2xs sm:size-12">
+                        <x-ts-icon name="academic-cap" class="size-5 sm:size-6" />
                     </div>
                     <div class="space-y-1.5">
                         <h2 class="text-base-content text-base font-bold sm:text-lg">
@@ -246,8 +298,8 @@
                 <div class="grid grid-cols-1 gap-3.5 sm:grid-cols-3 sm:gap-5">
                     {{-- Logbook --}}
                     <div class="bg-base-100 border-base-content/10 rounded-lg border p-4 text-center shadow-xs transition-all duration-200 hover:shadow-sm sm:p-5">
-                        <div class="from-primary/10 to-primary/5 mx-auto mb-3 flex size-10 items-center justify-center rounded-md bg-gradient-to-br">
-                            <x-ts-icon name="book-open" class="text-primary size-5" />
+                        <div class="border-base-content/10 bg-base-200/70 text-base-content/75 mx-auto mb-3 flex size-10 items-center justify-center rounded-md border shadow-2xs">
+                            <x-ts-icon name="book-open" class="size-5" />
                         </div>
                         <h3 class="mb-1 text-sm font-semibold sm:text-base">
                             {{ __('user.home.feature_logbook_title') }}
@@ -259,8 +311,8 @@
 
                     {{-- Supervision --}}
                     <div class="bg-base-100 border-base-content/10 rounded-lg border p-4 text-center shadow-xs transition-all duration-200 hover:shadow-sm sm:p-5">
-                        <div class="from-primary/10 to-primary/5 mx-auto mb-3 flex size-10 items-center justify-center rounded-md bg-gradient-to-br">
-                            <x-ts-icon name="user-group" class="text-primary size-5" />
+                        <div class="border-base-content/10 bg-base-200/70 text-base-content/75 mx-auto mb-3 flex size-10 items-center justify-center rounded-md border shadow-2xs">
+                            <x-ts-icon name="user-group" class="size-5" />
                         </div>
                         <h3 class="mb-1 text-sm font-semibold sm:text-base">
                             {{ __('user.home.feature_guidance_title') }}
@@ -272,8 +324,8 @@
 
                     {{-- Certificate --}}
                     <div class="bg-base-100 border-base-content/10 rounded-lg border p-4 text-center shadow-xs transition-all duration-200 hover:shadow-sm sm:p-5">
-                        <div class="from-primary/10 to-primary/5 mx-auto mb-3 flex size-10 items-center justify-center rounded-md bg-gradient-to-br">
-                            <x-ts-icon name="identification" class="text-primary size-5" />
+                        <div class="border-base-content/10 bg-base-200/70 text-base-content/75 mx-auto mb-3 flex size-10 items-center justify-center rounded-md border shadow-2xs">
+                            <x-ts-icon name="identification" class="size-5" />
                         </div>
                         <h3 class="mb-1 text-sm font-semibold sm:text-base">
                             {{ __('user.home.feature_certificate_title') }}
