@@ -667,7 +667,7 @@ portability and clarity.
 
 ```html
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-  <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Card Title</h2>
+  <h3 class="text-lg font-bold text-gray-900 dark:text-white">Card Title</h3>
   <p class="mt-2 text-gray-600 dark:text-gray-300">Card content goes here.</p>
 </div>
 

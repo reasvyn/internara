@@ -101,7 +101,7 @@ Commitment: **WCAG 2.2 Level AA** per `modular-pattern.md` §22 + `livewire-patt
 
 ```blade
 {{-- Focus management — base layout --}}
-<h1 tabindex="-1" class="text-2xl font-black">{{ $title }}</h1>
+<h1 tabindex="-1" class="text-2xl font-bold tracking-tight">{{ $title }}</h1>
 
 {{-- Livewire navigation — reset focus --}}
 <script>document.addEventListener('livewire:navigated', () => {

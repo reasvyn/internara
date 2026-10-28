@@ -97,7 +97,7 @@ Foundation layer — utility classes for layout, spacing, typography, colors:
 
 ```blade
 <div class="flex items-center justify-between p-4 bg-base-100 rounded-lg border border-base-content/10 shadow-sm">
-    <h2 class="text-lg font-semibold text-base-content">Page Title</h2>
+    <h1 class="text-2xl font-bold tracking-tight text-base-content">Page Title</h1>
     <x-ts-button sm wire:click="create">New Record</x-ts-button>
 </div>
 

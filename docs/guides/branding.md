@@ -116,6 +116,10 @@ Self-hosting eliminates external requests and ensures reliable loading. The `fon
 strategy prevents invisible text (FOIT) — browser renders with fallback first, swaps when Instrument
 Sans finishes loading.
 
+This table records the **brand** decision (which family per medium). The weight range and the per-level
+sizes are normative in
+[Design System §5](ui-ux/design-system.md#5-typography--visual-hierarchy).
+
 ---
 
 ## 6. Key Locations

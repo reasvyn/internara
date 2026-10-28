@@ -210,13 +210,19 @@ presets, and dark-mode computation. For the semantic meaning of each variant (`p
 
 ### Typography
 
+One self-hosted family, four weights, four visual tiers:
+
 ```css
 @theme {
   --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  /* --font-mono intentionally unset: Tailwind's default monospace stack applies */
 }
 
 ```
+
+Instrument Sans ships `400/500/600/700` only — there is no 800/900, so `font-extrabold` and
+`font-black` are forbidden. The H1–H6 mapping, body/meta sizes, and the hierarchy levers are normative
+in [Design System §5](./design-system.md#5-typography--visual-hierarchy).
 
 ### Spacing Scale
 

@@ -38,18 +38,29 @@ Hard rules. Violations are architecture violations.
 
 ### 1. Visual Design — Hierarchy, Whitespace, Grid, Color
 
-**Hierarchy via type scale, not custom CSS.** Tailwind's type scale is the single scale.
+**Hierarchy via type scale, not custom CSS.** Tailwind's type scale is the single scale; the
+normative heading/size/weight mapping and the hierarchy levers live in
+[Design System §5](../ui-ux/design-system.md#5-typography--visual-hierarchy) — this pattern only shows
+the canonical markup.
 
-| Role | Utility | Example |
-|------|---------|---------|
-| Page `h1` | `text-2xl font-black tracking-tight` | `ui::components.page-header` |
-| Section `h2` | `text-lg font-semibold` | Card or modal title |
-| Card title | `text-sm font-semibold` | `stat-card` title |
-| Body | `text-sm leading-relaxed` (1.6) | Descriptions, table cells |
-| Caption/meta | `text-xs text-base-content/50` | Timestamps, helpers |
-| Stat value | `text-2xl font-bold` | Dashboard KPIs |
+```blade
+{{-- Page title — one per page, via the component (never hand-rolled) --}}
+<x-ui::components.page-header :title="__('module.title')" :description="__('module.subtitle')" />
 
-Limit to Instrument Sans `400/500/600/700` — `700` (Bold) is the heaviest cut the family ships, so display `h1` tops out at `font-bold`; there is no 900/Black. Line length `max-w-prose` (65ch) for reading passages; use `truncate` + `min-w-0` in flex cards. Never `style="font-size:27px"`.
+{{-- Section → card → sub-panel: four visual tiers, level = structure --}}
+<h2 class="text-xl font-bold tracking-tight">{{ __('section.title') }}</h2>
+<h3 class="text-lg font-bold">{{ __('card.title') }}</h3>
+<h4 class="text-sm font-semibold">{{ __('field_group.title') }}</h4>
+
+{{-- Body and meta --}}
+<p class="text-sm leading-relaxed">{{ $description }}</p>
+<p class="text-xs text-base-content/60">{{ $timestamp }}</p>
+```
+
+Four weight utilities exist — `font-normal/medium/semibold/bold` (400/500/600/700). `700` (Bold) is the
+heaviest cut Instrument Sans ships; there is no 800/900, so `font-extrabold`/`font-black` are
+forbidden. Line length `max-w-prose` (65ch) for reading passages; use `truncate` + `min-w-0` in flex
+cards. Never `style="font-size:27px"`.
 
 **Whitespace as separator (Material 3 baseline 4dp / 8-point grid).**
 
@@ -98,7 +109,7 @@ Author mobile first, enhance upward. This is MDN Responsive Design + WCAG 1.4.10
 ```blade
 {{-- ✅ Mobile-first — flex-col base, row at sm; search full on mobile, constrained at sm --}}
 <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-  <h1 class="text-2xl font-black">{{ __('module.title') }}</h1>
+  <h1 class="text-2xl font-bold tracking-tight">{{ __('module.title') }}</h1>
   <x-ts-input wire:model.live.debounce.300ms="search" class="w-full sm:max-w-xs" />
 </div>
 
@@ -183,6 +194,7 @@ Prevent drift: ESLint/Prettier checks, code review flags arbitrary values (`[val
 
 ### 5. Typography
 
+- **Normative scale:** [Design System §5](../ui-ux/design-system.md#5-typography--visual-hierarchy) — H1–H6, body/meta sizes, weight range, hierarchy levers. Not restated here.
 - **Scale:** Tailwind `text-xs/sm/base/lg/xl/2xl` + `font-normal/medium/semibold/bold` + `tracking-tight` for display. `leading-relaxed` (1.6) for body, `leading-none/tight` for badges/buttons.
 - **Measure:** `max-w-prose` for articles, `max-w-7xl` for pages, `truncate` in flex.
 - **Font:** Self-hosted Instrument Sans `400/500/600/700` with `font-display:swap` (already in `app.css`). No external fetch. Email/PDF use `Arial`/`Courier New`. Never load Google Fonts at runtime without CSP update in `SecurityHeadersMiddleware`.

@@ -260,7 +260,7 @@ truth for these numbers — treat this table as a mirror, never as the value to 
 
 Each status token also ships a `-content` counterpart (e.g. `--color-success-content`) that flips
 between white and near-black in dark mode. These are pre-validated for WCAG contrast — never override
-them with arbitrary utilities (see §6.1).
+them with arbitrary utilities (see §7.1).
 
 ### 3.8 DaisyUI Shim Bridge
 
@@ -326,7 +326,131 @@ Internara employs a strict mobile-first responsive architecture designed to rend
 
 ---
 
-## 5. View Namespaces
+## 5. Typography & Visual Hierarchy
+
+> 📖 Authoritative references: [UI Pattern](../arch/ui-pattern.md) §1 (hierarchy, whitespace, grid) and §5 (type utilities); [UX Pattern](../arch/ux-pattern.md) §2 (WCAG 2.2 AA reading order and focus). This section is the normative scale — other guides reference it instead of restating it.
+
+Typography carries the reading order; colour, spacing, and curvature support it and never replace it.
+Two rules frame everything below:
+
+1. **Heading level = document structure; utility classes = visual size.** The level is chosen from the
+   content outline (it is what assistive technology announces); the size is chosen from the scale
+   below. `<h3 class="text-sm font-semibold">` is correct when the structure is an `h3` and the visual
+   weight is card-level. Picking `<h2>` because it *looks* the right size is not.
+2. **Hierarchy must survive without colour.** Every tier stays distinguishable in grayscale, in dark
+   mode, and for colour-blind readers. Colour may reinforce a tier, never be its only signal
+   (WCAG 1.4.1 Use of Color).
+
+### 5.1 Typeface & weight range
+
+One family, self-hosted, no runtime fetch: **Instrument Sans** (`--font-sans` in
+`resources/css/app.css`), `font-display: swap`. Monospace (`--font-mono`) is reserved for codes,
+tokens, IDs, and numeric tables.
+
+The family ships **four cuts — 400 / 500 / 600 / 700 — and nothing heavier**. Instrument Sans has no
+Black (900) and no ExtraBold (800); the variable range stops at `400..700`. Requesting
+`font-extrabold` or `font-black` forces the browser to synthesise a faux-bold face (dilated stems,
+wrong metrics), so both are **forbidden**.
+
+| Utility | Weight | Use |
+| ------- | ------ | --- |
+| `font-normal` | 400 | Body copy, table cells, descriptions, help text |
+| `font-medium` | 500 | Inline emphasis, current breadcrumb, active nav item, form labels |
+| `font-semibold` | 600 | Card and sub-panel titles, table headers, buttons, badges |
+| `font-bold` | 700 | Page, section, and card headings; KPI values |
+| ~~`font-extrabold`~~ / ~~`font-black`~~ | 800 / 900 | Not shipped — synthesised, forbidden |
+
+### 5.2 Heading scale (H1–H6)
+
+Four tiers carry the visual hierarchy, which is what the codebase already reflects (`h1` 15, `h2` 35,
+`h3` 72, `h4` 114 occurrences; `h5`/`h6` zero). H5 and H6 are **structural only** — they add no new
+size. If a screen seems to need a fifth visual tier, the nesting is the problem, not the scale.
+
+| Level | Semantic role | Classes | Size / weight |
+| ----- | ------------- | ------- | ------------- |
+| `h1` | Page title — **exactly one per page** | `text-2xl font-bold tracking-tight` | 24px / 700 |
+| `h2` | Major section of a page | `text-xl font-bold tracking-tight` | 20px / 700 |
+| `h3` | Card, panel, or modal title | `text-lg font-bold` | 18px / 700 |
+| `h4` | Title inside a card (field group, sub-panel) — the workhorse | `text-sm font-semibold` | 14px / 600 |
+| `h5` | Dense group label inside an `h4` block — no size of its own | `text-sm font-semibold text-base-content/70` | 14px / 600, muted |
+| `h6` | Overline / eyebrow — at most 3 words | `text-xs font-bold uppercase tracking-wider` | 12px / 700 |
+
+- **`h1` comes from a component, not from markup.** `<x-ui::components.page-header :title="…">` for
+  pages and `<x-ui::components.record-manager>` for list screens; both render the canonical `h1`. The
+  layout `$header` prop also contains an `h1` (`ui/layouts/header.blade.php`), but **no view passes
+  it** — leaving it unset is what keeps one `h1` per page. Never pass `header="…"` to a page that
+  already renders `page-header`.
+- **Hero exception.** Landing/marketing surfaces may scale `h1` to `text-3xl sm:text-4xl lg:text-5xl`
+  with `text-balance`; admin surfaces never do.
+- **Desktop scaling** is `sm:`-based and reserved for the `h1` hero variant; section and card headings
+  stay fixed, so tiers cannot collide at any breakpoint. No viewport-jacked `clamp()` outside hero
+  surfaces.
+- **Do not skip levels.** An `h4` directly under an `h2` breaks the announced outline (WCAG 1.3.1);
+  insert the `h3`, visually as `text-sm font-semibold` when the design does not call for a bigger step.
+- **`uppercase` belongs to `h6` overlines only** (≤ 3 words, with `tracking-wider`) — never on a
+  sentence, and never on `h1`–`h4`.
+
+### 5.3 Body, meta, and numeric sizes
+
+| Role | Classes | Size |
+| ---- | ------- | ---- |
+| Body copy on dense admin surfaces | `text-sm leading-relaxed` | 14px / 1.6 |
+| Reading passages (guides, legal, long-form) | `text-base leading-relaxed` | 16px / 1.6 |
+| Subtitle under an `h1`/`h2` | `text-sm text-base-content/60` | 14px |
+| Meta, timestamp, helper | `text-xs text-base-content/60` | 12px |
+| Overline / badge label | `text-xs font-semibold uppercase tracking-wide` | 12px |
+| KPI value | `text-2xl font-bold tabular-nums` | 24px |
+| Code, token, ID | `font-mono text-xs` | 12px |
+
+**`text-xs` (12px) is the floor** for text a user must read: no `text-[11px]`, and no inline
+`style="font-size:27px"` — the scale is the only source of sizes. `tracking-tight` belongs to `h1`–`h2`
+only; body copy keeps Tailwind's default tracking.
+
+### 5.4 Visual hierarchy
+
+Priority is expressed with four levers, **in this order**; reach for the next only when the previous
+is exhausted:
+
+1. **Size** — a step on the scale (§5.2, §5.3).
+2. **Weight** — 400 → 500 → 600 → 700, never beyond 700.
+3. **Colour and opacity** — `text-base-content` → `/70` → `/60` → `/50` de-emphasises; semantic
+   variants (`primary`, `error`, `success`) carry *meaning*, not decoration.
+4. **Space** — density and grouping (`space-y-*`, `gap-*`, `py-*`) separates blocks without visual noise.
+
+Decoration — gradients, shadows, borders, tinted surfaces — is **not** a hierarchy lever; it may only
+reinforce a tier that already reads correctly without it.
+
+- **Adjacent tiers must differ.** Two levels are visually distinct when they differ by ≥ 2px size,
+  one weight step, or ≥ 20% opacity. `h2` and `h3` both at `text-lg` is a defect — which is how 9
+  `h2`s drifted into `text-base font-bold sm:text-lg` (#550).
+- **The `h2` → `h3` step is the tightest one** (20px → 18px, both weight 700). Do not compensate by
+  inflating `h3`; compensate with the space lever — `mt-8`/`mb-4` before an `h2`, `mt-4`/`mb-2` before
+  an `h3`. If two blocks still read as siblings, the section boundary is wrong, not the font size.
+- **One primary action per viewport** (invariant of the semantic-variant system, §3.1) — typography
+  supports it by never out-shouting the primary CTA with a heading.
+- **Squint test.** Blur the screen: title → section → card → content must still separate in that order.
+  If two tiers merge, one of them is wrong.
+- **Grayscale test.** With saturation removed, the hierarchy must survive (rule 2 above).
+- **DOM order is reading order.** No visual reordering that contradicts markup order — the heading
+  sequence *is* the screen-reader outline.
+- **Focus lands on the heading** after `wire:navigate` (§8), so the `h1` must carry the page name.
+
+### 5.5 Anti-patterns
+
+| Anti-pattern | Replace with | Why |
+| ------------ | ------------ | --- |
+| `font-black` / `font-extrabold` | `font-bold` | 800/900 not shipped; faux-bold synthesis (#548) |
+| `<h2>` chosen to get a bigger font | `<h3>` + explicit size class | Level is structure; corrupted outline (WCAG 1.3.1) |
+| `h2` and `h3` both `text-lg` | `text-xl` for `h2`, `text-lg` for `h3` | Collapsed tiers — no perceptible hierarchy |
+| `style="font-size:27px"` | Nearest scale step | Escapes the scale and token audit |
+| `text-[13px]`, `text-[28px]` | `text-sm`, `text-3xl` | Arbitrary values escape review |
+| Two `h1`s (`header` prop + `page-header`) | One source: `page-header` / `record-manager` | Heading map must be unambiguous |
+| `uppercase` on a sentence or on `h1`–`h4` | Uppercase only on `h6` overlines | Uppercase destroys word-shape legibility |
+| Gradient or coloured heading as priority signal | Size + weight + space | Decoration fails in dark mode and for colour blindness |
+
+---
+
+## 6. View Namespaces
 
 Each module's view directory (`resources/views/{module}/`) is registered as a Blade namespace by
 `AppServiceProvider::registerBladeNamespaces()`.
@@ -340,7 +464,7 @@ Excluded directories: `components`, `emails`, `errors`, `layouts`, `mcp`, `pdf`,
 
 ---
 
-## 6. Accessibility (WCAG 2.2 AA)
+## 7. Accessibility (WCAG 2.2 AA)
 
 > 📖 Authoritative references: [UX Pattern](../arch/ux-pattern.md) §2 — WCAG 2.2 AA (Perceivable/Operable/Understandable/Robust), focus, ARIA, `aria-live`; [UI Pattern](../arch/ui-pattern.md) §7 — forms/tables/modals/navigation a11y. This section is the UI-layer checklist.
 
@@ -350,7 +474,7 @@ requirements. See `docs/guides/arch/modular-pattern.md` §22 for architectural r
 add: 2.4.11 Focus Not Obscured, 2.4.13 Focus Appearance, 2.5.8 Target Size (Minimum, 24×24px),
 3.3.7 Redundant Entry, and 3.3.8 Accessible Authentication.
 
-### 6.1 Color & Contrast
+### 7.1 Color & Contrast
 
 - **Minimum contrast ratios:** 4.5:1 for normal text, 3:1 for large text (≥18pt or ≥14pt bold),
   3:1 for UI components and graphical objects.
@@ -358,7 +482,7 @@ add: 2.4.11 Focus Not Obscured, 2.4.13 Focus Appearance, 2.5.8 Target Size (Mini
 - **Color is never the sole indicator:** Status badges (success/warning/error), capacity gauges,
   and validation states must include text labels, icons, or patterns alongside color (see UX Pattern §2.1).
 
-### 6.2 Keyboard Navigation
+### 7.2 Keyboard Navigation
 
 - **Tab order:** Must follow logical reading order (top-to-bottom, left-to-right for LTR). No
   positive `tabindex` values.
@@ -369,13 +493,13 @@ add: 2.4.11 Focus Not Obscured, 2.4.13 Focus Appearance, 2.5.8 Target Size (Mini
 - **Interactive elements:** All buttons, links, form fields, modals, and dropdowns must be
   reachable and operable via keyboard alone (Enter, Space, Arrow keys, Escape).
 
-### 6.3 Modal & Dialog Focus
+### 7.3 Modal & Dialog Focus
 
 - **Focus trap:** Modals (`x-ts-modal`, `x-ts-dialog`) must trap focus within the modal when open.
 - **Focus return:** On modal close, focus must return to the trigger element.
 - **Escape key:** All modals and dropdowns must close on Escape key press (TallstackUI default).
 
-### 6.4 Screen Reader Support
+### 7.4 Screen Reader Support
 
 - **ARIA landmarks:** Layout must use semantic HTML5 elements: `<nav>` (sidebar), `<main>`
   (content), `<header>` (top bar), `<footer>`. The app layout provides these by default.
@@ -386,7 +510,7 @@ add: 2.4.11 Focus Not Obscured, 2.4.13 Focus Appearance, 2.5.8 Target Size (Mini
   `<button aria-label="Close">`.
 - **Image alt text:** All `<img>` tags require `alt`. Decorative images use `alt=""`.
 
-### 6.5 Form Accessibility
+### 7.5 Form Accessibility
 
 - **Labels:** Every form input must have an associated `<label>` (via `for`/`id` or wrapping
   TallstackUI `label` prop). Placeholder text is not a label substitute.
@@ -397,7 +521,7 @@ add: 2.4.11 Focus Not Obscured, 2.4.13 Focus Appearance, 2.5.8 Target Size (Mini
 - **Error focus:** After failed validation, focus must move to the first invalid field or an error
   summary.
 
-### 6.6 Content Reflow
+### 7.6 Content Reflow
 
 - No horizontal scrolling at 320px viewport width (WCAG 1.4.10).
 - Responsive breakpoints must prevent content clipping or overlap.
@@ -405,7 +529,7 @@ add: 2.4.11 Focus Not Obscured, 2.4.13 Focus Appearance, 2.5.8 Target Size (Mini
 
 ---
 
-## 7. SPA Navigation
+## 8. SPA Navigation
 
 > 📖 Authoritative reference: [UX Pattern](../arch/ux-pattern.md) §4.1 — `wire:navigate` SPA, focus reset, information architecture.
 
@@ -427,7 +551,7 @@ JavaScript framework needed.
 
 ---
 
-## 8. Routing
+## 9. Routing
 
 ### URL Structure
 
@@ -473,7 +597,7 @@ See `docs/guides/arch/modular-pattern.md` §13 for full route patterns.
 
 ---
 
-## 9. Localization
+## 10. Localization
 
 > 📖 Authoritative reference: [UX Pattern](../arch/ux-pattern.md) §3 — localization (ICU/CLDR, key conventions, authoring rules, dual locale).
 
@@ -522,7 +646,7 @@ key to one locale without the other is a bug.
 
 ---
 
-## 10. Component Library Patterns
+## 11. Component Library Patterns
 
 ### TallstackUI Components (`x-ts-*`)
 
@@ -656,7 +780,7 @@ Used for setup wizards, profile editors, and complex submission forms:
 
 ---
 
-## 11. Guide Component Pattern
+## 12. Guide Component Pattern
 
 > 📖 Authoritative references: [UX Pattern](../arch/ux-pattern.md) §4.3 — Guide Pattern (NN/g Heuristic #10, placement, FAB, modal, a11y); [Livewire Pattern](../arch/livewire-pattern.md) §11 — implementation.
 
@@ -677,7 +801,7 @@ Implementation reference: `resources/views/setup/components/setup-guide.blade.ph
 
 ---
 
-## 12. Key Locations
+## 13. Key Locations
 
 | Asset             | Path                                      |
 | ----------------- | ----------------------------------------- |

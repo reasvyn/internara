@@ -400,7 +400,7 @@ for primary actions), 3.3.7 Redundant Entry, and 3.3.8 Accessible Authentication
 - Guide modals (`*-guide.blade.php`) must be keyboard-accessible and announce their content via
   ARIA.
 
-See: `docs/guides/ui-ux/design-system.md` §6 (Accessibility), `docs/conventions.md` §13.
+See: `docs/guides/ui-ux/design-system.md` §7 (Accessibility), `docs/conventions.md` §13.
 
 ---
 
