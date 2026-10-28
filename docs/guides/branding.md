@@ -56,7 +56,10 @@ Four brand colors are configurable:
 The system automatically computes:
 
 - Contrast text colors (readability on each brand color background)
-- Base surface hierarchy (base-100 for cards, base-200 for sidebar, base-300 for page background)
+- Base surface hierarchy — `base-200` is the page background, `base-100` the elevated surfaces
+  (cards, modals, inputs, sidebar), `base-300` borders and dividers. The mapping is normative in
+  [design-system.md §3.6](ui-ux/design-system.md#36-color-computation-appmodulescoresupportcolorphp);
+  do not restate a different order here.
 - Dark mode equivalents
 
 ### Presets
@@ -140,6 +143,10 @@ sizes are normative in
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
+| A newly uploaded logo does not appear | `logo` and `favicon` are theme cache keys; a write that bypasses the settings service leaves `theme_css_variables` holding the old URL for up to an hour. | Save through the admin branding form so `Settings::forget()` fires, or run `php artisan cache:clear`. See [design-system.md §3.9](ui-ux/design-system.md#39-cache-invalidation). |
+| Brand colour reverts by itself | The colour was never persisted, so the cached variables are rebuilt from the previous value once the hour expires. | Confirm the value lands in settings, then re-save; `Theme::all()` always reads settings, never the cache, as its source. |
+| Headings look heavier or blurrier than designed | A weight of 800/900 was requested. Only `instrument-sans-400/500/600/700.woff2` ship, so the browser synthesises the face. | Use `font-bold` (700) — the heaviest real cut. See §5. |
+| Font falls back to the system stack | `@font-face` `src` no longer resolves after the font files moved. | Keep the `@font-face` block and files together under `resources/css/app.css` and `resources/fonts/`. |
 
 
 ## Verification

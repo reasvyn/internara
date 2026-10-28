@@ -1175,3 +1175,7 @@ Show validation errors consistently:
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
+| Components render with no styling | `resources/css/app.css` dropped `@import '../../vendor/tallstackui/tallstackui/css/v4.css'`. The vendor components ship class names, not CSS. | Re-add the import as line 3 of the entry point and run `npm run build`. |
+| Classes used inside vendor Blade never reach the stylesheet | Tailwind v4 only scans sources declared with `@source`; the vendor component package was not listed. | Keep `@source '../../vendor/tallstackui/tallstackui/**/*.php'` in `resources/css/app.css`. |
+| Soft customization never applies, with no error | The block name is wrong, or the API was written as `->input()` when v4 exposes it as `form('input')`. TallStackUI resolves unknown blocks silently. | Copy the block name from the **Customize** button in the component docs and keep the chains in `AppServiceProvider`. |
+| `Method TallStackUi::personalize does not exist` | `personalize()` is the v2 API and was removed in v4. | Use `TallStackUi::customize()`. Soft customization is the only supported route. |

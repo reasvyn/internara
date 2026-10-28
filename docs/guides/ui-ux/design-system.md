@@ -828,3 +828,8 @@ Implementation reference: `resources/views/setup/components/setup-guide.blade.ph
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
+| Brand colour change has no effect | `theme_css_variables` is cached for an hour and `Settings::forget()` only invalidates the keys listed in `settings.theme_cache_keys`. A write that bypasses the settings service leaves the stale value in place. | Save through the admin form (`SystemSetting`) so `Settings::forget()` fires, or run `php artisan cache:clear`. See §3.9. |
+| Page background and card background are the same colour | The shell paints `bg-base-100` — the *elevated* token — while cards also use `bg-base-100`, so no surface step exists. `dark:bg-dark-900` is not a defined token and silently does nothing. | `ui/layouts/base.blade.php` body must use `bg-base-200`; leave `base-100` to cards and modals. See §3.6. |
+| Dark mode flashes light before hydration | The `theme` cookie is absent, so `base.blade.php` cannot set `class="dark"` on the first render and the swap happens after JS boots. | Ensure the theme switcher writes the cookie, and that `data-theme`/`class` are resolved server-side. See §3.10. |
+| Every heading looks the same size | Headings were authored ad hoc instead of from the §5.2 scale, so an `h2` can render smaller than the `h3` beneath it. | Apply the §5.2 scale; `scan_ui_consistency.py` rejects an `h2` without `text-xl font-bold` (`UI_HEADING`). |
+| Marketing headings look faux-bold or smeared | `font-black`/`font-extrabold` request 800/900, which Instrument Sans does not ship, so the browser synthesises the face. | Use `font-bold` (700). `scan_ui_consistency.py` rejects 800/900 (`UI_WEIGHT`). See §5.1. |
