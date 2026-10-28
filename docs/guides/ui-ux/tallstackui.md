@@ -178,7 +178,7 @@ File: `config/tallstackui.php` — a flat array mapping components to classes an
 | `top-on-mobile` | Move Toast position to top on mobile |
 | `unfiltered` | Default for styled select API search |
 | `recycle` | Default for styled API select to keep previous results |
-| `card.round` | Default Card border radius |
+| `card.round` | Default Card border radius (canonical `lg` / `rounded-lg` per xs–l scale) |
 | `date.start_day` | Default first day of week |
 | `loading.indicator` | Default loading indicator icon |
 | `icon.custom.guide` | Map internal icons to override default Heroicons |
@@ -671,8 +671,8 @@ Dropped Tippy.js in v4 → smaller bundle.
 <x-ts-card image="https://picsum.photos/750/300">…</x-ts-card>
 <x-ts-card position="bottom" image="…">…</x-ts-card>
 
-{{-- Round: bare flag → default rounded-lg; xs sm md lg xl 2xl --}}
-<x-ts-card round="sm">…</x-ts-card>
+{{-- Round: bare flag → default rounded-lg; xs sm md lg --}}
+<x-ts-card round="lg">…</x-ts-card>
 
 <x-ts-card header="TallStackUI" color="primary">…</x-ts-card>
 <x-ts-card header="TallStackUI" color="primary" light>…</x-ts-card>
@@ -692,7 +692,7 @@ Dropped Tippy.js in v4 → smaller bundle.
 </x-ts-card>
 
 <x-ts-card skeleton /> {{-- 3 body lines --}}
-<x-ts-card skeleton="5" header="…" footer image round="xl" />
+<x-ts-card skeleton="5" header="…" footer image round="lg" />
 
 <x-ts-card loading>…</x-ts-card>
 <x-ts-card loading="save" delay="longest">…</x-ts-card>
@@ -771,28 +771,30 @@ new class extends Component {
 ### Badge (`<x-ts-badge>`)
 
 ```blade
-<x-ts-badge text="Active" />
-<x-ts-badge text="Active" color="green" />
-<x-ts-badge text="Active" xs|sm|md|lg />
-<x-ts-badge text="Active" round />
-<x-ts-badge text="Active" light />
-<x-ts-badge text="Active" outline />
-<x-ts-badge icon="check" text="Verified" />
+{{-- Status & Semantic Badges (User-Oriented Lifecycle) --}}
+<x-ts-badge text="Draf" color="slate" light round="sm" />          {{-- Neutral: data bawaan/statis --}}
+<x-ts-badge text="Diajukan" color="blue" light round="sm" />        {{-- Info: proses berjalan --}}
+<x-ts-badge text="Terverifikasi" color="green" light round="sm" />  {{-- Success: valid/disetujui --}}
+<x-ts-badge text="Perlu Revisi" color="amber" light round="sm" />   {{-- Warning: butuh perhatian --}}
+<x-ts-badge text="Ditolak" color="red" light round="sm" />          {{-- Error: gagal/dibatalkan --}}
+<x-ts-badge text="Baru" color="orange" round="sm" />               {{-- Accent: sorotan khusus --}}
 
+{{-- Scale & Options (scale xs–l) --}}
+<x-ts-badge text="Compact" sm round="sm" />
+<x-ts-badge icon="check" text="Verified" color="green" round="sm" />
 ```
 
 ### Alert (`<x-ts-alert>`)
 
 ```blade
-<x-ts-alert>Default alert</x-ts-alert>
-<x-ts-alert color="green">Success message</x-ts-alert>
-<x-ts-alert color="red">Error message</x-ts-alert>
-<x-ts-alert color="yellow">Warning message</x-ts-alert>
-<x-ts-alert color="blue">Info message</x-ts-alert>
+{{-- Semantic Feedback Banners (Actionable & User-Oriented) --}}
+<x-ts-alert color="blue" title="Panduan">Info atau petunjuk alur.</x-ts-alert>
+<x-ts-alert color="green" title="Berhasil">Konfirmasi tindakan sukses.</x-ts-alert>
+<x-ts-alert color="amber" title="Perhatian">Peringatan kuota/tenggat waktu dengan instruksi perbaikan.</x-ts-alert>
+<x-ts-alert color="red" title="Kesalahan">Pemberitahuan kegagalan kritis atau data tidak valid.</x-ts-alert>
 
 <x-ts-alert close>Closable alert</x-ts-alert>
 <x-ts-alert icon="check-circle" color="green">With icon</x-ts-alert>
-
 ```
 
 ### Loading (`<x-ts-loading>`)
@@ -808,29 +810,36 @@ new class extends Component {
 ### Button (`<x-ts-button>`)
 
 ```blade
-<x-ts-button>Default</x-ts-button>
-<x-ts-button text="Save" />
+{{-- Action Hierarchy (User-Oriented) --}}
+{{-- 1. Primary Action: Focal point (Max 1 per viewport/card) --}}
+<x-ts-button color="primary" text="Simpan Perubahan" />
+
+{{-- 2. Secondary Action: Constructive alternative --}}
+<x-ts-button color="secondary" outline text="Ekspor PDF" />
+
+{{-- 3. Tertiary Action: Low prominence --}}
+<x-ts-button color="slate" flat text="Reset Filter" />
+
+{{-- 4. Ghost Action: Low friction / transparent resting state (tables, modals) --}}
+<x-ts-button color="slate" flat text="Batal" />
+<x-ts-button color="slate" flat icon="pencil" aria-label="{{ __('common.actions.edit') }}" />
+
+{{-- 5. Destructive Action: High risk (requires two-step confirmation) --}}
+<x-ts-button color="red" text="Hapus Data" />
+
+{{-- Status & Feedback Triggers --}}
 <x-ts-button color="green">Success</x-ts-button>
-<x-ts-button color="red">Danger</x-ts-button>
-<x-ts-button color="yellow">Warning</x-ts-button>
+<x-ts-button color="amber">Warning</x-ts-button>
 <x-ts-button color="blue">Info</x-ts-button>
 
+{{-- Sizes & Ergonomics (scale xs–l) --}}
 <x-ts-button sm>Small</x-ts-button>
 <x-ts-button lg>Large</x-ts-button>
-
 <x-ts-button outline>Outline</x-ts-button>
 <x-ts-button light>Light</x-ts-button>
-<x-ts-button circle>+</x-ts-button>
 
-<x-ts-button icon="plus" />
-<x-ts-button icon="pencil" sm>Edit</x-ts-button>
-
-<x-ts-button loading>Submit</x-ts-button>
-<x-ts-button disabled>Disabled</x-ts-button>
-
-<x-ts-button wire:click="save">Save</x-ts-button>
-<x-ts-button wire:loading wire:target="save">Saving…</x-ts-button>
-
+{{-- Async & Livewire Binding --}}
+<x-ts-button wire:click="save" loading="save">Simpan</x-ts-button>
 ```
 
 ### Avatar (`<x-ts-avatar>`)

@@ -96,7 +96,7 @@ app/Modules/{Module}/Livewire/     # Livewire components per module
 Foundation layer — utility classes for layout, spacing, typography, colors:
 
 ```blade
-<div class="flex items-center justify-between p-4 bg-base-100 rounded-xl border border-base-content/10 shadow-sm">
+<div class="flex items-center justify-between p-4 bg-base-100 rounded-lg border border-base-content/10 shadow-sm">
     <h2 class="text-lg font-semibold text-base-content">Page Title</h2>
     <x-ts-button sm wire:click="create">New Record</x-ts-button>
 </div>
@@ -615,13 +615,13 @@ public function delete()
 
 ```blade
 <!-- Recommended: Semantic palette tokens (auto dark-mode aware) -->
-<div class="bg-base-100 text-base-content border border-base-content/10 rounded-xl p-4">
+<div class="bg-base-100 text-base-content border border-base-content/10 rounded-md p-4">
     Themed content with automatic dark mode contrast
 </div>
 
 <!-- Surface hierarchy (base-200 container -> base-100 card) -->
-<div class="bg-base-200 p-6 rounded-2xl">
-    <div class="bg-base-100 p-4 rounded-xl border border-base-content/10 shadow-sm">
+<div class="bg-base-200 p-6 rounded-lg">
+    <div class="bg-base-100 p-4 rounded-lg border border-base-content/10 shadow-sm">
         Elevated card surface
     </div>
 </div>

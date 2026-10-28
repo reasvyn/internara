@@ -801,6 +801,22 @@ All components MUST use CSS variables from the Settings/Theme module for brand c
 - Never hardcode hex colors in Blade or CSS
 - Respect dark/light mode via `theme.dark_mode` setting
 
+### Semantic Variants & User-Oriented Hierarchy
+
+UI elements MUST strictly adhere to established semantic variants according to their communicative role (see [Design System §3.1](guides/ui-ux/design-system.md#31-user-oriented-semantic-variant-architecture)):
+
+- **`primary`**: Main action / focal point (e.g. Save, Submit). **Max 1 per viewport/card**. Never duplicate adjacent primary buttons.
+- **`secondary`**: Supporting constructive action (e.g. Export, Filter Lanjutan, Save Draft). Paired alongside primary.
+- **`tertiary`**: Low-prominence action (e.g. Reset Filter, View Audit Log). Subtle flat/minimal styling.
+- **`accent`**: High-value feature highlight (e.g. New Feature badge, recommendation). Sparing use (<5% visual surface).
+- **`muted`**: De-emphasized passive text/captions (e.g. timestamps, helper text). Must meet WCAG AA contrast (≥4.5:1).
+- **`ghost`**: Low-friction transparent resting state (e.g. table row action icons, modal Cancel, pagination).
+- **`neutral`**: Objective data/status (e.g. Draft, Archived, Offline).
+- **`info`**: Guidance, tips, or in-progress states (e.g. Pending Verification, Scheduled).
+- **`success`**: Positive confirmation / valid condition (e.g. Verified, Completed, Approved).
+- **`warning`**: Actionable caution / nearing quota or deadline (e.g. Needs Revision). Must include actionable advice.
+- **`error` / `danger`**: Critical failure, rejection, or permanent destructive action (e.g. Delete). Destructive actions require two-step confirmation.
+
 ### Form Field Icons
 
 Every form field MUST include an icon for visual clarity:
@@ -817,14 +833,14 @@ Every form field MUST include an icon for visual clarity:
 
 Icons use Heroicons via TallstackUI `x-ts-icon` (or inline SVG with `heroicon-*`). Pair icons with labels — never use icons as the sole indicator for accessibility.
 
-### Curvature & Soft Shapes (Tanpa Sudut Tajam)
+### Curvature & Soft Shapes (Tanpa Sudut Tajam, Skala xs–l)
 
-Sharp 90-degree corners and `rounded-none` are strictly prohibited on all UI elements:
+Sharp 90-degree corners (`rounded-none`) and overly bulbous shapes (`rounded-2xl`, `rounded-3xl`) are strictly prohibited on all UI elements. Border radius is calibrated across the `xs` to `l` (`rounded-xs` through `rounded-lg`) spectrum depending on functional role ("tidak terlalu bulat, tidak lancip"):
 
-- **Cards & structural surfaces**: `rounded-2xl` (1rem / 16px) or `rounded-3xl` (1.5rem / 24px)
-- **Interactive inputs, selects, textareas, buttons, and alerts**: `rounded-xl` (0.75rem / 12px)
-- **Badges, status indicators, avatar circles, and mode switchers**: `rounded-full` (9999px)
-- **Checkboxes**: `rounded-md` (0.375rem / 6px)
+- **Cards & structural surfaces**: `rounded-lg` (0.5rem / 8px)
+- **Interactive inputs, selects, textareas, buttons, and alerts**: `rounded-md` (0.375rem / 6px)
+- **Badges, status indicators, tags, and tooltips**: `rounded-sm` (0.25rem / 4px) to `rounded-md` (0.375rem / 6px)
+- **Checkboxes & micro-controls**: `rounded-xs` (0.125rem / 2px) to `rounded-sm` (0.25rem / 4px)
 
 ### Compact Hierarchy & Viewport Responsiveness
 

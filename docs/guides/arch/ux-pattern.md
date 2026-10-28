@@ -62,7 +62,7 @@ Runtime branding: `Theme::cssVariables()` generates inline `<style>` in `ui::lay
 
 ```blade
 {{-- Consume via token — never brand() in CSS --}}
-<div class="bg-primary text-primary-content border border-base-300 rounded-xl p-4">
+<div class="bg-primary text-primary-content border border-base-300 rounded-lg p-4">
   <x-ts-badge color="success" :text="__('common.verified')" />
 </div>
 {{-- Theme switch — always this component --}}

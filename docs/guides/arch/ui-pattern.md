@@ -12,13 +12,13 @@ Without it, UIs drift into arbitrary hex values, inconsistent spacing, desktop-o
 
 Hard rules. Violations are architecture violations.
 
-1. **Tokens over literals** — Never hardcode `style="color:#123456"`, `bg-[#...]`, `w-[930px]`, or arbitrary `11px`. Every color, spacing, radius, shadow, and font value MUST come from `@theme` CSS variables (`--color-primary`, `--spacing-*`, `--radius-*`) and their generated utilities (`bg-primary`, `p-4`, `rounded-xl`). Arbitrary values require explicit justification in review.
+1. **Tokens over literals** — Never hardcode `style="color:#123456"`, `bg-[#...]`, `w-[930px]`, or arbitrary `11px`. Every color, spacing, radius, shadow, and font value MUST come from `@theme` CSS variables (`--color-primary`, `--spacing-*`, `--radius-*`) and their generated utilities (`bg-primary`, `p-4`, `rounded-lg`, `rounded-md`). Arbitrary values require explicit justification in review.
 
 2. **CSS-first, no JS config** — Tailwind v4 is CSS-first. Do NOT create `tailwind.config.js`. All customization lives in `resources/css/app.css` via `@import 'tailwindcss'`, `@theme`, `@custom-variant dark`, `@layer`, and `@source`. Runtime brand overrides live in `Theme::cssVariables()` → inline `<style>` in `ui::layouts.base`, never in a build-time config. Core module owns zero UI layers.
 
-3. **Semantic palette only** — Use `base-100/200/300/content`, `primary/secondary/accent/neutral`, `info/success/warning/error` (and their `-content` pairs). Never `bg-blue-500`, `text-red-500`, `bg-[#059669]` for decorative color. The palette is pre-validated for WCAG AA contrast (4.5:1 text, 3:1 large/UI, 3:1 non-text contrast per WCAG 1.4.3 / 1.4.11).
+3. **Semantic palette & variants only** — Strictly use established semantic variants (`primary`, `secondary`, `tertiary`, `accent`, `muted`, `ghost`, `neutral`, `info`, `success`, `warning`, `error`). Never hardcode `bg-blue-500`, `text-red-500`, `bg-[#059669]` for decorative color. The palette is pre-validated for WCAG AA contrast (4.5:1 text, 3:1 large/UI, 3:1 non-text contrast per WCAG 1.4.3 / 1.4.11). User-oriented invariants apply: maximum 1 primary CTA per viewport, ghost for low-clutter table row actions, destructive actions in error/danger with mandatory confirmation, and actionable guidance on warning. See [Design System §3.1](../ui-ux/design-system.md#31-user-oriented-semantic-variant-architecture).
 
-4. **Mobile-first authoring** — Base classes are mobile. Breakpoints (`sm:640`, `md:768`, `lg:1024`, `xl:1280`) only add. No `hidden md:block` that hides primary content on mobile. No horizontal scroll at 320px viewport width (WCAG 1.4.10 Reflow). Tables wrap in `overflow-x-auto rounded-xl border`.
+4. **Mobile-first authoring** — Base classes are mobile. Breakpoints (`sm:640`, `md:768`, `lg:1024`, `xl:1280`) only add. No `hidden md:block` that hides primary content on mobile. No horizontal scroll at 320px viewport width (WCAG 1.4.10 Reflow). Tables wrap in `overflow-x-auto rounded-lg border`.
 
 5. **Blade is presentation only** — No business or UI computation in `.blade.php`. No `@php` blocks with `round(($a/$b)*100)`, `max()`, stage assembly, or permission expressions. Livewire computes and exposes `public` ready-to-render values; Alpine handles client-only toggles. See `livewire-pattern.md` §1.1 and `conventions.md` §14.1.
 
@@ -26,9 +26,9 @@ Hard rules. Violations are architecture violations.
 
 7. **Touch & focus minima** — Interactive targets ≥44×44px (WCAG 2.5.8 Minimum, Apple HIG 44pt). Icon-only buttons use `size-10`+ or `p-2` + `aria-label`. Every focusable element has a visible `focus:ring` — never `outline-none` without replacement.
 
-8. **No inline shadows sprawl** — Elevation is `border border-base-content/10` + `rounded-2xl` for cards, `shadow-xl` only for floating layers (modal, dropdown, popover). Max two shadow levels.
+8. **No inline shadows sprawl** — Elevation is `border border-base-content/10` + `rounded-lg` for cards, `shadow-xl` only for floating layers (modal, dropdown, popover). Max two shadow levels.
 
-9. **Soft fluid curvature (Zero sharp corners)** — Sharp 90-degree corners and `rounded-none` are strictly prohibited on UI elements. Elevated cards and structural surfaces MUST use `rounded-2xl` (1rem / 16px) or `rounded-3xl` (1.5rem / 24px); interactive form inputs, alerts, and buttons use `rounded-xl` (0.75rem / 12px); status badges, pills, search inputs, avatars, and mode switches use `rounded-full` (9999px); checkboxes use `rounded-md`.
+9. **Soft balanced curvature (Zero sharp corners, Skala xs–l)** — Sharp 90-degree corners (`rounded-none`) and overly bulbous shapes (`rounded-2xl`, `rounded-3xl`) are strictly prohibited on UI elements. Curvature is calibrated across the `xs` to `l` (`rounded-xs` through `rounded-lg`) spectrum depending on functional role ("tidak terlalu bulat, tidak lancip"): elevated cards, structural containers, and table wrappers MUST use `rounded-lg` (0.5rem / 8px); interactive form inputs, alerts, dropdowns, and buttons use `rounded-md` (0.375rem / 6px); status badges, tags, chips, and tooltips use `rounded-sm` (0.25rem / 4px) to `rounded-md` (0.375rem / 6px); checkboxes and micro-controls use `rounded-xs` (0.125rem / 2px) to `rounded-sm` (0.25rem / 4px).
 
 10. **Compact & viewport-efficient rhythm** — Interfaces must eliminate vertical bloat and excessive paddings/margins. Authentication screens, overview cards, and modal dialogs must fit comfortably within standard viewport heights (768px–900px) without forcing unnecessary vertical scroll to access primary action buttons. Form gaps follow compact spacing (`space-y-3.5` to `space-y-4`), card bodies use `p-5 sm:p-6`, headers maintain sleek `h-14 sm:h-16`.
 
@@ -55,7 +55,7 @@ Limit to Instrument Sans `400/500/600` + `900` for display `h1`. Line length `ma
 
 ```blade
 {{-- ✅ Correct — 8-point grid, soft curvature, border over heavy shadow --}}
-<div class="rounded-2xl border border-base-content/10 bg-base-100 p-5 shadow-xs">
+<div class="rounded-lg border border-base-content/10 bg-base-100 p-5 shadow-xs">
   <h2 class="text-sm font-semibold">{{ $title }}</h2>
   <p class="text-xs text-base-content/60">{{ $description }}</p>
 </div>
@@ -110,7 +110,7 @@ Author mobile first, enhance upward. This is MDN Responsive Design + WCAG 1.4.10
 **Rules:**
 
 - Breakpoints: `sm` filter collapses to full-width, `md` sidebar drawer, `lg` persistent sidebar + `lg:grid-cols-4`. Verify at 320 / 768 / 1024.
-- Reflow 320px: `body` has `overflow-x-hidden antialiased`; table wrapper MUST be `overflow-x-auto rounded-xl border`. No page-level horizontal scroll. Grid wraps to 1 col before scroll.
+- Reflow 320px: `body` has `overflow-x-hidden antialiased`; table wrapper MUST be `overflow-x-auto rounded-lg border`. No page-level horizontal scroll. Grid wraps to 1 col before scroll.
 - Fluid: `p-4 md:p-6 lg:p-8`, `text-sm` → `lg:text-base`, `max-w-7xl` container, `min-h-screen` root. Use `text-2xl` not `text-[27px]`.
 - Tables mobile: hide secondary columns `hidden md:table-cell` or keep scroll with visible indicator; at ≤640 offer card fallback. `table-zebra table-sm` for density.
 - Touch: FAB `fixed right-6 bottom-6 z-50 size-12 rounded-full` (48px) is the canonical anchor; `btn-square` → `size-10`+ for icon-only. Gap between targets ≥8px.
@@ -127,7 +127,7 @@ Follow **Atomic Design** (Brad Frost) + **W3C Design Tokens** + Material 3 Compo
 **Consistency contract:**
 
 - Every form field MUST have `label` + Heroicon (`o-user`, `o-envelope`, `o-calendar`, `o-clock`, `o-magnifying-glass`, `o-chevron-down`) — never icon as sole indicator (WCAG 1.4.1). Icons via `x-ts-icon` or `x-ts-*` `icon` prop.
-- Cards: `rounded-2xl border border-base-content/10 bg-base-100 p-5 sm:p-6`; floating: `rounded-2xl border shadow-xl mt-2 w-80 p-4`.
+- Cards: `rounded-lg border border-base-content/10 bg-base-100 p-5 sm:p-6`; floating: `rounded-lg border shadow-xl mt-2 w-80 p-4`.
 - Do not duplicate a molecule — extract to `resources/views/ui/components/` or `resources/views/{module}/components/` and reuse. Three similar blocks → extract.
 
 ### 4. Tailwind CSS v4 — CSS-First & Design Tokens
@@ -158,7 +158,7 @@ Tailwind v4 doctrine: **CSS is the config.** No `tailwind.config.js` exists nor 
 
 | Layer | What | Where | Example |
 |-------|------|-------|---------|
-| **Base (primitive)** | Raw values | `@theme` primitives | `--color-primary: #059669`, `--spacing-4: 1rem`, `--radius-xl: 0.75rem` |
+| **Base (primitive)** | Raw values | `@theme` primitives | `--color-primary: #059669`, `--spacing-4: 1rem`, `--radius-lg: 0.5rem` |
 | **Semantic (purpose)** | Intent, not value | `@theme` semantic + `Theme::cssVariables()` runtime | `--color-primary` → `bg-primary`, `text-primary-content`; `base-100` → `bg-base-100` |
 | **Component (variant)** | Component API | TallStackUI props + `@layer components` shims | `<x-ts-button color="primary">`, `.btn-primary` |
 
@@ -170,7 +170,7 @@ What components MUST use: semantic tokens (`bg-primary`, `text-success`, `border
 
 ```blade
 {{-- ✅ Token-driven --}}
-<div class="bg-primary text-primary-content rounded-xl border border-base-300 p-4">
+<div class="bg-primary text-primary-content rounded-md border border-base-300 p-4">
   <x-ts-badge color="success" :text="__('common.verified')" />
 </div>
 
@@ -197,7 +197,7 @@ Prevent drift: ESLint/Prettier checks, code review flags arbitrary values (`[val
 
 **Forms:** `x-ts-input`/`x-ts-select.native`/`x-ts-textarea`/`x-ts-file` with `label` prop (auto `for` association). `required` prop for required fields (not just visual asterisk). Errors via TallStackUI `aria-live` — do not suppress. Layout `space-y-4` inside modal, `grid grid-cols-1 md:grid-cols-2 gap-4` for two-column forms.
 
-**Tables:** `x-ts-table` with `headers` array (`label`, `field`, `sortable` → auto `aria-sort`). Wrap in `overflow-x-auto rounded-xl border`. Bulk checkbox header needs `aria-label="Select all rows"`. Density `table-sm`, zebra `table-zebra`. Empty state via `ui::widgets.empty-state` slot, not bare text.
+**Tables:** `x-ts-table` with `headers` array (`label`, `field`, `sortable` → auto `aria-sort`). Wrap in `overflow-x-auto rounded-lg border`. Bulk checkbox header needs `aria-label="Select all rows"`. Density `table-sm`, zebra `table-zebra`. Empty state via `ui::widgets.empty-state` slot, not bare text.
 
 **Modals/Dialogs:** `x-ts-modal` (`wire="showModal"`), `separator blur size="lg"` for guides. Focus traps automatically; focus moves to first focusable on open, returns to trigger on close. Confirm destructive via two-step `ask{Action}()` → `confirm{Action}()` + shared `ui::components.confirm` (`wire="showConfirm"`), never bare `wire:confirm`. Cancel via `Escape`.
 
@@ -216,16 +216,16 @@ Apply performance heuristics: avoid `@apply` bloat, keep `@layer components` shi
 | You see… | It should be… | Violation |
 |----------|---------------|-----------|
 | `style="color:#059669"` / `bg-[#059669]` / `text-[#1a1a1a]` | `bg-primary text-base-content` (semantic token) | Token drift, breaks dark mode & contrast |
-| `w-[930px]` / `m-[11px]` / `p-[13px]` / `rounded-[7px]` / `shadow-[0_2px_11px_...]` | `max-w-7xl`, `p-4`, `rounded-xl`, `shadow-xl` (scale) | Arbitrary value, no 8-point grid |
+| `w-[930px]` / `m-[11px]` / `p-[13px]` / `rounded-[7px]` / `shadow-[0_2px_11px_...]` | `max-w-7xl`, `p-4`, `rounded-lg`, `shadow-xl` (scale) | Arbitrary value, no 8-point grid |
 | `tailwind.config.js` with `theme.extend.colors` | `@theme { --color-* }` in `resources/css/app.css` + `Theme::cssVariables()` runtime | CSS-first violation, splits SSOT |
 | `bg-blue-500 text-red-500` decorative | `bg-info text-info-content` / `bg-primary` semantic | Palette violation, fails WCAG contrast gate |
 | `hidden md:flex` hiding primary content | `flex flex-col sm:flex-row` mobile-first | Desktop-first, fails 320px reflow |
-| Table without `overflow-x-auto` wrapper | `<div class="overflow-x-auto rounded-xl border"><x-ts-table /></div>` | Horizontal scroll at 320px (WCAG 1.4.10) |
+| Table without `overflow-x-auto` wrapper | `<div class="overflow-x-auto rounded-lg border"><x-ts-table /></div>` | Horizontal scroll at 320px (WCAG 1.4.10) |
 | `@php $rate = round(($a/$b)*100) @endphp` in Blade | Livewire `public int $completionRate` computed in `mount()`/`#[Computed]` | Blade logic (C1-adjacent, `conventions.md` §14) |
 | `@if ($user->role === 'admin' && $stats['x']>0)` in Blade | `public bool $isSuperAdmin` / `@hasrole('super_admin')` / Alpine `x-show` | Business logic in view |
 | `<button><x-ts-icon name="trash" /></button>` (icon-only, no label) | `<x-ts-button icon="trash" aria-label="{{ __('common.delete') }}" />` | WCAG 4.1.2 Name/Role/Value |
 | `class="outline-none"` without `focus:ring` replacement | Keep Tailwind `focus:ring` / TallStackUI default | WCAG 2.4.7 Focus Visible |
-| Sharp corners (`rounded-none`, 90° boxy elements) | `rounded-2xl` for cards, `rounded-xl` for inputs/buttons, `rounded-full` for badges | Curvature invariant violation ("tanpa sudut tajam") |
+| Sharp corners (`rounded-none`) or overly rounded (`rounded-2xl/3xl`) | `rounded-lg` for cards/modals, `rounded-md` for inputs/buttons, `rounded-sm` for badges | Curvature invariant violation ("tidak terlalu bulat, tidak lancip" — skala xs–l) |
 | Giant heroes / bloated paddings (`pt-32 pb-24`) | Compact rhythm (`pt-10 pb-8 sm:pt-14`), viewport efficiency | Density bloat, forces unnecessary scroll |
 | New `.btn .badge .alert` custom CSS | `<x-ts-button>` / `<x-ts-badge>` / `x-ts-alert` | DaisyUI shim misuse, should use TallStackUI primitive |
 | Inline `<script>` in Blade | Alpine `x-data` / `@entangle` + CSP-allowed external | CSP violation (`SecurityHeadersMiddleware`) |

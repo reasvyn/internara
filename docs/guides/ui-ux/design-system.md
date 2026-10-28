@@ -32,7 +32,7 @@ Internara's interface is built on three layers:
 
 Livewire manages server-side state; Alpine.js handles client-side behavior. The visual language is
 clean, compact, minimalist, and modern: neutral monochrome base, single accent brand color, low-saturation
-backgrounds, subtle borders, bold typography, minimal shadows, and soft fluid curvature with **zero sharp corners**.
+backgrounds, subtle borders, bold typography, minimal shadows, and balanced, restrained curvature (**tidak terlalu bulat dan tidak lancip**, calibrated across the `xs`–`l` spectrum with **zero sharp corners**).
 
 ### 1.1 Core Aesthetic Principles
 
@@ -46,16 +46,16 @@ backgrounds, subtle borders, bold typography, minimal shadows, and soft fluid cu
 - Clutter-free visual hierarchy: content-first layouts, subtle micro-interactions, and low-contrast surface dividers (`border-base-content/10`) instead of heavy box shadows or busy graphic dividers.
 - Elevation relies on delicate border definition (`border border-base-content/10`) coupled with soft shadows (`shadow-xs` or `shadow-sm`), reserving deeper shadows (`shadow-xl`) strictly for floating overlays (modals, dropdown menus).
 
-#### 3. Soft Fluid Curvature — Zero Sharp Corners ("Tanpa Sudut Tajam")
-Every structural container, surface, input, button, badge, and interactive element across Internara MUST feature smooth rounded curvature. **Sharp 90-degree corners and `rounded-none` are strictly prohibited**.
+#### 3. Balanced Soft Curvature — Zero Sharp Corners ("Tidak Terlalu Bulat, Tidak Lancip", Skala xs–l)
+Every structural container, surface, input, button, badge, and interactive element across Internara MUST feature balanced, proportionate curvature. Elements must neither be excessively circular/bubbly nor sharp/boxy: **sharp 90-degree corners (`rounded-none`) and overly bulbous radii (`rounded-2xl`, `rounded-3xl`) are strictly prohibited**. The design system strictly uses the **`xs` to `l` (`rounded-xs` through `rounded-lg`) spectrum** tailored to each element's functional role:
 
 | Component Category | Token / Class | Curvature Purpose |
 | ------------------ | ------------- | ----------------- |
-| **Elevated Surfaces & Cards** | `rounded-2xl` (1rem / 16px) or `rounded-3xl` (1.5rem / 24px) | Soft, modern card surfaces and modal bodies. |
-| **Interactive Controls** | `rounded-xl` (0.75rem / 12px) | Form inputs, selects, textareas, alert banners, and standard buttons. |
-| **Pills & Status Indicators** | `rounded-full` (9999px) | Badges, status pills, avatars, theme/language switches, and tag selectors. |
-| **Checkboxes & Small Toggles** | `rounded-md` (0.375rem / 6px) | Form checkboxes and compact toggles for ergonomic accessibility. |
-| **Subtle Transitions** | `rounded-t-2xl sm:rounded-t-3xl` | Section separators and bottom sheets transitioning across surface contrasts. |
+| **Elevated Surfaces, Cards & Modals** | `rounded-lg` (0.5rem / 8px) / `round="lg"` | Crisp, modern card surfaces, modal dialogs, drawer panels, and structural containers without excessive ballooning. |
+| **Interactive Controls & Inputs** | `rounded-md` (0.375rem / 6px) / `round="md"` | Form inputs, textareas, styled selects, alert banners, and primary/secondary buttons. Ergonomic and tactile without being bulbous. |
+| **Badges, Tags & Tooltips** | `rounded-sm` (0.25rem / 4px) to `rounded-md` (0.375rem / 6px) | Compact status indicators, metadata tags, filter chips, and floating tooltips. Replaces oversized pill shapes for a refined professional density. |
+| **Checkboxes, Micro-Toggles & Action Buttons** | `rounded-xs` (0.125rem / 2px) to `rounded-sm` (0.25rem / 4px) | Checkboxes, switches, table row action buttons, and small icon buttons. Preserves crisp edge definition while eliminating 90° sharp corners. |
+| **Subtle Transitions & Headers** | `rounded-t-lg sm:rounded-t-lg` | Section separators, drawer headers, and bottom sheets transitioning across surface contrasts. |
 
 ---
 
@@ -100,7 +100,54 @@ through a runtime chain, computed into CSS custom properties, and injected as an
 block on every page — no CSS rebuild or redeploy. This section documents the complete color schema,
 the computation algorithm, and the injection + caching pipeline.
 
-### 3.1 The Two Signals — Light / Dark
+### 3.1 User-Oriented Semantic Variant Architecture
+
+Every color, variant, and interactive treatment in Internara communicates intent, urgency, and hierarchy. Users do not parse raw CSS; they navigate by scanning visual affordances. Semantic variants are classified into three functional groups:
+
+1. **Action & Interaction Hierarchy:** `primary`, `secondary`, `tertiary`, `ghost`, `error/danger`
+2. **Context & Expression:** `accent`, `muted`, `neutral`
+3. **Feedback & System State:** `info`, `success`, `warning`, `error`
+
+#### 1. Semantic Variant Matrix
+
+| Variant | User Mental Model & Perception | Applied Components | Token / Class Binding | Mandatory User-Oriented Rules |
+| :--- | :--- | :--- | :--- | :--- |
+| **`primary`** | **"Aksi Utama / Focal Point"**<br>Langkah utama yang disarankan sistem untuk menyelesaikan alur saat ini. | Primary CTA button, active navigation, active step indicator, focused input ring. | `bg-primary text-primary-content`<br>`color="primary"` | **Maksimal 1 primary action per layar/viewport/card**. Jangan pernah menduplikasi dua tombol primary berdampingan untuk menghindari kebingungan pengguna (*decision paralysis*). |
+| **`secondary`** | **"Aksi Alternatif / Pendukung"**<br>Pilihan tindakan pelengkap yang konstruktif tanpa menyaingi aksi utama. | Tombol "Ekspor Data", "Filter Lanjutan", "Simpan Draf", sub-tab navigasi. | `border border-base-300 bg-base-100 text-base-content hover:bg-base-200`<br>`color="secondary"` atau `outline` | Dampingkan dengan tombol primary saat menyediakan jalur alternatif yang aman. |
+| **`tertiary`** | **"Aksi Tambahan / Low-Priority"**<br>Opsi pelengkap berbobot rendah; tersedia tanpa menarik perhatian visual. | Tombol "Reset Filter", "Lihat Log Audit", "Buka Dokumentasi", chip filter non-aktif. | `bg-base-200/60 text-base-content/80 hover:bg-base-200 border-transparent`<br>`color="slate" flat` | Gunakan saat ada tiga tingkatan aksi untuk menjaga tampilan tetap tenang. |
+| **`accent`** | **"Sorotan Khusus / Highlight"**<br>Penanda fitur unggulan, promosi penting, atau milestone bernilai tinggi. | Badge "Fitur Baru", "Rekomendasi", highlight statistik pencapaian, banner onboarding khusus. | `bg-accent text-accent-content`<br>`color="orange"` | **Gunakan secara selektif (<5% luas visual)**. Dilarang digunakan sebagai tombol submit biasa agar tidak mendistorsi hirarki primary. |
+| **`muted`** | **"Informasi Pasif / De-emphasized"**<br>Label pendukung atau informasi kontekstual yang dibaca saat diperlukan. | Timestamp ("2 jam lalu"), helper text / caption input, deskripsi sekunder tabel, label status archived. | `text-base-content/60` (light) / `text-base-content/50` (dark), `bg-base-200/50` | Kontras teks **wajib memenuhi WCAG AA (min 4.5:1)**. Dilarang digunakan untuk pesan validasi, peringatan, atau tombol aksi interaktif utama. |
+| **`ghost`** | **"Interaksi Bebas Beban / Low-Friction"**<br>Tombol interaktif yang transparan saat diam agar antarmuka bebas dari kumpulan kotak tombol yang berisik. | Row action icons di tabel (View, Edit, Download), navigasi pagination, tombol "Batal" (Cancel), close dialog. | `bg-transparent hover:bg-base-200 text-base-content border-transparent`<br>`color="slate" flat` atau `ghost` | **Wajib menyertakan `aria-label`** pada icon-only buttons. Hover state dan focus ring harus tegas terlihat saat berinteraksi. |
+| **`neutral`** | **"Data Struktural / Objektif"**<br>Status data bawaan yang faktual tanpa konotasi emosional positif/negatif. | Badge "Draf", "Offline", "Tersimpan", kartu informasi umum, surface kontainer sekunder. | `bg-base-300/80 text-base-content`<br>`badge-neutral`, `color="slate"` | Digunakan ketika sistem menyajikan metadata statis yang belum membutuhkan intervensi atau evaluasi pengguna. |
+| **`info`** | **"Panduan Edukatif / Status Berjalan"**<br>Petunjuk alur atau informasi bahwa suatu proses sedang berlangsung secara wajar. | Banner panduan workflow, badge "Menunggu Verifikasi", "Dalam Proses", "Dijadwalkan", tooltip edukasi. | `bg-info/10 text-info border-info/20`<br>`color="blue"`, `<x-ts-alert color="info">` | Dilarang digunakan untuk menandai bahaya atau kesalahan; fokuskan pada bantuan kontekstual dan transparansi progres sistem. |
+| **`success`** | **"Konfirmasi Positif / Selesai"**<br>Pemberitahuan bahwa tindakan berhasil atau data dalam kondisi valid dan aman. | Toast sukses, badge "Aktif", "Disetujui", "Lulus", "Terverifikasi", icon validasi form. | `bg-success/10 text-success border-success/20`<br>`color="green"`, `<x-ts-alert color="success">` | Menandakan kondisi positif permanen atau penyelesaian sukses dari suatu interaksi pengguna. |
+| **`warning`** | **"Peringatan Dini / Kehati-hatian"**<br>Perhatian bahwa ada batas kuota, masa tenggang, atau aksi yang membutuhkan ketelitian. | Alert kuota hampir habis, badge "Revisi Diperlukan", pengingat tenggat waktu, konfirmasi aksi berdampak luas. | `bg-warning/15 text-warning border-warning/30`<br>`color="amber"`, `<x-ts-alert color="warning">` | **Wajib menyertakan instruksi tindakan konkret** (*actionable guidance*) agar pengguna tahu apa yang harus diperiksa atau diperbaiki. |
+| **`error` / `danger`** | **"Kesalahan Kritis / Tindakan Destruktif"**<br>Peringatan kegagalan fatal, data tidak valid, atau aksi berbahaya yang tidak dapat dibatalkan. | Validasi form merah di bawah input, alert kegagalan proses, badge "Ditolak", "Dibatalkan", tombol "Hapus Data". | `bg-error/10 text-error border-error/20`<br>`color="red"`, `<x-ts-alert color="error">` | **Semua tombol tindakan destruktif wajib disertai dialog konfirmasi dua tahap** (`askDelete()` → `confirmDelete()`). |
+
+#### 2. User-Oriented Composition Patterns
+
+1. **Form Actions Toolbar (Hierarki Tindakan Formulir):**
+   - **Kiri / Sekunder:** Tombol `ghost` `[ Batal ]` — tidak membebani perhatian visual pengguna saat mengisi form.
+   - **Kanan / Utama:** Tombol `primary` `[ Simpan Perubahan ]` — penanda jelas titik penyelesaian alur.
+   - **Opsional Perantara:** Tombol `secondary` `[ Simpan Draf ]` — alternatif aman bagi pengguna yang ingin melanjutkan nanti.
+
+2. **Destructive Confirmation Modals:**
+   - **Kiri:** Tombol `ghost` `[ Batal ]` (opsi pelarian aman).
+   - **Kanan:** Tombol `error` / `danger` `[ Ya, Hapus Data ]` (warna merah tegas menandai konsekuensi permanen).
+
+3. **Table & Datagrid Actions:**
+   - Tombol aksi per baris (row actions) **wajib menggunakan varian `ghost`** (icon-only dengan tooltip dan `aria-label`). Menghindari tampilan tabel menyerupai "hutan tombol".
+
+4. **Status Badges Lifecycle Alignment:**
+   - `neutral`: "Draf", "Belum Diajukan", "Diarsipkan"
+   - `info`: "Diajukan", "Menunggu Verifikasi", "Dijadwalkan"
+   - `warning`: "Perlu Revisi", "Mendekati Batas Waktu", "Verifikasi Tertunda"
+   - `success`: "Disetujui", "Terverifikasi", "Aktif", "Lulus"
+   - `error`: "Ditolak", "Dibatalkan", "Gagal", "Kedaluwarsa"
+
+---
+
+### 3.2 The Two Signals — Light / Dark
 
 Each page carries **two** attributes on `<html>` (set in `resources/views/ui/layouts/base.blade.php`):
 
@@ -114,7 +161,7 @@ The `@custom-variant dark (&:where(.dark, .dark *))` in `resources/css/app.css` 
 `data-theme`. Both must stay in sync — `resources/js/app.js` `applyTheme()` sets them together and
 mirrors to the `theme` cookie for SSR accuracy, preventing flash-of-unstyled-content (FOUC).
 
-### 3.2 Resolution Chain
+### 3.3 Resolution Chain
 
 Theme values never hardcode a color. Each slot resolves at runtime:
 
@@ -130,7 +177,7 @@ DB setting (cached forever) → Theme::defaults() from config → hardcoded fall
 - `base()` → `getSetting('base_color', defaults()['base'])`
 - `all()` → primary/secondary/accent/accent from DB, `base` via `base()`, `content` via `Color::computeBaseShades(base())['content']`
 
-### 3.3 Brand Color Schema (Configurable)
+### 3.4 Brand Color Schema (Configurable)
 
 Four brand colors are configurable in the admin panel (`SystemSetting` → Branding form;
 `app/Modules/Setting/Livewire/SystemSetting.php`), stored as **`*_color`** settings, validated as
@@ -146,9 +193,9 @@ Four brand colors are configurable in the admin panel (`SystemSetting` → Brand
 | Base | `base_color` | `#ffffff` | Page/surface background anchor |
 
 `content_color` is declared in `config('settings.theme_cache_keys')` for invalidation but the resolved
-content color is **computed**, not read from a setting — see §3.5.
+content color is **computed**, not read from a setting — see §3.6.
 
-### 3.4 Presets
+### 3.5 Presets
 
 Six presets live in `config/settings.php` `colors.presets` (checkbox swatches in the admin panel):
 
@@ -165,7 +212,7 @@ Applying a preset fills all four color pickers (`BrandingForm::applyPreset()`). 
 compares the current four values against every preset and re-selects the matching swatch when the
 user's manual colors happen to match one — otherwise `selected_preset` is `null` (manual mode).
 
-### 3.5 Color Computation (`app/Modules/Core/Support/Color.php`)
+### 3.6 Color Computation (`app/Modules/Core/Support/Color.php`)
 
 `Theme::cssVariables()` computes these values using `Color`:
 
@@ -177,7 +224,7 @@ user's manual colors happen to match one — otherwise `selected_preset` is `nul
 - `--color-{key}-content` / `--{c}` = `contrastColor($hex)` — dark `#1a1a1a` when luminance > 0.5, else light `#f0f0f0`.
 - Dark theme lightens each brand color by **40%** (`Color::lighten($hex, 40)`) for visibility on dark backgrounds; dark brand content is fixed `#ffffff`.
 
-### 3.6 Injected CSS Variables
+### 3.7 Injected CSS Variables
 
 `Theme::cssVariables()` builds a `light` and a `dark` map and caches it for **1 hour** under
 `config('cache-keys.theme_css_variables')` (`theme.css_variables`). `base.blade.php` emits each map
@@ -210,7 +257,7 @@ Each status token also ships a `-content` counterpart (e.g. `--color-success-con
 between white and near-black in dark mode. These are pre-validated for WCAG contrast — never override
 them with arbitrary utilities (see §6.1).
 
-### 3.7 DaisyUI Shim Bridge
+### 3.8 DaisyUI Shim Bridge
 
 `app.css` `@layer components` re-declares the legacy DaisyUI component classes (`.btn`,
 `.badge`, `.table`, `.card`, `.alert`, `.input`, `.menu`, …) that still appear across committed views,
@@ -218,7 +265,7 @@ mapping them to the CSS variables above (`background: var(--color-primary)`, etc
 class-based markup styled while the codebase migrates to `x-ts-*` components. There is **no DaisyUI
 npm package**.
 
-### 3.8 Cache Invalidation
+### 3.9 Cache Invalidation
 
 `Settings::forget()` (and `forgetGroup()`) invalidates the theme variable cache. `Settings::forget()`
 checks `in_array($key, config('settings.theme_cache_keys'))` — the keys `primary_color`,
@@ -227,7 +274,7 @@ checks `in_array($key, config('settings.theme_cache_keys'))` — the keys `prima
 brand color invalidates the 1-hour CSS-variable cache and the change appears on the next page render
 without `php artisan cache:clear`.
 
-### 3.9 Theme Switcher & Dark Mode
+### 3.10 Theme Switcher & Dark Mode
 
 Dual-signal dark mode with a three-state switcher (light / dark / system):
 
@@ -269,7 +316,7 @@ Internara employs a strict mobile-first responsive architecture designed to rend
    - `lg`: `lg:grid-cols-3` or `lg:grid-cols-4` with `gap-5`.
 
 3. **Tables & Complex Datagrids:**
-   - Tables are wrapped inside `<div class="overflow-x-auto rounded-2xl border border-base-content/10">`.
+   - Tables are wrapped inside `<div class="overflow-x-auto rounded-lg border border-base-content/10">`.
    - Primary identifier stays visible on all screens; auxiliary metadata columns collapse on `<md`.
 
 ---
@@ -494,7 +541,7 @@ Every input field is composed of five standard layers:
 | Layer | Token / Class | Description |
 |---|---|---|
 | **Label** | `text-xs font-semibold text-base-content/70` | Descriptive title above field; required fields append visual asterisk `*` |
-| **Input Surface** | `bg-base-100 border border-base-content/10 rounded-xl` | Neutral background, subtle border, rounded corners |
+| **Input Surface** | `bg-base-100 border border-base-content/10 rounded-md` | Neutral background, subtle border, balanced rounded corners (scale xs–l) |
 | **Focus Ring** | `focus:ring-2 focus:ring-primary/20 focus:border-primary` | Visible focus indicator driven by semantic `--color-primary` (Emerald `#059669`) |
 | **Hint / Caption** | `text-xs text-base-content/50 mt-1` | Supplementary contextual help text below input |
 | **Validation Error** | `text-xs text-error mt-1` | High-contrast error message linked via `aria-describedby` |
