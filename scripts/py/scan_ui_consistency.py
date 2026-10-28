@@ -14,6 +14,8 @@ Rules:
   UI-A11Y-LABEL <input> without associated <label> or aria-label
   UI-A11Y-ARIA Icon-only button without aria-label
   UI-COMPONENT Duplicate layout markup instead of Core reusable component (Navbar/Sidebar/Header/Footer)
+  UI-WEIGHT    font-black/font-extrabold — weights the self-hosted family does not ship
+  UI-HEADING   Heading structure: page without h1, or h2 deviating from the canonical scale
 """
 
 from __future__ import annotations
@@ -55,6 +57,16 @@ RE_ARIA_LABEL = re.compile(r"aria-label\s*=", re.I)
 RE_ICON_BUTTON = re.compile(r"<button[^>]*>\s*<svg[^>]*>.*?</svg>\s*</button>", re.I | re.S)
 RE_DUPLICATE_NAV = re.compile(r"<nav[^>]*>.*?</nav>", re.I | re.S)
 RE_CORE_COMPONENTS = re.compile(r"<x-(core|ui)::(layouts|ui)\.")
+RE_HEADING_TAG = re.compile(r"<h([1-6])\b([^>]*)>", re.IGNORECASE | re.DOTALL)
+RE_CLASS_ATTR = re.compile(r"""class\s*=\s*["']([^"']*)["']""", re.DOTALL)
+RE_FORBIDDEN_WEIGHT = re.compile(r"\bfont-(black|extrabold)\b")
+RE_BLADE_COMMENT = re.compile(r"\{\{--.*?--\}\}", re.DOTALL)
+RE_HTML_COMMENT = re.compile(r"<!--.*?-->", re.DOTALL)
+
+# design-system.md §5.2 — the h1 sources are components, not hand-rolled markup
+H1_SOURCES = ("<x-ui::components.page-header", "<x-ui::components.record-manager", "<h1")
+HEADING_REFERENCE = "docs/guides/ui-ux/design-system.md §5.2"
+WEIGHT_REFERENCE = "docs/guides/ui-ux/design-system.md §5.1"
 
 
 def discover_core_components() -> list[str]:
@@ -194,6 +206,89 @@ def check_blade(path: Path) -> list[Finding]:
                     context={"count": nav_count},
                 ))
 
+    # UI-WEIGHT / UI-HEADING scan markup with comments stripped: a Blade comment that documents
+    # "<h1>" must not be read as a rendered heading.
+    markup = RE_HTML_COMMENT.sub("", RE_BLADE_COMMENT.sub("", content))
+    # Print/plain-HTML templates (pdf output, bare error pages) carry print stylesheets, not the
+    # Tailwind type scale — they are out of scope for §5.
+    is_print = "pdf" in Path(rel).name.lower() or "/pdf/" in rel
+    uses_design_system = 'class="' in markup and not is_print
+
+    # UI-WEIGHT: Instrument Sans ships 400/500/600/700 only; 800/900 are synthesised
+    if uses_design_system:
+        for m in RE_FORBIDDEN_WEIGHT.finditer(markup):
+            line_no = markup[: m.start()].count("\n") + 1
+            findings.append(Finding(
+                id="UI-0000",
+                rule="UI_WEIGHT",
+                severity="medium",
+                category="convention",
+                file=rel,
+                line=line_no,
+                message=f"'{m.group(0)}' — the self-hosted family ships no 800/900 cut, so the browser synthesises a faux-bold face",
+                suggestion="Use font-bold (700), the heaviest real cut",
+                reference=WEIGHT_REFERENCE,
+                context={"class": m.group(0)},
+            ))
+
+    # UI-HEADING: one h1 per page, and h2 must sit on the canonical scale
+    if not uses_design_system:
+        return findings
+
+    headings = [
+        (m.group(1), m.group(2), markup[: m.start()].count("\n") + 1)
+        for m in RE_HEADING_TAG.finditer(markup)
+    ]
+    has_h1 = any(src in markup for src in H1_SOURCES)
+    # Partials inherit their parent's h1 (setup step components, widgets)
+    is_partial = "/components/" in rel or "/widgets/" in rel or "/partials/" in rel or Path(rel).name.startswith("_")
+
+    if headings and not has_h1 and not is_partial:
+        findings.append(Finding(
+            id="UI-0000",
+            rule="UI_HEADING",
+            severity="medium",
+            category="accessibility",
+            file=rel,
+            line=headings[0][2],
+            message="Page renders section headings but no h1 — screen readers announce no page title",
+            suggestion="Promote the page-title heading to <h1>, or render <x-ui::components.page-header> / <x-ui::components.record-manager>",
+            reference=HEADING_REFERENCE,
+            context={"levels": ",".join(f"h{h[0]}" for h in headings[:6])},
+        ))
+
+    for level, attrs, line_no in headings:
+        cls = RE_CLASS_ATTR.search(attrs)
+        classes = cls.group(1) if cls else ""
+        if level == "2":
+            missing = [t for t in ("text-xl", "font-bold") if t not in classes]
+            if missing:
+                findings.append(Finding(
+                    id="UI-0000",
+                    rule="UI_HEADING",
+                    severity="low",
+                    category="convention",
+                    file=rel,
+                    line=line_no,
+                    message=f"h2 off the canonical scale — missing {'/'.join(missing)} (expected 'text-xl font-bold tracking-tight')",
+                    suggestion="Section headings are text-xl font-bold tracking-tight; a smaller h2 collapses into h3",
+                    reference=HEADING_REFERENCE,
+                    context={"class": classes[:120]},
+                ))
+        elif level == "1" and "font-bold" not in classes:
+            findings.append(Finding(
+                id="UI-0000",
+                rule="UI_HEADING",
+                severity="low",
+                category="convention",
+                file=rel,
+                line=line_no,
+                message="h1 is not font-bold — the page title must outrank every section heading",
+                suggestion="h1 is text-2xl font-bold tracking-tight (compact shells may keep a smaller size, not a lighter weight)",
+                reference=HEADING_REFERENCE,
+                context={"class": classes[:120]},
+            ))
+
     return findings
 
 
@@ -213,7 +308,7 @@ def main() -> None:
 
     core_comps = discover_core_components()
     metadata = {"total_files": len(blade_files), "core_components": ", ".join(core_comps[:20]), "core_components_total": len(core_comps)}
-    result = build_report(findings, SCAN_NAME, "full" if not args.module else "module", args.module, start, metadata, total_checks=len(blade_files) * 3)
+    result = build_report(findings, SCAN_NAME, "full" if not args.module else "module", args.module, start, metadata, total_checks=len(blade_files) * 5)
 
     # Uniform output via _output.py
     exit_code = handle_output(result, args)

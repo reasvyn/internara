@@ -50,8 +50,8 @@
             @endif
 
             {{-- Mobile brand. The page title lives in the page itself
-                 (`ui::components.page-header` / `record-manager`), which owns the single <h1>;
-                 the shell must not render a competing heading. --}}
+                 (`ui::components.page-header` / `record-manager`), which owns the single page
+                 heading; the shell must not render a competing one. --}}
             <div class="flex items-center gap-2 md:hidden">
                 <a wire:navigate href="{{ route('dashboard') }}" aria-label="{{ brand('name') }}">
                     <x-ui::components.logo size="5" />
