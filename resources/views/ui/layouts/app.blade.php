@@ -1,6 +1,5 @@
 @props([
     'title' => null,
-    'header' => null,
     'footer' => null,
     'context' => null,
 ])
@@ -12,7 +11,7 @@
         </x-slot:menu>
 
         <x-slot:header>
-            <x-ui::layouts.header :$header />
+            <x-ui::layouts.header />
         </x-slot:header>
 
         <div class="mx-auto flex w-full max-w-7xl flex-1 flex-col">

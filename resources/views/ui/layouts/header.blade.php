@@ -1,6 +1,5 @@
 @props([
     'header' => null,
-    'subheader' => null,
     'breadcrumbs' => null, // array of ['label' => '', 'url' => '']
     'sticky' => true,
 ])
@@ -50,20 +49,15 @@
                 </nav>
             @endif
 
-            @if ($header)
-                <h1 class="truncate text-lg leading-tight font-semibold" tabindex="-1">{{ $header }}</h1>
-                @if ($subheader)
-                    <p class="text-base-content/60 truncate text-xs">{{ $subheader }}</p>
-                @endif
-            @else
-                {{-- Fallback mobile brand ketika tidak ada title --}}
-                <div class="flex items-center gap-2 md:hidden">
-                    <a wire:navigate href="{{ route('dashboard') }}" aria-label="{{ brand('name') }}">
-                        <x-ui::components.logo size="5" />
-                    </a>
-                    <span class="text-sm font-bold">{{ brand('name') }}</span>
-                </div>
-            @endif
+            {{-- Mobile brand. The page title lives in the page itself
+                 (`ui::components.page-header` / `record-manager`), which owns the single <h1>;
+                 the shell must not render a competing heading. --}}
+            <div class="flex items-center gap-2 md:hidden">
+                <a wire:navigate href="{{ route('dashboard') }}" aria-label="{{ brand('name') }}">
+                    <x-ui::components.logo size="5" />
+                </a>
+                <span class="text-sm font-bold">{{ brand('name') }}</span>
+            </div>
         </div>
     </x-slot:left>
 
