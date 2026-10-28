@@ -41,36 +41,116 @@
             {{-- Registration + Login cards --}}
             <div class="mx-auto grid max-w-4xl grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2">
                 {{-- Registration Card --}}
-                <div class="group bg-base-100 border-base-content/10 hover:border-primary/30 flex flex-col items-center justify-between rounded-lg border p-5 text-center shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md sm:p-6 lg:p-7">
-                    <div class="flex w-full flex-col items-center">
-                        <div class="from-primary/15 to-primary/5 ring-base-content/10 mx-auto mb-3.5 flex size-12 items-center justify-center rounded-md bg-gradient-to-br ring-1 transition-transform duration-500 ring-inset group-hover:scale-105 sm:mb-4 sm:size-14">
-                            <x-ts-icon name="clipboard-document-list" class="text-primary size-6 sm:size-7" />
+                <div class="group bg-base-100 border-base-content/10 hover:border-primary/30 flex flex-col justify-between rounded-lg border p-5 shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md sm:p-6 lg:p-7">
+                    <div class="flex w-full flex-col">
+                        {{-- Card Header: Icon well + Status Badge --}}
+                        <div class="flex w-full items-start justify-between gap-3">
+                            <div class="from-primary/15 to-primary/5 ring-base-content/10 flex size-12 shrink-0 items-center justify-center rounded-md bg-gradient-to-br ring-1 transition-transform duration-500 ring-inset group-hover:scale-105 sm:size-14">
+                                <x-ts-icon name="clipboard-document-list" class="text-primary size-6 sm:size-7" />
+                            </div>
+
+                            <div>
+                                @if ($registration['status'] === 'open')
+                                    <x-ts-badge
+                                        color="success"
+                                        round="sm"
+                                        text="{{ __('user.home.registration_open') }}"
+                                        icon="check-circle"
+                                        class="px-2.5 py-1 text-xs font-semibold"
+                                    />
+                                @elseif ($registration['status'] === 'upcoming')
+                                    <x-ts-badge
+                                        color="info"
+                                        round="sm"
+                                        text="{{ __('user.home.registration_upcoming') }}"
+                                        icon="clock"
+                                        class="px-2.5 py-1 text-xs font-semibold"
+                                    />
+                                @elseif ($registration['status'] === 'closed')
+                                    <x-ts-badge
+                                        color="warning"
+                                        round="sm"
+                                        text="{{ __('user.home.registration_closed') }}"
+                                        icon="x-circle"
+                                        class="px-2.5 py-1 text-xs font-semibold"
+                                    />
+                                @else
+                                    <x-ts-badge
+                                        color="neutral"
+                                        round="sm"
+                                        text="{{ __('user.home.registration_unavailable') }}"
+                                        icon="question-mark-circle"
+                                        class="px-2.5 py-1 text-xs font-semibold"
+                                    />
+                                @endif
+                            </div>
                         </div>
 
-                        <h2 class="mb-1.5 text-lg font-bold sm:text-xl">{{ __('user.home.registration_title') }}</h2>
+                        {{-- Card Heading & Description --}}
+                        <div class="mt-3.5 w-full text-left sm:mt-4">
+                            <h2 class="text-base-content text-base font-bold sm:text-lg lg:text-xl">
+                                {{ __('user.home.registration_title') }}
+                            </h2>
+                            <p class="text-base-content/65 mt-1 text-xs leading-relaxed sm:text-sm">
+                                {{ __('user.home.registration_desc') }}
+                            </p>
+                        </div>
 
-                        <p class="text-base-content/65 mb-4 max-w-sm text-xs leading-relaxed sm:text-sm">
-                            {{ __('user.home.registration_desc') }}
-                        </p>
+                        {{-- Status Content / Schedule Capsule --}}
+                        <div class="my-3.5 w-full sm:my-4">
+                            @if ($registration['status'] === 'open')
+                                <div class="border-base-content/10 bg-base-200/50 flex w-full items-center gap-2.5 rounded-md border px-3 py-2 text-left text-xs sm:px-3.5 sm:py-2.5">
+                                    <x-ts-icon name="calendar-days" class="text-primary size-4 shrink-0 sm:size-4.5" />
+                                    <p class="text-base-content/75 text-xs font-medium">
+                                        {{
+                                            __('user.home.registration_period', [
+                                                'start' => \Carbon\Carbon::parse($registration['start_date'])->translatedFormat('j F Y'),
+                                                'end' => \Carbon\Carbon::parse($registration['end_date'])->translatedFormat('j F Y'),
+                                            ])
+                                        }}
+                                    </p>
+                                </div>
+                            @elseif ($registration['status'] === 'upcoming')
+                                <div class="border-info/20 bg-info/5 flex w-full flex-col gap-1.5 rounded-md border p-3 text-left text-xs">
+                                    <div class="flex items-center gap-2">
+                                        <x-ts-icon name="clock" class="text-info size-4 shrink-0" />
+                                        <span class="text-info font-semibold">
+                                            {{
+                                                __('user.home.registration_upcoming_period', [
+                                                    'start' => \Carbon\Carbon::parse($registration['start_date'])->translatedFormat('j F Y'),
+                                                    'end' => \Carbon\Carbon::parse($registration['end_date'])->translatedFormat('j F Y'),
+                                                ])
+                                            }}
+                                        </span>
+                                    </div>
+                                    <p class="text-base-content/70 pl-6 text-xs">
+                                        {{ __('user.home.registration_not_open_yet') }}
+                                    </p>
+                                </div>
+                            @elseif ($registration['status'] === 'closed')
+                                <div class="border-warning/20 bg-warning/5 flex w-full items-start gap-2.5 rounded-md border p-3 text-left text-xs">
+                                    <x-ts-icon name="x-circle" class="text-warning mt-0.5 size-4 shrink-0" />
+                                    <p class="text-base-content/75 text-xs leading-relaxed">
+                                        {{ __('user.home.registration_closed_desc') }}
+                                    </p>
+                                </div>
+                            @else
+                                <div class="border-base-content/10 bg-base-200/50 flex w-full items-start gap-2.5 rounded-md border p-3 text-left text-xs">
+                                    <x-ts-icon
+                                        name="question-mark-circle"
+                                        class="text-base-content/60 mt-0.5 size-4 shrink-0"
+                                    />
+                                    <p class="text-base-content/75 text-xs leading-relaxed">
+                                        {{ __('user.home.registration_unavailable_desc') }}
+                                    </p>
+                                </div>
+                            @endif
+                        </div>
                     </div>
 
-                    <div class="flex w-full flex-col items-center">
+                    {{-- Action Row --}}
+                    <div class="mt-auto w-full pt-1">
                         @if ($registration['status'] === 'open')
-                            <x-ts-badge
-                                color="success"
-                                round="sm"
-                                text="{{ __('user.home.registration_open') }}"
-                                icon="check-circle"
-                                class="mb-2.5 px-3 py-1.5 text-xs font-semibold"
-                            />
-                            <p class="text-base-content/50 mb-4 text-xs">
-                                {{
-                                    __('user.home.registration_period', [
-                                        'start' => \Carbon\Carbon::parse($registration['start_date'])->translatedFormat('j F Y'),
-                                        'end' => \Carbon\Carbon::parse($registration['end_date'])->translatedFormat('j F Y'),
-                                    ])
-                                }}
-                            </p>
                             <x-ts-button
                                 wire:navigate
                                 href="{{ route('apply') }}"
@@ -78,70 +158,45 @@
                                 icon="arrow-right"
                                 icon-right
                                 color="primary"
-                                class="w-full sm:w-auto"
-                            />
-                        @elseif ($registration['status'] === 'upcoming')
-                            <x-ts-badge
-                                color="info"
-                                round="sm"
-                                text="{{ __('user.home.registration_upcoming') }}"
-                                icon="clock"
-                                class="mb-2.5 px-3 py-1.5 text-xs font-semibold"
-                            />
-                            <p class="text-base-content/50 mb-4 text-xs">
-                                {{
-                                    __('user.home.registration_upcoming_period', [
-                                        'start' => \Carbon\Carbon::parse($registration['start_date'])->translatedFormat('j F Y'),
-                                        'end' => \Carbon\Carbon::parse($registration['end_date'])->translatedFormat('j F Y'),
-                                    ])
-                                }}
-                            </p>
-                            <x-ts-alert
-                                color="info"
-                                :text="__('user.home.registration_not_open_yet')"
-                                class="w-full rounded-md text-xs"
-                            />
-                        @elseif ($registration['status'] === 'closed')
-                            <x-ts-badge
-                                color="warning"
-                                round="sm"
-                                text="{{ __('user.home.registration_closed') }}"
-                                icon="x-circle"
-                                class="mb-2.5 px-3 py-1.5 text-xs font-semibold"
-                            />
-                            <x-ts-alert
-                                color="warning"
-                                :text="__('user.home.registration_closed_desc')"
-                                class="w-full rounded-md text-xs"
+                                class="w-full"
                             />
                         @else
-                            <x-ts-badge
-                                round="sm"
-                                text="{{ __('user.home.registration_unavailable') }}"
-                                icon="question-mark-circle"
-                                class="mb-2.5 px-3 py-1.5 text-xs font-semibold"
-                            />
-                            <x-ts-alert
-                                :text="__('user.home.registration_unavailable_desc')"
-                                class="w-full rounded-md text-xs"
+                            <x-ts-button
+                                wire:navigate
+                                href="{{ route('login') }}"
+                                :text="__('user.home.login_action')"
+                                icon="arrow-right"
+                                icon-right
+                                color="primary"
+                                class="w-full sm:hidden"
                             />
                         @endif
                     </div>
                 </div>
 
                 {{-- Login Card --}}
-                <div class="group bg-base-100 border-base-content/10 hover:border-primary/30 flex flex-col items-center justify-between rounded-lg border p-5 text-center shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md sm:p-6 lg:p-7">
-                    <div class="flex w-full flex-col items-center">
-                        <div class="from-primary/15 to-primary/5 ring-base-content/10 mx-auto mb-3.5 flex size-12 items-center justify-center rounded-md bg-gradient-to-br ring-1 transition-transform duration-500 ring-inset group-hover:scale-105 sm:mb-4 sm:size-14">
-                            <x-ts-icon name="arrow-right-on-rectangle" class="text-primary size-6 sm:size-7" />
+                <div class="group bg-base-100 border-base-content/10 hover:border-primary/30 flex flex-col justify-between rounded-lg border p-5 shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md sm:p-6 lg:p-7">
+                    <div class="flex w-full flex-col">
+                        {{-- Card Header: Icon well --}}
+                        <div class="flex w-full items-start justify-between gap-3">
+                            <div class="from-primary/15 to-primary/5 ring-base-content/10 flex size-12 shrink-0 items-center justify-center rounded-md bg-gradient-to-br ring-1 transition-transform duration-500 ring-inset group-hover:scale-105 sm:size-14">
+                                <x-ts-icon name="arrow-right-on-rectangle" class="text-primary size-6 sm:size-7" />
+                            </div>
                         </div>
 
-                        <h2 class="mb-1.5 text-lg font-bold sm:text-xl">{{ __('user.home.login_title') }}</h2>
+                        {{-- Card Heading & Description --}}
+                        <div class="mt-3.5 w-full text-left sm:mt-4">
+                            <h2 class="text-base-content text-base font-bold sm:text-lg lg:text-xl">
+                                {{ __('user.home.login_title') }}
+                            </h2>
+                            <p class="text-base-content/65 mt-1 text-xs leading-relaxed sm:text-sm">
+                                {{ __('user.home.login_desc') }}
+                            </p>
+                        </div>
+                    </div>
 
-                        <p class="text-base-content/65 mb-4 max-w-sm text-xs leading-relaxed sm:text-sm">
-                            {{ __('user.home.login_desc') }}
-                        </p>
-
+                    {{-- Action Row & Footer --}}
+                    <div class="mt-auto w-full pt-4">
                         <x-ts-button
                             wire:navigate
                             href="{{ route('login') }}"
@@ -150,12 +205,12 @@
                             icon-right
                             :color="$registration['status'] === 'open' ? 'secondary' : 'primary'"
                             :outline="$registration['status'] === 'open'"
-                            class="w-full sm:w-auto"
+                            class="w-full"
                         />
-                    </div>
 
-                    <div class="border-base-content/10 mt-6 w-full border-t pt-3.5">
-                        <p class="text-base-content/50 text-xs leading-relaxed">{{ __('user.home.no_account') }}</p>
+                        <div class="border-base-content/10 mt-3.5 w-full border-t pt-2.5 text-center sm:mt-4 sm:pt-3">
+                            <p class="text-base-content/50 text-xs leading-relaxed">{{ __('user.home.no_account') }}</p>
+                        </div>
                     </div>
                 </div>
             </div>
