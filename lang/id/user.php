@@ -295,7 +295,6 @@ return [
         'feature_guidance_desc' => 'Koordinasi dan pemantauan bimbingan berkala antara siswa dan guru pembimbing sekolah.',
         'feature_certificate_title' => 'Penilaian & Sertifikat',
         'feature_certificate_desc' => 'Evaluasi capaian kompetensi magang hingga penerbitan sertifikat PKL resmi.',
-        'registration_badge' => 'Pendaftaran Siswa',
         'step_1' => 'Lengkapi formulir biodata & akun',
         'step_2' => 'Pilih program PKL & mitra industri',
         'step_3' => 'Verifikasi sekolah & mulai magang',

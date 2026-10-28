@@ -43,63 +43,48 @@
                 {{-- Registration Card --}}
                 <div class="bg-base-100 border-base-content/10 hover:border-base-content/20 flex flex-col justify-between rounded-lg border p-5 shadow-xs transition-all duration-300 hover:shadow-md sm:p-6 lg:p-7">
                     <div class="flex w-full flex-col">
-                        {{-- Top Bar: Identity & Status Badge --}}
-                        <div class="border-base-content/10 flex items-center justify-between gap-3 border-b pb-3.5">
-                            <div class="flex items-center gap-2.5">
-                                <div class="border-base-content/10 bg-base-200/70 text-base-content/75 flex size-10 shrink-0 items-center justify-center rounded-md border shadow-2xs">
-                                    <x-ts-icon name="clipboard-document-list" class="size-5" />
-                                </div>
-                                <div>
-                                    <span class="text-base-content/50 block text-[10px] font-semibold tracking-wider uppercase">
-                                        {{ __('user.home.registration_badge') }}
-                                    </span>
-                                    <h2 class="text-base-content text-base font-bold sm:text-lg">
-                                        {{ __('user.home.registration_title') }}
-                                    </h2>
-                                </div>
+                        {{-- Top Bar: Icon Well & Status Badge (when active) --}}
+                        <div class="flex items-center justify-between gap-3">
+                            <div class="border-base-content/10 bg-base-200/70 text-base-content/75 flex size-12 shrink-0 items-center justify-center rounded-md border shadow-2xs">
+                                <x-ts-icon name="clipboard-document-list" class="size-6" />
                             </div>
 
-                            <div>
-                                @if ($registration['status'] === 'open')
-                                    <x-ts-badge
-                                        color="success"
-                                        round="sm"
-                                        text="{{ __('user.home.registration_open') }}"
-                                        icon="check-circle"
-                                        class="px-2.5 py-1 text-xs font-semibold"
-                                    />
-                                @elseif ($registration['status'] === 'upcoming')
-                                    <x-ts-badge
-                                        color="info"
-                                        round="sm"
-                                        text="{{ __('user.home.registration_upcoming') }}"
-                                        icon="clock"
-                                        class="px-2.5 py-1 text-xs font-semibold"
-                                    />
-                                @elseif ($registration['status'] === 'closed')
-                                    <x-ts-badge
-                                        color="warning"
-                                        round="sm"
-                                        text="{{ __('user.home.registration_closed') }}"
-                                        icon="x-circle"
-                                        class="px-2.5 py-1 text-xs font-semibold"
-                                    />
-                                @else
-                                    <x-ts-badge
-                                        color="neutral"
-                                        round="sm"
-                                        text="{{ __('user.home.registration_unavailable') }}"
-                                        icon="question-mark-circle"
-                                        class="px-2.5 py-1 text-xs font-semibold"
-                                    />
-                                @endif
-                            </div>
+                            @if ($registration['status'] === 'open')
+                                <x-ts-badge
+                                    color="success"
+                                    round="sm"
+                                    text="{{ __('user.home.registration_open') }}"
+                                    icon="check-circle"
+                                    class="px-2.5 py-1 text-xs font-semibold"
+                                />
+                            @elseif ($registration['status'] === 'upcoming')
+                                <x-ts-badge
+                                    color="info"
+                                    round="sm"
+                                    text="{{ __('user.home.registration_upcoming') }}"
+                                    icon="clock"
+                                    class="px-2.5 py-1 text-xs font-semibold"
+                                />
+                            @elseif ($registration['status'] === 'closed')
+                                <x-ts-badge
+                                    color="warning"
+                                    round="sm"
+                                    text="{{ __('user.home.registration_closed') }}"
+                                    icon="x-circle"
+                                    class="px-2.5 py-1 text-xs font-semibold"
+                                />
+                            @endif
                         </div>
 
-                        {{-- Main Description --}}
-                        <p class="text-base-content/65 pt-3.5 text-xs leading-relaxed sm:text-sm">
-                            {{ __('user.home.registration_desc') }}
-                        </p>
+                        {{-- Title & Subtitle --}}
+                        <div class="mt-3.5 w-full text-left sm:mt-4">
+                            <h2 class="text-base-content text-base font-bold sm:text-lg lg:text-xl">
+                                {{ __('user.home.registration_title') }}
+                            </h2>
+                            <p class="text-base-content/65 mt-1 text-xs leading-relaxed sm:text-sm">
+                                {{ __('user.home.registration_desc') }}
+                            </p>
+                        </div>
 
                         {{-- Dynamic Status & Steps Area --}}
                         <div class="my-3.5 space-y-3">

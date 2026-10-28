@@ -23,32 +23,50 @@ test('Browser: homepage layout, title normalization, and user-friendly registrat
 
         // 1. Verify Site Title normalization: "{Page Name} - {Brand Name}"
         const title = await page.title()
-        assert.match(title, /Beranda\s*-\s*Internara/i, `Expected title to contain 'Beranda - Internara', got '${title}'`)
+        assert.match(
+            title,
+            /Beranda\s*-\s*Internara/i,
+            `Expected title to contain 'Beranda - Internara', got '${title}'`,
+        )
 
         // 2. Wait for main container and cards
         await page.waitForSelector('section', { timeout: 10000 })
 
         // 3. Verify Registration Card heading and Login Card heading exist
         const pageText = await page.evaluate(() => document.body.innerText)
-        assert.ok(pageText.includes('Pendaftaran PKL'), "Expected page to include 'Pendaftaran PKL'")
+        assert.ok(
+            pageText.includes('Pendaftaran PKL'),
+            "Expected page to include 'Pendaftaran PKL'",
+        )
         assert.ok(pageText.includes('Masuk ke Akun'), "Expected page to include 'Masuk ke Akun'")
 
-        // 4. Verify humanized microcopy (no bureaucratic jargon)
+        // 4. Verify humanized microcopy (no bureaucratic jargon or redundant kickers)
         assert.ok(
             !pageText.includes('Periode pendaftaran belum diatur'),
-            "Page should NOT contain bureaucratic copy 'Periode pendaftaran belum diatur'"
+            "Page should NOT contain bureaucratic copy 'Periode pendaftaran belum diatur'",
         )
         assert.ok(
             !pageText.includes('Jadwal pendaftaran PKL belum dikonfigurasi oleh pihak sekolah'),
-            "Page should NOT contain bureaucratic copy 'Jadwal pendaftaran PKL belum dikonfigurasi oleh pihak sekolah'"
+            "Page should NOT contain bureaucratic copy 'Jadwal pendaftaran PKL belum dikonfigurasi oleh pihak sekolah'",
+        )
+        assert.ok(
+            !pageText.includes('Tidak Ada Pendaftaran Terbuka'),
+            "Page should NOT contain negative badge 'Tidak Ada Pendaftaran Terbuka'",
+        )
+        assert.ok(
+            !pageText.includes('Pendaftaran Siswa'),
+            "Page should NOT contain redundant kicker 'Pendaftaran Siswa' above 'Pendaftaran PKL'",
         )
 
         // 5. Verify either open registration or friendly unavailable status
-        const hasOpenStatus = pageText.includes('Pendaftaran dibuka') || pageText.includes('Daftar Sekarang')
-        const hasFriendlyUnavailable = pageText.includes('Tidak Ada Pendaftaran Terbuka') || pageText.includes('Pendaftaran ditutup')
+        const hasOpenStatus =
+            pageText.includes('Pendaftaran dibuka') || pageText.includes('Daftar Sekarang')
+        const hasFriendlyUnavailable =
+            pageText.includes('Saat ini belum ada pendaftaran PKL yang terbuka') ||
+            pageText.includes('Pendaftaran ditutup')
         assert.ok(
             hasOpenStatus || hasFriendlyUnavailable,
-            "Expected page to show either open registration or humanized unavailable/closed status"
+            'Expected page to show either open registration or humanized unavailable/closed status',
         )
 
         // 6. Verify single primary CTA focal point and curvature hierarchy
@@ -61,7 +79,9 @@ test('Browser: homepage layout, title normalization, and user-friendly registrat
             const iconWells = registrationCard.querySelectorAll('.from-primary\\/15')
 
             // Check buttons inside card
-            const primaryButtons = registrationCard.querySelectorAll('button[class*="bg-primary"], a[class*="bg-primary"]')
+            const primaryButtons = registrationCard.querySelectorAll(
+                'button[class*="bg-primary"], a[class*="bg-primary"]',
+            )
 
             return {
                 found: true,
@@ -75,12 +95,12 @@ test('Browser: homepage layout, title normalization, and user-friendly registrat
         assert.strictEqual(
             cardEvaluation.hasConflictingGradients,
             false,
-            'Icon container should not have conflicting primary gradient background'
+            'Icon container should not have conflicting primary gradient background',
         )
         assert.strictEqual(
             cardEvaluation.hasRedundantLoginButton,
             false,
-            'Registration card should not contain redundant login action button'
+            'Registration card should not contain redundant login action button',
         )
     } finally {
         await browser.close()

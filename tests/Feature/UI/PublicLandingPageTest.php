@@ -110,7 +110,8 @@ describe('K8HP1: public landing page lifecycle', function (): void {
         // Not configured
         Livewire::test(HomePage::class)
             ->set('registration', ['status' => 'not_configured'])
-            ->assertSee(__('user.home.registration_unavailable'));
+            ->assertSee(__('user.home.registration_unavailable_desc'))
+            ->assertDontSee(__('user.home.registration_unavailable'));
 
         // Open
         Livewire::test(HomePage::class)
