@@ -14,7 +14,7 @@ test('Browser smoke test: login page accessibility and title', async (t) => {
     try {
         const page = await browser.newPage()
         await page.goto(process.env.APP_URL || 'https://internara.web.id/login', {
-            waitUntil: 'networkidle2',
+            waitUntil: 'domcontentloaded',
             timeout: 15000,
         })
         const title = await page.title()
