@@ -41,13 +41,12 @@ final class ReadTeacherDashboardAction extends BaseReadAction
             )
             ->count();
 
-        $activeCompanies = Registration::where('status', 'active')
+        $activeCompanies = Registration::where('registrations.status', 'active')
             ->whereHas('mentors', fn ($q) => $q->where('user_id', $userId))
-            ->whereHas('placement.company')
-            ->get()
-            ->pluck('placement.company_id')
-            ->unique()
-            ->count();
+            ->join('placements', 'registrations.placement_id', '=', 'placements.id')
+            ->whereNotNull('placements.company_id')
+            ->distinct('placements.company_id')
+            ->count('placements.company_id');
 
         $ungradedSubmissions = Submission::where('status', SubmissionStatus::SUBMITTED->value)
             ->whereHas(

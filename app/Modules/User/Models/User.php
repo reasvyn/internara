@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -251,6 +252,31 @@ class User extends BaseAuthenticatable implements HasMedia
         if (function_exists('imagewebp')) {
             $conversion->format('webp');
         }
+    }
+
+    public function getAvatarUrl(): ?string
+    {
+        $media = $this->getFirstMedia('avatar');
+
+        if (! $media) {
+            return null;
+        }
+
+        $disk = Storage::disk($media->disk);
+
+        if ($media->hasGeneratedConversion('thumb')) {
+            $thumbRelative = $media->getPathRelativeToRoot('thumb');
+            if ($disk->exists($thumbRelative)) {
+                return $media->getUrl('thumb');
+            }
+        }
+
+        $originalRelative = $media->getPathRelativeToRoot();
+        if ($disk->exists($originalRelative)) {
+            return $media->getUrl();
+        }
+
+        return null;
     }
 
     public function initials(): string

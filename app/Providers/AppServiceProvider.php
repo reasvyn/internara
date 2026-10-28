@@ -5,16 +5,27 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Modules\Auth\Domain\Permission\Policies\UserPolicy;
+use App\Modules\Certification\Domain\Certificate\Models\Certificate;
+use App\Modules\Certification\Domain\Certificate\Observers\CertificateObserver;
 use App\Modules\Core\Contracts\SendsNotifications;
 use App\Modules\Core\Contracts\SettingsStore;
 use App\Modules\Core\Services\LangChecker;
 use App\Modules\Core\Services\ModuleService;
 use App\Modules\Core\Support\ModuleManager;
+use App\Modules\Enrollment\Domain\Placement\Models\Placement;
+use App\Modules\Enrollment\Domain\Placement\Observers\PlacementObserver;
+use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\Enrollment\Domain\Registration\Observers\RegistrationObserver;
+use App\Modules\Journal\Domain\Attendance\Models\Attendance;
+use App\Modules\Journal\Domain\Attendance\Observers\AttendanceObserver;
+use App\Modules\Journal\Domain\Logbook\Models\Logbook;
+use App\Modules\Journal\Domain\Logbook\Observers\LogbookObserver;
 use App\Modules\Report\Domain\StudentReport\Models\StudentReport;
 use App\Modules\Report\Domain\StudentReport\Observers\StudentReportObserver;
 use App\Modules\Setting\Services\Settings;
 use App\Modules\User\Domain\Notify\Actions\SendNotificationAction;
 use App\Modules\User\Models\User;
+use App\Modules\User\Observers\UserObserver;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -71,6 +82,12 @@ class AppServiceProvider extends ServiceProvider
             $this->service()->registerBladeNamespaces();
         }
 
+        Registration::observe(RegistrationObserver::class);
+        Logbook::observe(LogbookObserver::class);
+        Attendance::observe(AttendanceObserver::class);
+        Placement::observe(PlacementObserver::class);
+        Certificate::observe(CertificateObserver::class);
+        User::observe(UserObserver::class);
         StudentReport::observe(StudentReportObserver::class);
 
         try {

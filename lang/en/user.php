@@ -265,10 +265,10 @@ return [
 
     'home' => [
         'page_title' => 'Home',
-        'hero_desc' => 'Central service portal for internship administration, mentoring, and collaboration between students, mentors, and industry partners.',
+        'hero_desc' => 'Central service portal for internship administration, mentoring, and monitoring for students, academic mentors, and school administrators.',
         'hero_secure' => 'Students',
         'hero_academic' => 'School Mentors',
-        'hero_global' => 'Industry Partners',
+        'hero_global' => 'Educational Institution',
         'registration_title' => 'PKL Registration',
         'registration_desc' => 'For students starting their internship, submit your registration and placement during the active enrollment window.',
         'registration_open' => 'Registration is open',
@@ -284,7 +284,7 @@ return [
         'login_title' => 'Account Sign In',
         'login_desc' => 'Sign in to your account to record daily journals, attendance records, mentoring notes, or manage internship data.',
         'login_action' => 'Sign In',
-        'no_account' => 'Student accounts are created via registration verification. Mentor and partner accounts are assigned by the school coordinator.',
+        'no_account' => 'Student accounts are created via registration verification. Teacher and coordinator accounts are configured by the school administrator.',
         'pkl_definition_title' => 'What is Praktik Kerja Lapangan (PKL)?',
         'pkl_definition_desc' => 'PKL is an applied learning and internship program in the workplace (business and industry) for students to gain real-world experience, hone vocational skills, and build professional work ethics.',
         'features_title' => 'Internship Program Workflow',
@@ -292,9 +292,9 @@ return [
         'feature_logbook_title' => 'Journal & Attendance',
         'feature_logbook_desc' => 'Regular student recording of daily workplace tasks and attendance records.',
         'feature_guidance_title' => 'Mentoring & Monitoring',
-        'feature_guidance_desc' => 'Direct coordination and progress tracking between students, school mentors, and industry supervisors.',
+        'feature_guidance_desc' => 'Direct coordination and regular progress tracking between students and school mentors.',
         'feature_certificate_title' => 'Evaluation & Certification',
-        'feature_certificate_desc' => 'Structured competency evaluations from school and industry partners through official certificate issuance.',
+        'feature_certificate_desc' => 'Competency assessment and evaluation through official internship certificate issuance.',
     ],
 
     'user_management' => [

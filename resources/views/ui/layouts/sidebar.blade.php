@@ -43,8 +43,16 @@
     @endif
 
     @auth
+        @php
+            $currentUser = auth()->user();
+            $currentUserRoles = $currentUser ? $currentUser->getRoleNames()->all() : [];
+        @endphp
         @foreach ($groups as $groupKey => $group)
-            @if (auth()->user()->hasRole($group['roles'] ?? []))
+            @php
+                $groupRoles = (array) ($group['roles'] ?? []);
+                $canSeeGroup = empty($groupRoles) || ! empty(array_intersect($groupRoles, $currentUserRoles));
+            @endphp
+            @if ($canSeeGroup)
                 @php
                     $groupItems = $group['items'] ?? [];
                     $hasActiveItem = false;
@@ -94,23 +102,26 @@
                     <div x-show="open || railed" x-collapse class="space-y-1">
                         @foreach ($groupItems as $item)
                             @php
-                                $itemRoles = $item['roles'] ?? $group['roles'] ?? [];
-                                $disabled = $item['disabled'] ?? false;
-                                $active = ! $disabled && request()->routeIs($item['route'] ?? '');
-                                $url = '#';
-                                if (! $disabled && ! empty($item['route'])) {
-                                    try {
-                                        if (\Illuminate\Support\Facades\Route::has($item['route'])) {
-                                            $url = route($item['route']);
-                                        }
-                                    } catch (\Throwable) {
-                                        $url = '#';
-                                    }
-                                }
-                                $rawIcon = $item['icon'] ?? null;
-                                $icon = $rawIcon ? (str_starts_with($rawIcon, 'o-') ? substr($rawIcon, 2) : (str_starts_with($rawIcon, 's-') ? substr($rawIcon, 2) : $rawIcon)) : null;
+                                $itemRoles = (array) ($item['roles'] ?? $group['roles'] ?? []);
+                                $canSeeItem = empty($itemRoles) || ! empty(array_intersect($itemRoles, $currentUserRoles));
                             @endphp
-                            @if (empty($itemRoles) || auth()->user()->hasRole($itemRoles))
+                            @if ($canSeeItem)
+                                @php
+                                    $disabled = $item['disabled'] ?? false;
+                                    $active = ! $disabled && request()->routeIs($item['route'] ?? '');
+                                    $url = '#';
+                                    if (! $disabled && ! empty($item['route'])) {
+                                        try {
+                                            if (\Illuminate\Support\Facades\Route::has($item['route'])) {
+                                                $url = route($item['route']);
+                                            }
+                                        } catch (\Throwable) {
+                                            $url = '#';
+                                        }
+                                    }
+                                    $rawIcon = $item['icon'] ?? null;
+                                    $icon = $rawIcon ? (str_starts_with($rawIcon, 'o-') ? substr($rawIcon, 2) : (str_starts_with($rawIcon, 's-') ? substr($rawIcon, 2) : $rawIcon)) : null;
+                                @endphp
                                 @if ($disabled)
                                     <div
                                         class="flex cursor-not-allowed items-center gap-3 rounded-xl px-3 py-2 text-sm opacity-40"

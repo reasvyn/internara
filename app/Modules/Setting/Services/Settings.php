@@ -13,7 +13,11 @@ use Illuminate\Support\Facades\Cache;
 
 final class Settings
 {
+    private const NOT_FOUND_SENTINEL = '__SETTING_NOT_FOUND__';
+
     protected static array $overrides = [];
+
+    protected static array $runtime = [];
 
     protected static array $appInfoKeys = ['name', 'version', 'support', 'license'];
 
@@ -99,14 +103,21 @@ final class Settings
         }
     }
 
+    public static function clearRuntime(): void
+    {
+        self::$runtime = [];
+    }
+
     public static function override(array $overrides): void
     {
         self::$overrides = array_merge(self::$overrides, $overrides);
+        self::$runtime = [];
     }
 
     public static function clearOverrides(): void
     {
         self::$overrides = [];
+        self::$runtime = [];
     }
 
     public static function hasGroup(string $name): bool
@@ -124,6 +135,7 @@ final class Settings
 
     public static function forgetGroup(string $name): void
     {
+        self::$runtime = [];
         Cache::forget(config('cache-keys.settings_group').$name);
         Cache::forget(config('cache-keys.settings_all'));
         Cache::forget(config('cache-keys.theme_css_variables'));
@@ -192,6 +204,7 @@ final class Settings
 
     public static function forget(string $key, ?string $group = null): void
     {
+        unset(self::$runtime[$key]);
         Cache::forget(config('cache-keys.settings_key').$key);
 
         if ($group !== null) {
@@ -226,13 +239,20 @@ final class Settings
             return self::$overrides[$key];
         }
 
+        if (! $skipCache && array_key_exists($key, self::$runtime)) {
+            return self::$runtime[$key] ?? $default;
+        }
+
         $infoValue = self::resolveAppInfoValue($key);
 
         if ($infoValue !== null) {
+            self::$runtime[$key] = $infoValue;
+
             return $infoValue;
         }
 
         if ($skipCache) {
+            unset(self::$runtime[$key]);
             Cache::forget(config('cache-keys.settings_key').$key);
         }
 
@@ -242,7 +262,7 @@ final class Settings
                 function () use ($key) {
                     $setting = Setting::where('key', $key)->first();
 
-                    return $setting?->value;
+                    return $setting?->value ?? self::NOT_FOUND_SENTINEL;
                 },
             );
         } catch (QueryException $e) {
@@ -250,16 +270,23 @@ final class Settings
                 'key' => $key,
             ]);
 
-            $dbValue = null;
+            $dbValue = self::NOT_FOUND_SENTINEL;
         }
 
-        if (! is_null($dbValue)) {
+        if ($dbValue !== self::NOT_FOUND_SENTINEL && ! is_null($dbValue)) {
+            self::$runtime[$key] = $dbValue;
+
             return $dbValue;
         }
 
         if (config()->has($key)) {
-            return config($key);
+            $configValue = config($key);
+            self::$runtime[$key] = $configValue;
+
+            return $configValue;
         }
+
+        self::$runtime[$key] = $default;
 
         return $default;
     }

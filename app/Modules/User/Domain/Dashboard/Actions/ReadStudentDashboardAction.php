@@ -38,6 +38,7 @@ final class ReadStudentDashboardAction extends BaseReadAction
         }
 
         $registration = $user->getActiveRegistration();
+        $registration?->loadMissing(['placement.company', 'internship', 'mentors']);
 
         $totalJournals = 0;
         $verifiedJournals = 0;

@@ -200,16 +200,26 @@
                                 class="sr-only"
                             />
                             <label for="avatar-upload" class="relative block cursor-pointer">
-                                <div class="bg-base-200 border-base-content/10 ring-primary/10 group-hover:ring-primary/30 relative flex size-24 items-center justify-center overflow-hidden rounded-full border-2 ring-2 transition-all">
+                                <div
+                                    class="bg-base-200 border-base-content/10 ring-primary/10 group-hover:ring-primary/30 relative flex size-24 items-center justify-center overflow-hidden rounded-full border-2 ring-2 transition-all"
+                                    x-data="{ imgFailed: false }"
+                                >
                                     @php
-                                        $currentAvatar = $this->avatarPreviewUrl() ?: ($user->getFirstMediaUrl('avatar', 'thumb') ?: $user->getFirstMediaUrl('avatar'));
+                                        $currentAvatar = $this->avatarPreviewUrl() ?: $user->getAvatarUrl();
                                     @endphp
                                     @if ($currentAvatar)
                                         <img
                                             src="{{ $currentAvatar }}"
                                             alt="{{ __('common.avatar') }}"
                                             class="size-full object-cover"
+                                            x-show="! imgFailed"
+                                            x-on:error="imgFailed = true"
                                         />
+                                        <span
+                                            x-show="imgFailed"
+                                            x-cloak
+                                            class="text-base-content/60 text-2xl font-bold"
+                                        >{{ $user->initials() }}</span>
                                     @else
                                         <span class="text-base-content/60 text-2xl font-bold">{{ $user->initials() }}</span>
                                     @endif

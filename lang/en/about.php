@@ -26,7 +26,7 @@ return [
         ],
         'mentorship' => [
             'title' => 'Mentorship & Supervision',
-            'desc' => 'Active collaboration between school teacher advisors and workplace instructors to guide and monitor student progress.',
+            'desc' => 'Active guidance and regular monitoring by school mentors to track student progress throughout the internship.',
         ],
         'logbook' => [
             'title' => 'Daily Journals & Attendance',

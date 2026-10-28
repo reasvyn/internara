@@ -26,7 +26,7 @@ return [
         ],
         'mentorship' => [
             'title' => 'Pembimbingan & Supervisi',
-            'desc' => 'Kolaborasi aktif antara guru pembimbing sekolah dan instruktur tempat kerja dalam mendampingi dan memantau perkembangan siswa secara berkala.',
+            'desc' => 'Pendampingan dan pemantauan aktif oleh guru pembimbing sekolah terhadap perkembangan dan kegiatan siswa secara berkala.',
         ],
         'logbook' => [
             'title' => 'Jurnal Harian & Presensi',

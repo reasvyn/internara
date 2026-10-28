@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Setting\Observers;
 
 use App\Modules\Setting\Models\Setting;
+use App\Modules\Setting\Services\Settings;
 use Illuminate\Support\Facades\Cache;
 
 final class SettingObserver
@@ -27,6 +28,8 @@ final class SettingObserver
     private function invalidate(Setting $setting): void
     {
         $key = $setting->key;
+
+        Settings::clearRuntime();
 
         Cache::forget(config('cache-keys.settings_key').$key);
         Cache::forget(config('cache-keys.settings_all'));

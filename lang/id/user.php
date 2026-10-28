@@ -267,10 +267,10 @@ return [
 
     'home' => [
         'page_title' => 'Beranda',
-        'hero_desc' => 'Pusat layanan administrasi dan pelaksanaan Praktik Kerja Lapangan (PKL) terpadu untuk siswa, guru pembimbing, dan mitra industri.',
+        'hero_desc' => 'Pusat layanan administrasi dan pelaksanaan Praktik Kerja Lapangan (PKL) terpadu untuk siswa, guru pembimbing, dan pihak sekolah.',
         'hero_secure' => 'Siswa PKL',
         'hero_academic' => 'Guru Pembimbing',
-        'hero_global' => 'Mitra Industri',
+        'hero_global' => 'Satuan Pendidikan',
         'registration_title' => 'Pendaftaran PKL',
         'registration_desc' => 'Bagi siswa yang akan melaksanakan PKL, ajukan pendaftaran akun dan penempatan sesuai jadwal yang dibuka oleh sekolah.',
         'registration_open' => 'Pendaftaran dibuka',
@@ -286,7 +286,7 @@ return [
         'login_title' => 'Masuk ke Akun',
         'login_desc' => 'Masuk ke akun Anda untuk mengisi jurnal harian, presensi, bimbingan, atau mengelola data PKL.',
         'login_action' => 'Masuk Sekarang',
-        'no_account' => 'Akun siswa dibuat melalui verifikasi pendaftaran. Akun pembimbing dan mitra dikonfigurasi oleh koordinator sekolah.',
+        'no_account' => 'Akun siswa dibuat melalui verifikasi pendaftaran. Akun guru pembimbing dan koordinator dikonfigurasi oleh administrator sekolah.',
         'pkl_definition_title' => 'Mengenal Praktik Kerja Lapangan (PKL)',
         'pkl_definition_desc' => 'PKL adalah program pembelajaran dan pelatihan terapan di dunia kerja (dunia usaha dan industri) bagi peserta didik untuk memperoleh pengalaman nyata, mengasah keahlian kejuruan, serta membangun etika kerja profesional.',
         'features_title' => 'Alur Pelaksanaan PKL',
@@ -294,9 +294,9 @@ return [
         'feature_logbook_title' => 'Jurnal & Presensi',
         'feature_logbook_desc' => 'Pencatatan aktivitas harian dan kehadiran siswa di tempat kerja secara mandiri dan berkala.',
         'feature_guidance_title' => 'Bimbingan & Monitoring',
-        'feature_guidance_desc' => 'Koordinasi dan pemantauan berkala antara siswa, guru pembimbing, dan instruktur industri.',
+        'feature_guidance_desc' => 'Koordinasi dan pemantauan bimbingan berkala antara siswa dan guru pembimbing sekolah.',
         'feature_certificate_title' => 'Penilaian & Sertifikat',
-        'feature_certificate_desc' => 'Evaluasi capaian kompetensi dari industri dan sekolah hingga penerbitan sertifikat PKL resmi.',
+        'feature_certificate_desc' => 'Evaluasi capaian kompetensi magang hingga penerbitan sertifikat PKL resmi.',
     ],
 
     'user_management' => [
