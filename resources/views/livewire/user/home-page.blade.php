@@ -170,7 +170,7 @@
                         </div>
                     </div>
 
-                    {{-- Action Row (Only Element with Primary Background!) --}}
+                    {{-- Action Row --}}
                     <div class="mt-auto w-full pt-2">
                         @if ($registration['status'] === 'open')
                             <x-ts-button
@@ -184,16 +184,19 @@
                                 class="w-full font-bold shadow-xs transition-all duration-200 hover:shadow-md"
                             />
                         @else
-                            <x-ts-button
-                                wire:navigate
-                                href="{{ route('login') }}"
-                                :text="__('user.home.login_action')"
-                                icon="arrow-right"
-                                icon-right
-                                color="primary"
-                                lg
-                                class="w-full font-bold sm:hidden"
-                            />
+                            <div class="border-base-content/10 bg-base-200/50 flex items-center justify-between gap-3 rounded-md border px-3.5 py-2.5 text-xs">
+                                <span class="text-base-content/70">
+                                    {{ __('user.home.registration_not_open_help') }}
+                                </span>
+                                <a
+                                    wire:navigate
+                                    href="{{ route('login') }}"
+                                    class="text-primary hover:text-primary-focus inline-flex shrink-0 items-center gap-1 font-bold transition-colors"
+                                >
+                                    <span>{{ __('user.home.login_action') }}</span>
+                                    <x-ts-icon name="arrow-right" class="size-3.5" />
+                                </a>
+                            </div>
                         @endif
                     </div>
                 </div>
