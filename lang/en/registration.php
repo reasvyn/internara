@@ -102,9 +102,6 @@ return [
     ],
 
     'document_upload' => [
-        'title' => 'Upload Documents',
-        'uploaded' => 'Uploaded',
-        'required' => 'Document requirements not met.',
         'no_registration' => 'No active or pending registration found.',
         'success' => 'Documents uploaded successfully.',
         'uploading' => 'Uploading document...',
