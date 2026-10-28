@@ -18,7 +18,7 @@
         }
     </style>
 
-    <title>{{ __('mcp.authorize_application') }} - {{ config('app.name', __('mcp.server')) }}</title>
+    <title>{{ __('mcp.authorize_application') }} - {{ brand('name') }}</title>
 
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

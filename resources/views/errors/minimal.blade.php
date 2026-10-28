@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>
         @yield('title')
-        — {{ config('app.name') }}
+        - {{ brand('name') }}
     </title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <style>

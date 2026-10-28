@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{{ __('certificate.verify.title') }} — {{ config('app.name') }}</title>
+    <title>{{ __('certificate.verify.title') }} - {{ brand('name') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="text-base-content flex h-full flex-col items-center justify-center p-4 antialiased">
