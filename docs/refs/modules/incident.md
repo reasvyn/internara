@@ -5,6 +5,10 @@
 Structured incident reporting, severity classification, investigation workflow, resolution tracking,
 and escalation management.
 
+> [!NOTE]
+> **Operational Scope Note (Issue #540)**
+> User-facing incident reporting routes (`routes/web/incident.php`) and navigation items have been deactivated to streamline operational scope for the MVP release. The underlying domain architecture, actions, models, and schema remain intact for future reactivation or historical audit continuity.
+
 ## Purpose & Boundary
 
 Incident provides a formal channel for reporting workplace issues during internships. Any

@@ -2,8 +2,16 @@
 
 ## Description
 
-External relationship management: company profiles, partnership agreements (MoU), placement slot
-capacity, and agreement lifecycle.
+External relationship management: company profiles, industry host organization details, and
+placement slot capacity.
+
+> [!NOTE]
+> **Operational Scope Note (Issue #539)**
+> Formal MoU lifecycle workflows, MoU media document uploads, and partnership agreement management
+> have been cut from the active MVP operational scope. School coordinators and administrators manage
+> host company profiles directly (`CompanyManager` via `partner.companies`). Placements in the
+> Enrollment module directly link to host companies. The underlying `Partnership` model and tables
+> remain preserved for historical schema compatibility.
 
 ## Purpose & Boundary
 
@@ -25,13 +33,12 @@ Organization profile: legal name, trading name, address, industry classification
 email, and notes. Soft-deletes preserve historical placements and partnerships. Companies are
 referenced by partnerships and placement records.
 
-### Partnership
+### Partnership (Inactive in MVP)
 
 Formal agreement record: agreement number, title, description, start/end dates, scope of
 cooperation, contact person, signing parties, and MoU document upload (via Spatie Media Library).
 Status lifecycle: `active` → `expired` (automatic on end date) or `active` → `terminated` (admin
-action). Both `expired` and `terminated` are terminal states. Only active partnerships allow new
-placements. Expiry warning notify fire 30 days before end_date.
+action). *(Note: Deactivated from active navigation per issue #539; direct Company management is used for active MVP operations).*
 
 ## Key Concepts
 

@@ -57,6 +57,19 @@ Once an assessment record is finalized, all scores become immutable. This preser
 for audit purposes. Correcting a finalized assessment requires creating a new assessment round,
 which preserves the original as a historical record.
 
+### Supervisor Access via Magic Link (Issue #538)
+
+Industry supervisors do not need an account or dashboard login. Instead, school administrators or
+teachers generate a secure, tokenized magic link (`/partner-assessment/{token}`) backed by an
+`AssessmentMagicLink` model:
+
+- **Tokenized Direct Access**: The link provides immediate access to `PartnerAssessmentPage` for
+  a specific student's rubric evaluation without requiring authentication.
+- **Grading & Finalization**: The supervisor submits scores directly; `SubmitPartnerAssessmentAction`
+  evaluates indicator scores, locks the assessment record as finalized, and marks the token used.
+- **Fallback**: If the supervisor is unavailable to submit via magic link, the school teacher can use
+  the **Supervisor Proxy** mechanism.
+
 ### Cross-Role Proxy (Supervisor Proxy)
 
 Industry supervisor evaluations are optional to prevent blocking student workflows. Teachers can act

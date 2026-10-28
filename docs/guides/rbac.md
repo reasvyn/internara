@@ -40,7 +40,7 @@ The application defines five user roles in a flat hierarchy. Each role has expli
 | **Super Admin** | `super_admin` | Unrestricted access — bypasses all permission checks. Manages infrastructure, settings, and all accounts. |
 | **Admin**       | `admin`       | School-level operations: user CRUD, programs, companies, departments, announcements, audit logs.          |
 | **Teacher**     | `teacher`     | Academic supervision: journal review, assignment grading, site visits, grade card compilation.            |
-| **Supervisor**  | `supervisor`  | Industry supervision: attendance verification, journal review, competency evaluation.                     |
+| **Supervisor**  | `supervisor`  | Industry supervision: competency evaluation. (Note: evaluated via Magic Link per #538 or teacher proxy; direct login portal hidden). |
 | **Student**     | `student`     | Program participation: attendance, logbooks, assignments, certificate download.                           |
 
 ### Rationale for Flat Hierarchy

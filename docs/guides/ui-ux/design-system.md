@@ -383,9 +383,9 @@ Routes follow a predictable, human-readable URL pattern:
 | -------------- | ------------------------------- | ---------------------------------------- |
 | Guest          | `/{resource}`                   | `/apply`, `/login`                       |
 | Authenticated  | `/{resource}`                   | `/registration`, `/dashboard`            |
-| Student        | `/student/{module}/{resource}`  | `/student/internships/placement-change`  |
+| Student        | `/student/{module}/{resource}`  | `/student/journals/logbook`              |
 | Teacher        | `/teacher/{module}/{resource}`  | `/teacher/journals/logbook`              |
-| Supervisor     | `/supervisor/{module}/{resource}` | `/supervisor/journals/attendance`      |
+| Supervisor     | `/partner-assessment/{token}`   | `/partner-assessment/{token}` (magic link)|
 | Admin          | `/admin/{module}/{resource}`    | `/admin/internships/placements`          |
 | Super Admin    | `/admin/{module}/{resource}`    | `/admin/users` (shared with admin)       |
 

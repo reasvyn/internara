@@ -177,12 +177,12 @@ Student registration, placement slot assignment, and change requests.
 
 ### Assessment — Evaluation Framework
 
-Rubrics, assessments, and scoring frameworks.
+Rubrics, assessments, scoring frameworks, and supervisor magic links.
 
 - Overview: [assessment.md](assessment.md)
 - Reference: [assessment-reference.md](assessment-reference.md)
 
-**Key Concepts:** Rubric, Assessment
+**Key Concepts:** Rubric, Assessment, AssessmentMagicLink
 
 **Dependencies:** Core
 
@@ -239,9 +239,9 @@ scheduling/verification.
 
 ---
 
-### Incident — Issue Tracking
+### Incident — Issue Tracking (Inactive in MVP)
 
-Incident reports and workplace concern documentation.
+Incident reports and workplace concern documentation (routes deactivated per #540).
 
 - Overview: [incident.md](incident.md)
 - Reference: [incident-reference.md](incident-reference.md)
@@ -258,7 +258,7 @@ Incident reports and workplace concern documentation.
 
 ### Partners — Industrial Partners
 
-Company management and partnership agreements.
+Company profile management and placement slots (formal MoU agreements cut for MVP per #539).
 
 - Overview: [partner.md](partner.md)
 - Reference: [partner-reference.md](partner-reference.md)

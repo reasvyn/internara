@@ -28,6 +28,8 @@ Manages competency rubrics, assessment scoring frameworks, and student evaluatio
 | `Domain/Rubric/Actions/UpdateCompetencyAction.php` | `UpdateCompetencyAction` | `BaseCommandAction` |
 | `Domain/Rubric/Actions/UpdateIndicatorAction.php` | `UpdateIndicatorAction` | `BaseCommandAction` |
 | `Domain/Rubric/Actions/UpdateRubricAction.php` | `UpdateRubricAction` | `BaseCommandAction` |
+| `Actions/GenerateAssessmentMagicLinkAction.php` | `GenerateAssessmentMagicLinkAction` | `BaseCommandAction` |
+| `Actions/SubmitPartnerAssessmentAction.php` | `SubmitPartnerAssessmentAction` | `BaseCommandAction` |
 
 ## Models
 
@@ -35,6 +37,7 @@ Manages competency rubrics, assessment scoring frameworks, and student evaluatio
 |---|---|---|
 | `Domain/Rubric/Models/Rubric.php` | `Rubric` | `BaseModel` |
 | `Models/Assessment.php` | `Assessment` | `BaseModel` |
+| `Models/AssessmentMagicLink.php` | `AssessmentMagicLink` | `BaseModel` |
 
 ## Policies & Permissions
 
@@ -68,6 +71,8 @@ Manages competency rubrics, assessment scoring frameworks, and student evaluatio
 | `Domain/Rubric/Data/UpdateCompetencyData.php` | `UpdateCompetencyData` | `BaseData` |
 | `Domain/Rubric/Data/UpdateIndicatorData.php` | `UpdateIndicatorData` | `BaseData` |
 | `Domain/Rubric/Data/UpdateRubricData.php` | `UpdateRubricData` | `BaseData` |
+| `Data/GenerateMagicLinkData.php` | `GenerateMagicLinkData` | `BaseData` |
+| `Data/SubmitPartnerAssessmentData.php` | `SubmitPartnerAssessmentData` | `BaseData` |
 
 ## Livewire Components
 
@@ -76,6 +81,7 @@ Manages competency rubrics, assessment scoring frameworks, and student evaluatio
 | `Domain/Rubric/Livewire/RubricManager.php` | `RubricManager` | `BaseRecordManager` |
 | `Livewire/AssessmentGrading.php` | `AssessmentGrading` | `BaseFormView` |
 | `Livewire/AssessmentView.php` | `AssessmentView` | `Component` |
+| `Livewire/PartnerAssessmentPage.php` | `PartnerAssessmentPage` | `BaseFormView` |
 
 ## Events
 
@@ -91,7 +97,7 @@ Manages competency rubrics, assessment scoring frameworks, and student evaluatio
 
 ## Routes
 
-File: `routes/web/assessment.php` Named routes: `assessments`, `sysadmin.assessments.rubrics`,
+File: `routes/web/assessment.php` Named routes: `partner-assessment.show`, `assessments`, `sysadmin.assessments.rubrics`,
 `sysadmin.assessments.grade`
 
 ## Views
@@ -113,10 +119,11 @@ testing conventions.
 
 ## Migrations
 
-| Migration                  | Table         |
-| -------------------------- | ------------- |
-| `create_assessments_table` | `assessments` |
-| `create_rubrics_table`     | `rubrics`     |
+| Migration                             | Table                     |
+| ------------------------------------- | ------------------------- |
+| `create_assessments_table`            | `assessments`             |
+| `create_rubrics_table`                | `rubrics`                 |
+| `create_assessment_magic_links_table` | `assessment_magic_links`  |
 
 ---
 

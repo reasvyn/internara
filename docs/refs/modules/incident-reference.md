@@ -10,6 +10,10 @@ Detailed structural and implementation reference for the **Incident** module.
 
 Manages workplace incident reports, severity classification, and resolution tracking.
 
+> [!NOTE]
+> **Operational Status (Issue #540)**
+> User-facing routes and navigation are deactivated to streamline MVP scope. The code artifacts remain in the repository for historical schema integrity and future expansion.
+
 ## Actions
 
 | File | Class | Extends |
@@ -58,7 +62,8 @@ None. The module dispatches no domain events; a submitted incident is delivered 
 
 ## Routes
 
-File: `routes/web/incident.php` Named routes: `student.incidents.report`, `sysadmin.incidents`
+File: `routes/web/incident.php`
+Routes deactivated per issue #540 (`student.incidents.report`, `sysadmin.incidents` disabled).
 
 ## Views
 

@@ -91,7 +91,7 @@ restricted views.
 - **Guest-to-Student provisioning is atomic** — account creation, registration, and initial placement happen in a single database transaction. If any step fails, the entire pipeline rolls back. No orphan User, partial Registration, or dangling Placement can exist after a failed application.
 - **Placement capacity is enforced at the database level** — slot quota consumption uses pessimistic locking so that concurrent requests cannot oversell a company slot. Capacity checks live inside the same transaction as Placement creation, not as a pre-check.
 - **Status drives feature access, not role alone** — active students unlock journals, assignments, and assessments; archived or pending students see restricted views. Authorization checks must consult the Registration status, not just the User role, to enforce this contract.
-- **Partnership lifecycle controls placement eligibility** — new placements can only be created under active partnerships. Expired and terminated partnerships are preserved for historical audit but filtered out of the placement UI. A partnership transition never retroactively affects existing placements.
+- **Company placement capacity controls placement eligibility** — placements consume company slot capacity with atomic pessimistic locking (formal MoU lifecycle simplified into direct company slot management for MVP per #539).
 
 ## How It Works
 

@@ -47,9 +47,10 @@ with live counter via Livewire polling.
 
 ### Dashboard
 
-Role-specific portals rendered post-login: admin, teacher, supervisor, and student dashboards. Each
-displays relevant metrics, pending actions, and workflow shortcuts. Role priority determines which
-dashboard renders when a user holds multiple roles.
+Role-specific portals rendered post-login: admin, teacher, and student dashboards (industry
+supervisors evaluate via tokenized magic links per #538 or teacher proxy without needing a dedicated
+dashboard portal). Each displays relevant metrics, pending actions, and workflow shortcuts. Role
+priority determines which dashboard renders when a user holds multiple roles.
 
 ## Key Concepts
 

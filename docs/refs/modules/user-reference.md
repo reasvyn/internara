@@ -202,7 +202,7 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 File: `routes/web/user.php` Named routes: `home`, `dashboard`, `profile`,
 `profile.recovery`, `notifications`, `logout`, `password.request`, `password.reset`,
 `recover.account`, `password.confirm`, `sysadmin.accounts.lifecycle`, `sysadmin.recovery-slips`;
-role dashboards at `sysadmin.dashboard`, `student.dashboard`, `teacher.dashboard`, `supervisor.dashboard`
+role dashboards at `sysadmin.dashboard`, `student.dashboard`, `teacher.dashboard` (supervisor direct portal cut per #538; accessed via magic links)
 
 ## Views
 

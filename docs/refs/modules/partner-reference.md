@@ -8,7 +8,13 @@ Detailed structural and implementation reference for the **Partner** module.
 
 ## Overview
 
-Manages industrial partner companies and partnership agreements for internship placements.
+Manages industrial partner companies and host placements.
+
+> [!NOTE]
+> **Operational Status (Issue #539)**
+> Formal partnership agreement (MoU) management and routes (`partner.partnerships`) have been
+> deactivated from active navigation. Company profile management (`partner.companies`) remains the
+> active operational workflow.
 
 ## Actions
 
