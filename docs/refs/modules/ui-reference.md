@@ -4,7 +4,7 @@
 
 Structural reference for the **UI** module: the presentation layer that owns the app shell,
 reusable Blade components, widgets, and the Livewire base classes business modules build on.
-For the rationale and boundaries, see [ui.md](ui.md).
+For the conceptual overview and boundaries, see [ui.md](ui.md).
 
 ---
 
@@ -23,6 +23,19 @@ The module has no business logic and no persistence. Everything it ships is a Bl
 - **Livewire concerns**: 2 (`WithRecordSelection`, `WithSorting`)
 - **Support classes**: 1 (`UiHelper`)
 - **Actions / Models / Policies / Routes**: none — presentation only
+
+---
+
+## Models
+
+None. UI owns no Eloquent models, tables, or migrations — it stores no state of its own.
+
+---
+
+## Actions
+
+None. The module ships no Action classes — it carries no persistence and no domain state to
+mutate. Consumers render its views and extend its base classes directly.
 
 ---
 
@@ -53,7 +66,7 @@ Located in `resources/views/ui/components/`, reachable as `x-ui::components.*` (
 `table-action`, `table-actions`, `textarea`, `toggle`, `tooltip`.
 
 Theme and language switches are **not** part of this set — they render from the Setting module
-(`resources/views/setting/locale/{theme-switch,lang-switch}.blade.php`) because they persist state.
+(`resources/views/setting/locale/{theme-switch,lang-switch}.blade.php`).
 
 ---
 
@@ -101,6 +114,20 @@ Two concerns supply row selection (`WithRecordSelection`) and sortable-column re
 
 None. UI ships no routes; every page is reached through a business module's route or Livewire
 component.
+
+---
+
+## Policies & Permissions
+
+None. With no Actions, Models, or Livewire components of its own, there is nothing for a policy to
+gate; access to the shell is governed by the policy of the module rendering the page.
+
+---
+
+## Events
+
+None. UI dispatches no domain events. The only event it emits is the Alpine `@toggle-sidebar`
+client-side dispatch from the header to the sidebar drawer, which never leaves the browser.
 
 ---
 

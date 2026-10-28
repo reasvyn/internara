@@ -81,6 +81,7 @@ Components accept `items`, `links`, `breadcrumbs`, `title`, `actions` via `@prop
 - **All colors are semantic tokens, never raw hex literals** — every colour references a Tailwind v4 `--color-*` token (`--color-primary`, `--color-danger`, etc.). No `bg-red-500` or hardcoded hex outside the semantic palette. This ensures the entire UI updates when the brand palette changes.
 - **Components are props-driven with no hardcoded menu items** — layouts and primitives accept `items`, `links`, `breadcrumbs`, `title`, and `actions` via `@props` or slots. Defaults read from `config/menu.php` inside the component, not as inline arrays. This keeps the shell decoupled from business navigation logic.
 - **Accessibility is structural, not optional** — sidebar has focus traps and `aria-label`; header has `role="banner"` and `h1[tabindex=-1]` for focus reset; theme and language switches have `aria-label` and `aria-current`. WCAG 2.2 AA compliance is a default, not a checklist.
+- **State-persisting controls belong to Setting, not UI** — the theme and language switches are rendered from the Setting module (`resources/views/setting/locale/*.blade.php`) rather than shipped as UI primitives. UI stays free of persistence; anything that writes a cookie or a setting lives in the module that owns that state.
 
 ## How It Works
 
