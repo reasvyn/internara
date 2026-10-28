@@ -39,7 +39,7 @@
 <body class="{{ $bodyClass }}">
     <a
         href="#main-content"
-        class="focus:ring-primary focus:bg-base-100 focus:text-base-content dark:focus:bg-base-200 dark:focus:text-base-content sr-only focus:not-sr-only focus:absolute focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:ring-2 focus:ring-offset-2"
+        class="focus:ring-primary focus:bg-base-100 focus:text-base-content dark:focus:bg-base-200 dark:focus:text-base-content sr-only focus:not-sr-only focus:absolute focus:z-50 focus:rounded-md focus:px-4 focus:py-2 focus:ring-2 focus:ring-offset-2"
     >
         {{ __('common.skip_to_content') }}
     </a>

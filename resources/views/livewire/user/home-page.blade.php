@@ -41,9 +41,9 @@
             {{-- Registration + Login cards --}}
             <div class="mx-auto grid max-w-4xl grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2">
                 {{-- Registration Card --}}
-                <div class="group bg-base-100 border-base-content/10 hover:border-primary/30 flex flex-col items-center justify-between rounded-2xl border p-5 text-center shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md sm:p-6 lg:p-7">
+                <div class="group bg-base-100 border-base-content/10 hover:border-primary/30 flex flex-col items-center justify-between rounded-lg border p-5 text-center shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md sm:p-6 lg:p-7">
                     <div class="flex w-full flex-col items-center">
-                        <div class="from-primary/15 to-primary/5 ring-base-content/10 mx-auto mb-3.5 flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br ring-1 transition-transform duration-500 ring-inset group-hover:scale-105 sm:mb-4 sm:size-14">
+                        <div class="from-primary/15 to-primary/5 ring-base-content/10 mx-auto mb-3.5 flex size-12 items-center justify-center rounded-md bg-gradient-to-br ring-1 transition-transform duration-500 ring-inset group-hover:scale-105 sm:mb-4 sm:size-14">
                             <x-ts-icon name="clipboard-document-list" class="text-primary size-6 sm:size-7" />
                         </div>
 
@@ -58,7 +58,7 @@
                         @if ($registration['status'] === 'open')
                             <x-ts-badge
                                 color="success"
-                                round
+                                round="sm"
                                 text="{{ __('user.home.registration_open') }}"
                                 icon="check-circle"
                                 class="mb-2.5 px-3 py-1.5 text-xs font-semibold"
@@ -83,7 +83,7 @@
                         @elseif ($registration['status'] === 'upcoming')
                             <x-ts-badge
                                 color="info"
-                                round
+                                round="sm"
                                 text="{{ __('user.home.registration_upcoming') }}"
                                 icon="clock"
                                 class="mb-2.5 px-3 py-1.5 text-xs font-semibold"
@@ -99,12 +99,12 @@
                             <x-ts-alert
                                 color="info"
                                 :text="__('user.home.registration_not_open_yet')"
-                                class="w-full rounded-xl text-xs"
+                                class="w-full rounded-md text-xs"
                             />
                         @elseif ($registration['status'] === 'closed')
                             <x-ts-badge
                                 color="warning"
-                                round
+                                round="sm"
                                 text="{{ __('user.home.registration_closed') }}"
                                 icon="x-circle"
                                 class="mb-2.5 px-3 py-1.5 text-xs font-semibold"
@@ -112,27 +112,27 @@
                             <x-ts-alert
                                 color="warning"
                                 :text="__('user.home.registration_closed_desc')"
-                                class="w-full rounded-xl text-xs"
+                                class="w-full rounded-md text-xs"
                             />
                         @else
                             <x-ts-badge
-                                round
+                                round="sm"
                                 text="{{ __('user.home.registration_unavailable') }}"
                                 icon="question-mark-circle"
                                 class="mb-2.5 px-3 py-1.5 text-xs font-semibold"
                             />
                             <x-ts-alert
                                 :text="__('user.home.registration_unavailable_desc')"
-                                class="w-full rounded-xl text-xs"
+                                class="w-full rounded-md text-xs"
                             />
                         @endif
                     </div>
                 </div>
 
                 {{-- Login Card --}}
-                <div class="group bg-base-100 border-base-content/10 hover:border-primary/30 flex flex-col items-center justify-between rounded-2xl border p-5 text-center shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md sm:p-6 lg:p-7">
+                <div class="group bg-base-100 border-base-content/10 hover:border-primary/30 flex flex-col items-center justify-between rounded-lg border p-5 text-center shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md sm:p-6 lg:p-7">
                     <div class="flex w-full flex-col items-center">
-                        <div class="from-primary/15 to-primary/5 ring-base-content/10 mx-auto mb-3.5 flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br ring-1 transition-transform duration-500 ring-inset group-hover:scale-105 sm:mb-4 sm:size-14">
+                        <div class="from-primary/15 to-primary/5 ring-base-content/10 mx-auto mb-3.5 flex size-12 items-center justify-center rounded-md bg-gradient-to-br ring-1 transition-transform duration-500 ring-inset group-hover:scale-105 sm:mb-4 sm:size-14">
                             <x-ts-icon name="arrow-right-on-rectangle" class="text-primary size-6 sm:size-7" />
                         </div>
 
@@ -148,7 +148,8 @@
                             :text="__('user.home.login_action')"
                             icon="arrow-right"
                             icon-right
-                            color="primary"
+                            :color="$registration['status'] === 'open' ? 'secondary' : 'primary'"
+                            :outline="$registration['status'] === 'open'"
                             class="w-full sm:w-auto"
                         />
                     </div>
@@ -161,8 +162,8 @@
 
             {{-- PKL Definition Callout --}}
             <div class="mx-auto mt-8 max-w-4xl sm:mt-10">
-                <div class="bg-base-100 border-base-content/10 flex flex-col items-center gap-4 rounded-2xl border p-5 text-center shadow-xs sm:flex-row sm:items-start sm:p-6 sm:text-left">
-                    <div class="from-primary/15 to-primary/5 ring-base-content/10 flex size-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ring-1 ring-inset sm:size-14">
+                <div class="bg-base-100 border-base-content/10 flex flex-col items-center gap-4 rounded-lg border p-5 text-center shadow-xs sm:flex-row sm:items-start sm:p-6 sm:text-left">
+                    <div class="from-primary/15 to-primary/5 ring-base-content/10 flex size-12 shrink-0 items-center justify-center rounded-md bg-gradient-to-br ring-1 ring-inset sm:size-14">
                         <x-ts-icon name="academic-cap" class="text-primary size-6 sm:size-7" />
                     </div>
                     <div class="space-y-1.5">
@@ -189,8 +190,8 @@
 
                 <div class="grid grid-cols-1 gap-3.5 sm:grid-cols-3 sm:gap-5">
                     {{-- Logbook --}}
-                    <div class="bg-base-100 border-base-content/10 rounded-2xl border p-4 text-center shadow-xs transition-all duration-200 hover:shadow-sm sm:p-5">
-                        <div class="from-primary/10 to-primary/5 mx-auto mb-3 flex size-10 items-center justify-center rounded-2xl bg-gradient-to-br">
+                    <div class="bg-base-100 border-base-content/10 rounded-lg border p-4 text-center shadow-xs transition-all duration-200 hover:shadow-sm sm:p-5">
+                        <div class="from-primary/10 to-primary/5 mx-auto mb-3 flex size-10 items-center justify-center rounded-md bg-gradient-to-br">
                             <x-ts-icon name="book-open" class="text-primary size-5" />
                         </div>
                         <h3 class="mb-1 text-sm font-semibold sm:text-base">
@@ -202,8 +203,8 @@
                     </div>
 
                     {{-- Supervision --}}
-                    <div class="bg-base-100 border-base-content/10 rounded-2xl border p-4 text-center shadow-xs transition-all duration-200 hover:shadow-sm sm:p-5">
-                        <div class="from-primary/10 to-primary/5 mx-auto mb-3 flex size-10 items-center justify-center rounded-2xl bg-gradient-to-br">
+                    <div class="bg-base-100 border-base-content/10 rounded-lg border p-4 text-center shadow-xs transition-all duration-200 hover:shadow-sm sm:p-5">
+                        <div class="from-primary/10 to-primary/5 mx-auto mb-3 flex size-10 items-center justify-center rounded-md bg-gradient-to-br">
                             <x-ts-icon name="user-group" class="text-primary size-5" />
                         </div>
                         <h3 class="mb-1 text-sm font-semibold sm:text-base">
@@ -215,8 +216,8 @@
                     </div>
 
                     {{-- Certificate --}}
-                    <div class="bg-base-100 border-base-content/10 rounded-2xl border p-4 text-center shadow-xs transition-all duration-200 hover:shadow-sm sm:p-5">
-                        <div class="from-primary/10 to-primary/5 mx-auto mb-3 flex size-10 items-center justify-center rounded-2xl bg-gradient-to-br">
+                    <div class="bg-base-100 border-base-content/10 rounded-lg border p-4 text-center shadow-xs transition-all duration-200 hover:shadow-sm sm:p-5">
+                        <div class="from-primary/10 to-primary/5 mx-auto mb-3 flex size-10 items-center justify-center rounded-md bg-gradient-to-br">
                             <x-ts-icon name="identification" class="text-primary size-5" />
                         </div>
                         <h3 class="mb-1 text-sm font-semibold sm:text-base">

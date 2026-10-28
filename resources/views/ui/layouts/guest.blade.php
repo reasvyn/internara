@@ -28,7 +28,7 @@
                                 <a
                                     wire:navigate
                                     href="{{ route('dashboard') }}"
-                                    class="border-primary bg-primary text-primary-content hover:bg-primary/80 hidden rounded-xl border px-3 py-1.5 text-xs font-semibold shadow-2xs transition-colors sm:inline-flex"
+                                    class="border-primary bg-primary text-primary-content hover:bg-primary/80 hidden rounded-md border px-3 py-1.5 text-xs font-semibold shadow-2xs transition-colors sm:inline-flex"
                                 >
                                     {{ __('user.dashboard.title') }}
                                 </a>
@@ -36,7 +36,7 @@
                                 <a
                                     wire:navigate
                                     href="{{ route('login') }}"
-                                    class="border-primary bg-primary text-primary-content hover:bg-primary/80 hidden rounded-xl border px-3 py-1.5 text-xs font-semibold shadow-2xs transition-colors sm:inline-flex"
+                                    class="border-primary bg-primary text-primary-content hover:bg-primary/80 hidden rounded-md border px-3 py-1.5 text-xs font-semibold shadow-2xs transition-colors sm:inline-flex"
                                 >
                                     {{ __('user.home.login_action') }}
                                 </a>

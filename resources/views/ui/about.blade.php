@@ -8,7 +8,7 @@
         </div>
 
         <div class="relative mx-auto max-w-5xl px-4 py-12 text-center sm:px-6 sm:py-16 lg:px-8">
-            <div class="border-primary/20 bg-primary/10 text-primary ring-primary/10 mx-auto mb-6 flex size-20 items-center justify-center rounded-2xl border ring-4 sm:size-24">
+            <div class="border-primary/20 bg-primary/10 text-primary ring-primary/10 mx-auto mb-6 flex size-20 items-center justify-center rounded-lg border ring-4 sm:size-24">
                 <x-ui::components.logo size="12" />
             </div>
 
@@ -16,7 +16,7 @@
                 <h1 class="from-base-content to-base-content/70 bg-gradient-to-br bg-clip-text text-3xl font-black tracking-tight text-transparent sm:text-4xl lg:text-5xl">
                     {{ $appName }}
                 </h1>
-                <x-ts-badge :text="'v'.$version" color="primary" light round sm class="font-mono font-bold" />
+                <x-ts-badge :text="'v'.$version" color="primary" light round="sm" sm class="font-mono font-bold" />
             </div>
 
             <p class="text-primary mx-auto mb-4 max-w-2xl text-base font-semibold sm:text-lg">{{ $tagline }}</p>
@@ -31,16 +31,16 @@
     <section class="bg-base-200/40 flex-1 py-10 sm:py-14 lg:py-16">
         <div class="mx-auto max-w-5xl space-y-10 px-4 sm:px-6 lg:px-8">
             {{-- PKL Educational Context Card --}}
-            <article class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-2xl border p-6 transition-all duration-300 sm:p-8 lg:p-10">
+            <article class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-lg border p-6 transition-all duration-300 sm:p-8 lg:p-10">
                 <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-6">
-                    <div class="border-primary/20 bg-primary/10 text-primary ring-primary/10 mx-auto flex size-16 shrink-0 items-center justify-center rounded-2xl border ring-4 sm:size-20 md:mx-0">
+                    <div class="border-primary/20 bg-primary/10 text-primary ring-primary/10 mx-auto flex size-16 shrink-0 items-center justify-center rounded-md border ring-4 sm:size-20 md:mx-0">
                         <x-ts-icon name="academic-cap" class="size-8 sm:size-10" />
                     </div>
 
                     <div class="flex-1 space-y-2 text-center sm:text-left">
                         <div class="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
                             <h2 class="text-base-content text-xl font-bold sm:text-2xl">{{ __('about.pkl.title') }}</h2>
-                            <x-ts-badge :text="__('about.pkl.badge')" color="primary" light sm />
+                            <x-ts-badge :text="__('about.pkl.badge')" color="primary" light round="sm" sm />
                         </div>
 
                         <p class="text-base-content/75 text-sm leading-relaxed sm:text-base">
@@ -60,8 +60,8 @@
                 </div>
 
                 <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
-                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-6 transition-all duration-200">
-                        <div class="bg-primary/10 text-primary mb-3.5 flex size-10 items-center justify-center rounded-xl">
+                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-lg border p-6 transition-all duration-200">
+                        <div class="bg-primary/10 text-primary mb-3.5 flex size-10 items-center justify-center rounded-md">
                             <x-ts-icon name="building-office-2" class="size-5" />
                         </div>
                         <h3 class="text-base-content mb-1.5 text-sm font-bold sm:text-base">
@@ -72,8 +72,8 @@
                         </p>
                     </div>
 
-                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-6 transition-all duration-200">
-                        <div class="bg-primary/10 text-primary mb-3.5 flex size-10 items-center justify-center rounded-xl">
+                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-lg border p-6 transition-all duration-200">
+                        <div class="bg-primary/10 text-primary mb-3.5 flex size-10 items-center justify-center rounded-md">
                             <x-ts-icon name="user-group" class="size-5" />
                         </div>
                         <h3 class="text-base-content mb-1.5 text-sm font-bold sm:text-base">
@@ -84,8 +84,8 @@
                         </p>
                     </div>
 
-                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-6 transition-all duration-200">
-                        <div class="bg-primary/10 text-primary mb-3.5 flex size-10 items-center justify-center rounded-xl">
+                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-lg border p-6 transition-all duration-200">
+                        <div class="bg-primary/10 text-primary mb-3.5 flex size-10 items-center justify-center rounded-md">
                             <x-ts-icon name="clipboard-document-check" class="size-5" />
                         </div>
                         <h3 class="text-base-content mb-1.5 text-sm font-bold sm:text-base">
@@ -96,8 +96,8 @@
                         </p>
                     </div>
 
-                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-6 transition-all duration-200">
-                        <div class="bg-primary/10 text-primary mb-3.5 flex size-10 items-center justify-center rounded-xl">
+                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-lg border p-6 transition-all duration-200">
+                        <div class="bg-primary/10 text-primary mb-3.5 flex size-10 items-center justify-center rounded-md">
                             <x-ts-icon name="trophy" class="size-5" />
                         </div>
                         <h3 class="text-base-content mb-1.5 text-sm font-bold sm:text-base">
@@ -108,8 +108,8 @@
                         </p>
                     </div>
 
-                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-6 transition-all duration-200 md:col-span-2">
-                        <div class="bg-primary/10 text-primary mb-3.5 flex size-10 items-center justify-center rounded-xl">
+                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-lg border p-6 transition-all duration-200 md:col-span-2">
+                        <div class="bg-primary/10 text-primary mb-3.5 flex size-10 items-center justify-center rounded-md">
                             <x-ts-icon name="shield-check" class="size-5" />
                         </div>
                         <h3 class="text-base-content mb-1.5 text-sm font-bold sm:text-base">
@@ -123,9 +123,9 @@
             </section>
 
             {{-- Author Profile & Attribution Spotlight Card --}}
-            <article class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-2xl border p-6 transition-all duration-300 sm:p-8 lg:p-10">
+            <article class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-lg border p-6 transition-all duration-300 sm:p-8 lg:p-10">
                 <div class="flex flex-col gap-6 md:flex-row md:items-start md:gap-8">
-                    <div class="border-primary/20 bg-primary/10 text-primary ring-primary/10 mx-auto flex size-20 shrink-0 items-center justify-center rounded-2xl border text-2xl font-black ring-4 sm:size-24 sm:text-3xl md:mx-0">
+                    <div class="border-primary/20 bg-primary/10 text-primary ring-primary/10 mx-auto flex size-20 shrink-0 items-center justify-center rounded-md border text-2xl font-black ring-4 sm:size-24 sm:text-3xl md:mx-0">
                         {{ strtoupper(substr($authorName, 0, 1)) }}
                     </div>
 
@@ -133,7 +133,7 @@
                         <div class="space-y-1">
                             <div class="flex flex-wrap items-center justify-center gap-2 md:justify-start">
                                 <h2 class="text-base-content text-xl font-bold sm:text-2xl">{{ $authorName }}</h2>
-                                <x-ts-badge :text="__('about.author.role')" color="primary" light sm />
+                                <x-ts-badge :text="__('about.author.role')" color="primary" light round="sm" sm />
                             </div>
                             <p class="text-base-content/60 text-xs sm:text-sm">{{ __('about.author.subheading') }}</p>
                         </div>
@@ -167,7 +167,7 @@
                             @endif
                         </div>
 
-                        <div class="border-primary/20 bg-primary/5 rounded-xl border p-4 text-left">
+                        <div class="border-primary/20 bg-primary/5 rounded-md border p-4 text-left">
                             <p class="text-base-content/70 text-xs leading-relaxed">
                                 <x-ts-icon
                                     name="shield-check"
