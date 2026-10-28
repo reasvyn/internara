@@ -93,7 +93,7 @@ Manages industrial partner companies and partnership agreements for internship p
 
 ## Routes
 
-File: `routes/web/partner.php` Naming pattern: `partner.companies`, `partner.partnerships`
+File: `routes/web/partner.php` Naming pattern: `partner.companies`
 
 ## Views
 

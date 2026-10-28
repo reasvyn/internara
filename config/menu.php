@@ -55,11 +55,6 @@ return [
                     'label' => 'company.title',
                 ],
                 [
-                    'route' => 'partner.partnerships',
-                    'icon' => 'o-hand-raised',
-                    'label' => 'common.sidebar.partnerships',
-                ],
-                [
                     'route' => 'enrollment.internships.placements',
                     'icon' => 'o-map-pin',
                     'label' => 'common.sidebar.placements',

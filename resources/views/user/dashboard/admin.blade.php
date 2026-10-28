@@ -206,10 +206,6 @@
                     <span class="text-base-content/60">{{ __('dashboard.funnel.companies_active') }}</span
                     ><span class="font-semibold">{{ $stats['companiesActive'] }}</span>
                 </div>
-                <div class="flex items-center justify-between text-xs">
-                    <span class="text-base-content/60">{{ __('dashboard.funnel.partnerships') }}</span
-                    ><span class="font-semibold">{{ $stats['totalPartnerships'] }}</span>
-                </div>
             </div>
         </x-ts-card>
     </div>

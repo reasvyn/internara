@@ -14,7 +14,6 @@ use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Journal\Domain\Attendance\Models\Attendance;
 use App\Modules\Journal\Domain\Logbook\Models\Logbook;
 use App\Modules\Partner\Domain\Company\Models\Company;
-use App\Modules\Partner\Domain\Partnership\Models\Partnership;
 use App\Modules\Program\Domain\Internship\Models\Internship;
 use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Cache;
@@ -34,7 +33,6 @@ final class ReadAdminDashboardAction extends BaseReadAction
                 'totalSupervisors' => User::role(RoleEnum::SUPERVISOR->value)->count(),
                 'totalMentors' => User::role([RoleEnum::TEACHER->value, RoleEnum::SUPERVISOR->value])->count(),
                 'totalCompanies' => Company::count(),
-                'totalPartnerships' => Partnership::count(),
                 'totalDepartments' => Department::count(),
 
                 // ─── Internships ──────────────────────────────────────
