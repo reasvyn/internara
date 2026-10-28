@@ -237,7 +237,7 @@ Apply performance heuristics: avoid `@apply` bloat, keep `@layer components` shi
 
 - `livewire-pattern.md` — Thin components, Blade no-logic, `BaseRecordManager`/`BaseRecordEntry`/`BaseRecordList`, Guide pattern, a11y, localization (§1, §1.1, §11, §13, §14)
 - `../conventions.md` §13 Theming & Visual Consistency — CSS variables, form icons; §14 Frontend & Blade Presentation — Blade no-logic, `@hasrole`
-- `modular-pattern.md` §22 Accessibility (WCAG 2.1 AA) & §23 Localization — project-wide a11y/i18n contracts
+- `modular-pattern.md` §22 Accessibility (WCAG 2.2 AA) & §23 Localization — project-wide a11y/i18n contracts
 - `resources/css/app.css` — `@theme` palette, `@custom-variant dark`, `@layer components` shims, `data-theme` overrides
 - `resources/views/ui/layouts/base.blade.php` + `app.blade.php` + `sidebar.blade.php` + `header.blade.php` — app shell, `Theme::cssVariables()`, skip-link, focus reset
 - `resources/views/ui/components/record-manager.blade.php` — canonical CRUD scaffold (reference for every manager)

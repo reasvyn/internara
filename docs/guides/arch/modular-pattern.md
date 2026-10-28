@@ -336,10 +336,12 @@ Read Action with DTO.
 
 ---
 
-## 22. Accessibility (WCAG 2.1 AA)
+## 22. Accessibility (WCAG 2.2 AA)
 
-All user-facing interfaces MUST meet WCAG 2.1 Level AA. Accessibility is not a post-launch
-afterthought — it is a design constraint enforced at every layer.
+All user-facing interfaces MUST meet WCAG 2.2 Level AA. Accessibility is not a post-launch
+afterthought — it is a design constraint enforced at every layer. The 2.2 additions are binding:
+2.4.11 Focus Not Obscured, 2.4.13 Focus Appearance, 2.5.8 Target Size (Minimum, 24×24px; 44×44px
+for primary actions), 3.3.7 Redundant Entry, and 3.3.8 Accessible Authentication.
 
 ### 22.1 Perceivable
 

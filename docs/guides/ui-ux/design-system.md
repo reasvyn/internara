@@ -335,13 +335,15 @@ Excluded directories: `components`, `emails`, `errors`, `layouts`, `mcp`, `pdf`,
 
 ---
 
-## 6. Accessibility (WCAG 2.1 AA)
+## 6. Accessibility (WCAG 2.2 AA)
 
 > 📖 Authoritative references: [UX Pattern](../arch/ux-pattern.md) §2 — WCAG 2.2 AA (Perceivable/Operable/Understandable/Robust), focus, ARIA, `aria-live`; [UI Pattern](../arch/ui-pattern.md) §7 — forms/tables/modals/navigation a11y. This section is the UI-layer checklist.
 
-All user-facing interfaces MUST meet WCAG 2.1 Level AA. This section defines UI-layer
+All user-facing interfaces MUST meet WCAG 2.2 Level AA. This section defines UI-layer
 requirements. See `docs/guides/arch/modular-pattern.md` §22 for architectural rules and
-`docs/guides/arch/livewire-pattern.md` §13 for component-specific patterns.
+`docs/guides/arch/livewire-pattern.md` §13 for component-specific patterns. The 2.2-only criteria
+add: 2.4.11 Focus Not Obscured, 2.4.13 Focus Appearance, 2.5.8 Target Size (Minimum, 24×24px),
+3.3.7 Redundant Entry, and 3.3.8 Accessible Authentication.
 
 ### 6.1 Color & Contrast
 
@@ -532,7 +534,7 @@ Legacy DaisyUI class tokens (`.btn`, `.badge`, `.card`, `.table`, `.alert` etc.)
 
 ### Form Input Design System
 
-Form inputs are the primary mutation surface across all 19 modules. All inputs must adhere to strict visual consistency, accessibility (WCAG 2.1 AA), and responsive behavior using TallStackUI primitives (`x-ts-*`).
+Form inputs are the primary mutation surface across all 19 modules. All inputs must adhere to strict visual consistency, accessibility (WCAG 2.2 AA), and responsive behavior using TallStackUI primitives (`x-ts-*`).
 
 #### 1. Input Anatomy & Token Specifications
 

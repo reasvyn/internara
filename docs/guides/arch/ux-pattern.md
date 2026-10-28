@@ -278,7 +278,7 @@ Canonical: `resources/views/setup/components/setup-guide.blade.php` (now `<x-ts-
 - `ui-pattern.md` — Elegant, modern, responsive UI (visual hierarchy, Tailwind v4 tokens, component design, performance) — companion to this doc
 - `livewire-pattern.md` §11 Guide Component, §13 Accessibility, §14 Localization — thin components, `*-guide.blade.php`, WCAG, `__()` in Livewire
 - `../conventions.md` §13 Theming (CSS vars, form icons), §14 Frontend & Blade Presentation (Blade no-logic, `@hasrole`), §15 Localization (flat `lang/{locale}/*.php`, dual locale)
-- `modular-pattern.md` §22 Accessibility (WCAG 2.1 AA Perceivable/Operable/Understandable/Robust) & §23 Localization — project-wide contracts
+- `modular-pattern.md` §22 Accessibility (WCAG 2.2 AA Perceivable/Operable/Understandable/Robust) & §23 Localization — project-wide contracts
 - `resources/css/app.css` — `@theme` semantic palette, `@custom-variant dark`, `@layer components` shims, `[data-theme='dark']` overrides
 - `resources/views/ui/layouts/base.blade.php` / `app.blade.php` / `sidebar.blade.php` / `header.blade.php` — shell, `Theme::cssVariables()`, skip-link, `aria-live`, `wire:navigate` focus reset
 - `resources/views/ui/components/record-manager.blade.php` / `page-header.blade.php` / `confirm.blade.php` / `widgets/empty-state.blade.php` — canonical organisms/molecules; `resources/views/setting/locale/theme-switch.blade.php` (`<x-setting::locale.theme-switch>`) — theme switcher
