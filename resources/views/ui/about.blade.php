@@ -31,6 +31,26 @@
     {{-- Main Content Section --}}
     <section class="bg-base-200/40 flex-1 py-10 sm:py-14 lg:py-16">
         <div class="mx-auto max-w-5xl space-y-12 px-4 sm:px-6 lg:px-8">
+            {{-- PKL Educational Context Card --}}
+            <article class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-2xl border p-6 transition-all duration-300 sm:p-8 lg:p-10">
+                <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-6">
+                    <div class="border-primary/20 bg-primary/10 text-primary ring-primary/10 mx-auto flex size-16 shrink-0 items-center justify-center rounded-2xl border ring-4 sm:size-20 md:mx-0">
+                        <x-ts-icon name="academic-cap" class="size-8 sm:size-10" />
+                    </div>
+
+                    <div class="flex-1 space-y-2 text-center sm:text-left">
+                        <div class="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
+                            <h2 class="text-base-content text-xl font-bold sm:text-2xl">{{ __('about.pkl.title') }}</h2>
+                            <x-ts-badge :text="__('about.pkl.badge')" color="primary" light sm />
+                        </div>
+
+                        <p class="text-base-content/75 text-sm leading-relaxed sm:text-base">
+                            {{ __('about.pkl.description') }}
+                        </p>
+                    </div>
+                </div>
+            </article>
+
             {{-- Author Profile & Attribution Spotlight Card --}}
             <article class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-2xl border p-6 transition-all duration-300 sm:p-8 lg:p-10">
                 <div class="flex flex-col gap-6 md:flex-row md:items-start md:gap-8">

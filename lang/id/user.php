@@ -287,6 +287,8 @@ return [
         'login_desc' => 'Masuk ke akun Anda untuk mengisi jurnal harian, presensi, bimbingan, atau mengelola data PKL.',
         'login_action' => 'Masuk Sekarang',
         'no_account' => 'Akun siswa dibuat melalui verifikasi pendaftaran. Akun pembimbing dan mitra dikonfigurasi oleh koordinator sekolah.',
+        'pkl_definition_title' => 'Mengenal Praktik Kerja Lapangan (PKL)',
+        'pkl_definition_desc' => 'PKL adalah program pembelajaran dan pelatihan terapan di dunia kerja (dunia usaha dan industri) bagi peserta didik untuk memperoleh pengalaman nyata, mengasah keahlian kejuruan, serta membangun etika kerja profesional.',
         'features_title' => 'Alur Pelaksanaan PKL',
         'features_subtitle' => 'Tahapan kegiatan magang yang dipantau dan dikelola secara terpusat melalui portal ini.',
         'feature_logbook_title' => 'Jurnal & Presensi',

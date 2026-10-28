@@ -36,11 +36,13 @@ describe('AB0UT: About page and author attribution', function (): void {
     test('AB0UT-UC-ABOUT-003: user can read Internaras mission vocational internship background and guiding philosophy in Indonesian or English', function (): void {
         $enResponse = $this->withSession(['locale' => 'en'])->get(route('about'));
         $enResponse->assertOk()
+            ->assertSee(__('about.pkl.title', [], 'en'))
             ->assertSee(__('about.philosophy.heading', [], 'en'))
             ->assertSee(__('about.tech_stack.heading', [], 'en'));
 
         $idResponse = $this->withSession(['locale' => 'id'])->get(route('about'));
         $idResponse->assertOk()
+            ->assertSee(__('about.pkl.title', [], 'id'))
             ->assertSee(__('about.philosophy.heading', [], 'id'))
             ->assertSee(__('about.tech_stack.heading', [], 'id'));
     });

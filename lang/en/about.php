@@ -12,6 +12,11 @@ return [
         'subheading' => 'Designed to elevate vocational internship operations with dignity and precision.',
         'description' => ':app is a specialized management system designed to coordinate the entire lifecycle of student vocational fieldwork (PKL / Praktik Kerja Lapangan). From company partnerships, mentor assignment, student logbooks, attendance monitoring, and rubric grading to official certificate issuance, :app puts educational sovereignty and operational reliability at the forefront.',
     ],
+    'pkl' => [
+        'title' => 'What is Praktik Kerja Lapangan (PKL)?',
+        'badge' => 'Vocational Education',
+        'description' => 'Praktik Kerja Lapangan (PKL) is an applied learning and internship program where students train directly within partner companies, industries, and institutions. It equips students with hands-on workplace experience, reinforces practical vocational competencies, and cultivates professional ethics and workplace culture.',
+    ],
     'author' => [
         'heading' => 'Author & Attribution',
         'subheading' => 'System authorship and architectural custody.',

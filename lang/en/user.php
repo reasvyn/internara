@@ -285,6 +285,8 @@ return [
         'login_desc' => 'Sign in to your account to record daily journals, attendance records, mentoring notes, or manage internship data.',
         'login_action' => 'Sign In',
         'no_account' => 'Student accounts are created via registration verification. Mentor and partner accounts are assigned by the school coordinator.',
+        'pkl_definition_title' => 'What is Praktik Kerja Lapangan (PKL)?',
+        'pkl_definition_desc' => 'PKL is an applied learning and internship program in the workplace (business and industry) for students to gain real-world experience, hone vocational skills, and build professional work ethics.',
         'features_title' => 'Internship Program Workflow',
         'features_subtitle' => 'Key stages of the internship program monitored and managed centrally through this portal.',
         'feature_logbook_title' => 'Journal & Attendance',

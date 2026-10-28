@@ -150,6 +150,7 @@ describe('K8HP1: public landing page lifecycle', function (): void {
 
     test('K8HP1-FR-LAND-018: feature section renders header and three-column card grid', function (): void {
         Livewire::test(HomePage::class)
+            ->assertSee(__('user.home.pkl_definition_title'))
             ->assertSee(__('user.home.features_title'))
             ->assertSee(__('user.home.features_subtitle'));
     });

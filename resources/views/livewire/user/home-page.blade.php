@@ -184,6 +184,23 @@
                 </div>
             </div>
 
+            {{-- PKL Definition Callout --}}
+            <div class="mx-auto mt-8 max-w-4xl sm:mt-10">
+                <div class="bg-base-100 border-base-content/10 flex flex-col items-center gap-4 rounded-2xl border p-5 text-center shadow-xs sm:flex-row sm:items-start sm:p-6 sm:text-left">
+                    <div class="from-primary/15 to-primary/5 ring-base-content/10 flex size-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ring-1 ring-inset sm:size-14">
+                        <x-ts-icon name="academic-cap" class="text-primary size-6 sm:size-7" />
+                    </div>
+                    <div class="space-y-1.5">
+                        <h2 class="text-base-content text-base font-bold sm:text-lg">
+                            {{ __('user.home.pkl_definition_title') }}
+                        </h2>
+                        <p class="text-base-content/75 text-xs leading-relaxed sm:text-sm">
+                            {{ __('user.home.pkl_definition_desc') }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             {{-- Feature Highlights --}}
             <div class="mx-auto mt-10 max-w-4xl sm:mt-14">
                 <div class="mb-5 text-center sm:mb-8">
