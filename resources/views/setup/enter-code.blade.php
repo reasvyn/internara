@@ -36,7 +36,7 @@
                         <div class="border-primary/20 bg-primary/10 text-primary ring-primary/10 mb-3.5 inline-flex size-12 items-center justify-center rounded-md border shadow-xs ring-4 sm:mb-4 sm:size-14">
                             <x-ts-icon name="key" class="size-6 sm:size-7" />
                         </div>
-                        <h1 class="text-base-content text-xl font-black tracking-tight sm:text-2xl">
+                        <h1 class="text-base-content text-xl font-bold tracking-tight sm:text-2xl">
                             {{ __('setup.code_entry.title') }}
                         </h1>
                         <p class="text-base-content/60 mt-1 text-xs leading-relaxed sm:mt-1.5 sm:text-sm">
@@ -119,7 +119,7 @@
                                             @focus="$event.target.select()"
                                             @if ($i === 0) autofocus @endif
                                             aria-label="{{ __('setup.code_entry.code_label') }} {{ $i + 1 }}"
-                                            class="bg-base-100 border-base-content/20 text-base-content focus:border-primary focus:ring-primary/20 size-10.5 rounded-md border text-center font-mono text-lg font-black uppercase shadow-xs transition-all focus:ring-4 focus:outline-hidden sm:size-12 sm:text-xl"
+                                            class="bg-base-100 border-base-content/20 text-base-content focus:border-primary focus:ring-primary/20 size-10.5 rounded-md border text-center font-mono text-lg font-bold uppercase shadow-xs transition-all focus:ring-4 focus:outline-hidden sm:size-12 sm:text-xl"
                                         />
                                     @endfor
                                 </div>

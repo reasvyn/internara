@@ -7,7 +7,7 @@
     @if ($this->openInternships->isEmpty())
         <div class="flex flex-col items-center justify-center py-24 text-center">
             <x-ts-icon name="x-circle" class="text-base-300 mb-6 size-20" />
-            <h2 class="text-base-content/60 mb-2 text-2xl font-black">{{ __('registration.center.empty') }}</h2>
+            <h2 class="text-base-content/60 mb-2 text-2xl font-bold">{{ __('registration.center.empty') }}</h2>
             <p class="text-base-content/40 max-w-md">{{ __('registration.center.empty_desc') }}</p>
         </div>
     @else

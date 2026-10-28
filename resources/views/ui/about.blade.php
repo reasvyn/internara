@@ -13,7 +13,7 @@
             </div>
 
             <div class="mb-4 flex flex-wrap items-center justify-center gap-3">
-                <h1 class="from-base-content to-base-content/70 bg-gradient-to-br bg-clip-text text-3xl font-black tracking-tight text-transparent sm:text-4xl lg:text-5xl">
+                <h1 class="from-base-content to-base-content/70 bg-gradient-to-br bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:text-4xl lg:text-5xl">
                     {{ $appName }}
                 </h1>
                 <x-ts-badge :text="'v'.$version" color="primary" light round="sm" sm class="font-mono font-bold" />
@@ -125,7 +125,7 @@
             {{-- Author Profile & Attribution Spotlight Card --}}
             <article class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-lg border p-6 transition-all duration-300 sm:p-8 lg:p-10">
                 <div class="flex flex-col gap-6 md:flex-row md:items-start md:gap-8">
-                    <div class="border-primary/20 bg-primary/10 text-primary ring-primary/10 mx-auto flex size-20 shrink-0 items-center justify-center rounded-md border text-2xl font-black ring-4 sm:size-24 sm:text-3xl md:mx-0">
+                    <div class="border-primary/20 bg-primary/10 text-primary ring-primary/10 mx-auto flex size-20 shrink-0 items-center justify-center rounded-md border text-2xl font-bold ring-4 sm:size-24 sm:text-3xl md:mx-0">
                         {{ strtoupper(substr($authorName, 0, 1)) }}
                     </div>
 

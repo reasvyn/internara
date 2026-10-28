@@ -2,10 +2,10 @@
     {{-- Header --}}
     <div class="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
         <div>
-            <h2 class="tracking-tightest text-base-content text-3xl font-black">
+            <h2 class="tracking-tightest text-base-content text-3xl font-bold">
                 {{ __('submission.grading_title') }}
             </h2>
-            <p class="text-base-content/40 mt-2 text-[10px] font-black tracking-[0.3em] uppercase">
+            <p class="text-base-content/40 mt-2 text-[10px] font-bold tracking-[0.3em] uppercase">
                 {{ __('submission.grading_subtitle') }}
             </p>
         </div>
@@ -42,7 +42,7 @@
             @if ($submissions->isEmpty())
                 <div class="flex flex-col items-center justify-center gap-4 py-20">
                     <x-ts-icon name="check-circle" class="text-base-content/20 size-16" />
-                    <h3 class="text-base-content/40 text-xl font-black tracking-tight">
+                    <h3 class="text-base-content/40 text-xl font-bold tracking-tight">
                         {{ __('submission.all_caught_up') }}
                     </h3>
                     <p class="text-base-content/60 text-sm">{{ __('submission.no_pending_grading') }}</p>
@@ -56,7 +56,7 @@
                         >
                             <div class="min-w-0 flex-1">
                                 <div class="mb-1 flex items-center gap-3">
-                                    <span class="text-base-content text-sm font-black">{{ $submission->student->name }}</span>
+                                    <span class="text-base-content text-sm font-bold">{{ $submission->student->name }}</span>
                                     <span class="text-[10px] opacity-50">{{ $submission->assignment->assignment_type ?? '—' }}</span>
                                 </div>
                                 <p class="text-base-content/60 truncate text-sm">
@@ -72,7 +72,7 @@
                                 @endphp
                                 <x-ts-badge :text="$submission->status->label()" :color="$badgeColor" xs />
                                 @if ($submission->score)
-                                    <div class="text-base-content/60 mt-2 text-sm font-black">
+                                    <div class="text-base-content/60 mt-2 text-sm font-bold">
                                         {{ $submission->score }}/100
                                     </div>
                                 @endif
@@ -102,7 +102,7 @@
             <div class="bg-base-200/30 mb-8 rounded-[2rem] p-6">
                 <div class="flex items-start justify-between">
                     <div>
-                        <h3 class="text-base-content mb-1 text-2xl font-black tracking-tight">
+                        <h3 class="text-base-content mb-1 text-2xl font-bold tracking-tight">
                             {{ $selectedSubmission->student->name }}
                         </h3>
                         <p class="text-base-content/60 text-sm">{{ $selectedSubmission->assignment->title }}</p>
@@ -130,7 +130,7 @@
             {{-- Submission Content --}}
             @if ($selectedSubmission->content)
                 <div class="mb-8">
-                    <h4 class="text-base-content mb-4 text-sm font-black tracking-tight uppercase">
+                    <h4 class="text-base-content mb-4 text-sm font-bold tracking-tight uppercase">
                         {{ __('submission.student_submission') }}
                     </h4>
                     <div class="bg-base-200/30 text-base-content/70 rounded-[2rem] p-6 text-sm leading-relaxed">
@@ -148,8 +148,8 @@
                             <x-ts-icon name="document" class="size-6" />
                         </div>
                         <div>
-                            <h4 class="text-primary text-sm font-black">{{ $media->file_name }}</h4>
-                            <p class="text-primary/40 mt-1 text-[9px] font-black tracking-[0.3em] uppercase">
+                            <h4 class="text-primary text-sm font-bold">{{ $media->file_name }}</h4>
+                            <p class="text-primary/40 mt-1 text-[9px] font-bold tracking-[0.3em] uppercase">
                                 {{ __('submission.attached_file') }}
                             </p>
                         </div>
@@ -167,7 +167,7 @@
 
             {{-- Grading Form --}}
             <div class="bg-base-200/30 border-base-content/5 rounded-[2rem] border p-6">
-                <h4 class="text-base-content mb-6 text-sm font-black tracking-tight uppercase">
+                <h4 class="text-base-content mb-6 text-sm font-bold tracking-tight uppercase">
                     {{ __('submission.grade_submission') }}
                 </h4>
 
@@ -208,7 +208,7 @@
                             <x-ts-button
                                 :text="__('submission.verify')"
                                 icon="shield-check"
-                                class="h-12 rounded-[2rem] px-10 text-[10px] font-black tracking-[0.2em] uppercase"
+                                class="h-12 rounded-[2rem] px-10 text-[10px] font-bold tracking-[0.2em] uppercase"
                                 color="green"
                                 wire:click="askVerify('{{ $selectedSubmission->id }}')"
                                 loading="confirmVerify"
@@ -217,14 +217,14 @@
                         <x-ts-button
                             :text="__('common.actions.cancel')"
                             wire:click="back"
-                            class="rounded-[1.5rem] px-8 text-[10px] font-black tracking-widest uppercase"
+                            class="rounded-[1.5rem] px-8 text-[10px] font-bold tracking-widest uppercase"
                             color="slate"
                             outline
                         />
                         <x-ts-button
                             :text="__('submission.submit_grade')"
                             icon="check-circle"
-                            class="shadow-primary/30 h-12 rounded-[2rem] px-10 text-[10px] font-black tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-[1.02]"
+                            class="shadow-primary/30 h-12 rounded-[2rem] px-10 text-[10px] font-bold tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-[1.02]"
                             color="primary"
                             wire:click="grade"
                             loading="grade"

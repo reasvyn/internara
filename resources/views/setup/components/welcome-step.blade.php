@@ -8,7 +8,7 @@
         >
             <x-ts-icon name="rocket-launch" class="size-6 sm:size-7" />
         </div>
-        <h2 class="text-base-content mb-1 text-lg font-black tracking-tight sm:text-2xl">
+        <h2 class="text-base-content mb-1 text-lg font-bold tracking-tight sm:text-2xl">
             {{ __('setup.wizard.welcome') }}
         </h2>
         <p class="text-base-content/60 mx-auto max-w-lg text-xs leading-relaxed sm:text-sm">

@@ -8,8 +8,8 @@
 <div class="border-base-content/10 mt-4 border-t py-3 text-center sm:mt-6 sm:py-4">
     <div class="flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-4">
         <div class="flex items-center gap-2">
-            <span class="text-base-content/60 text-[10px] font-black tracking-widest uppercase">&copy; {{ date('Y') }}</span>
-            <span class="text-base-content/60 text-xs font-black tracking-tight">{{ $appName }}</span>
+            <span class="text-base-content/60 text-[10px] font-bold tracking-widest uppercase">&copy; {{ date('Y') }}</span>
+            <span class="text-base-content/60 text-xs font-bold tracking-tight">{{ $appName }}</span>
         </div>
 
         <div class="bg-base-content/10 hidden size-1 rounded-full sm:block"></div>
@@ -19,22 +19,22 @@
         @if (! empty($author))
             <div class="bg-base-content/10 hidden size-1 rounded-full sm:block"></div>
             <div class="flex items-center gap-1.5">
-                <span class="text-base-content/60 text-[10px] font-black tracking-widest uppercase">{{ __('common.handcrafted_by') }}</span>
+                <span class="text-base-content/60 text-[10px] font-bold tracking-widest uppercase">{{ __('common.handcrafted_by') }}</span>
                 @if (! empty($author['github']))
                     <a
                         href="{{ $author['github'] }}"
                         target="_blank"
                         rel="noopener noreferrer"
-                        class="text-primary text-xs font-black tracking-tight decoration-2 underline-offset-4 transition-all hover:underline"
+                        class="text-primary text-xs font-bold tracking-tight decoration-2 underline-offset-4 transition-all hover:underline"
                     >{{ $author['name'] ?? $author }}</a>
                 @else
-                    <span class="text-base-content/60 text-xs font-black tracking-tight">{{ $author['name'] ?? $author }}</span>
+                    <span class="text-base-content/60 text-xs font-bold tracking-tight">{{ $author['name'] ?? $author }}</span>
                 @endif
             </div>
         @endif
 
         <div class="bg-base-content/10 hidden size-1 rounded-full sm:block"></div>
 
-        <span class="text-base-content/60 text-[10px] font-black tracking-widest uppercase">{{ $appLicense }} License</span>
+        <span class="text-base-content/60 text-[10px] font-bold tracking-widest uppercase">{{ $appLicense }} License</span>
     </div>
 </div>

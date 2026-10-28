@@ -40,7 +40,7 @@
         <div class="flex min-w-0 flex-col">
             <span
                 @class([
-                    'font-black tracking-tighter leading-none transition-colors group-hover:text-primary truncate',
+                    'font-bold tracking-tighter leading-none transition-colors group-hover:text-primary truncate',
                     $nameClasses,
                 ])
                 title="{{ brand('name') }}"
@@ -48,7 +48,7 @@
                 {{ brand('name') }}
             </span>
             @if ($withTagline)
-                <span class="mt-1 text-[9px] font-black tracking-[0.3em] uppercase opacity-60">
+                <span class="mt-1 text-[9px] font-bold tracking-[0.3em] uppercase opacity-60">
                     {{ brand('tagline') ?? __('common.management_system') }}
                 </span>
             @endif

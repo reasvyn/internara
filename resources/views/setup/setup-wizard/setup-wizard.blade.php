@@ -3,7 +3,7 @@
     <div class="mb-3.5 sm:mb-5" role="group" aria-label="{{ __('setup.wizard.progress_label') }}">
         <div class="mb-2.5 flex flex-wrap items-center justify-between gap-2.5 sm:mb-3.5 sm:gap-4">
             <div>
-                <h1 class="text-base-content text-lg font-black tracking-tight sm:text-2xl">
+                <h1 class="text-base-content text-lg font-bold tracking-tight sm:text-2xl">
                     {{ __('setup.wizard.title') }}
                 </h1>
                 <p class="text-base-content/50 mt-0.5 text-xs font-medium">

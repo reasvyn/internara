@@ -7,7 +7,7 @@
             <x-ts-button
                 :text="__('logbook.write_journal')"
                 icon="pencil-square"
-                class="shadow-primary/20 rounded-2xl px-6 font-black tracking-widest uppercase shadow-lg"
+                class="shadow-primary/20 rounded-2xl px-6 font-bold tracking-widest uppercase shadow-lg"
                 color="primary"
                 wire:click="create"
             />
@@ -29,8 +29,8 @@
                 <x-ts-table :headers="$headers" :rows="$journals" paginate>
                     @interact('column_date', $journal)
                         <div class="flex flex-col">
-                            <span class="text-base-content text-sm font-black tracking-tight">{{ $journal->date->format('d M Y') }}</span>
-                            <span class="text-base-content/60 mt-0.5 text-[10px] leading-none font-black tracking-widest uppercase">{{ $journal->date->format('l') }}</span>
+                            <span class="text-base-content text-sm font-bold tracking-tight">{{ $journal->date->format('d M Y') }}</span>
+                            <span class="text-base-content/60 mt-0.5 text-[10px] leading-none font-bold tracking-widest uppercase">{{ $journal->date->format('l') }}</span>
                         </div>
                     @endinteract
 
@@ -175,7 +175,7 @@
             />
             <x-ts-button
                 :text="__('logbook.save_activity')"
-                class="shadow-primary/20 rounded-2xl px-8 font-black tracking-widest uppercase shadow-lg"
+                class="shadow-primary/20 rounded-2xl px-8 font-bold tracking-widest uppercase shadow-lg"
                 color="primary"
                 wire:click="save"
                 loading="save"

@@ -8,7 +8,7 @@
         <x-ts-card class="!bg-base-100 shadow-base-content/5 border-base-content/5 overflow-hidden border shadow-2xl">
             <div class="flex flex-col items-center justify-center gap-4 py-20">
                 <x-ts-icon name="document-text" class="text-base-content/20 size-16" />
-                <h3 class="text-base-content/40 text-xl font-black tracking-tight">{{ __('submission.none_yet') }}</h3>
+                <h3 class="text-base-content/40 text-xl font-bold tracking-tight">{{ __('submission.none_yet') }}</h3>
                 <p class="text-base-content/60 text-sm">{{ __('submission.none_yet_hint') }}</p>
             </div>
         </x-ts-card>
@@ -34,7 +34,7 @@
                                     <x-ts-badge :text="__('assignment.optional')" color="gray" xs />
                                 @endif
                             </div>
-                            <h3 class="text-base-content mb-2 text-xl font-black tracking-tight">
+                            <h3 class="text-base-content mb-2 text-xl font-bold tracking-tight">
                                 {{ $assignment->title }}
                             </h3>
                             @if ($assignment->description)
@@ -42,7 +42,7 @@
                             @endif
                         </div>
                         <div class="shrink-0 text-right">
-                            <div class="text-base-content/40 text-sm font-black">
+                            <div class="text-base-content/40 text-sm font-bold">
                                 {{ $assignment->due_date?->format('d M Y') ?? __('submission.no_due_date') }}
                             </div>
                             @php
@@ -86,7 +86,7 @@
                 @endif
             </div>
 
-            <h2 class="tracking-tightest text-base-content mb-2 text-3xl font-black">
+            <h2 class="tracking-tightest text-base-content mb-2 text-3xl font-bold">
                 {{ $selectedAssignment->title }}
             </h2>
 
@@ -108,8 +108,8 @@
                             <x-ts-icon name="document" class="size-6" />
                         </div>
                         <div>
-                            <h4 class="text-primary text-sm font-black">{{ $selectedAssignment->document->name }}</h4>
-                            <p class="text-primary/40 mt-1 text-[9px] font-black tracking-[0.3em] uppercase">
+                            <h4 class="text-primary text-sm font-bold">{{ $selectedAssignment->document->name }}</h4>
+                            <p class="text-primary/40 mt-1 text-[9px] font-bold tracking-[0.3em] uppercase">
                                 {{ __('submission.template_guide') }}
                             </p>
                         </div>
@@ -137,17 +137,17 @@
                             <x-ts-icon name="exclamation-triangle" class="size-6" />
                         </div>
                         <div>
-                            <h4 class="text-warning text-sm font-black tracking-tight uppercase">
+                            <h4 class="text-warning text-sm font-bold tracking-tight uppercase">
                                 {{ __('submission.statuses.revision_required') }}
                             </h4>
-                            <p class="text-warning/40 mt-1 text-[9px] font-black tracking-[0.3em] uppercase">
+                            <p class="text-warning/40 mt-1 text-[9px] font-bold tracking-[0.3em] uppercase">
                                 {{ __('submission.revise_hint') }}
                             </p>
                         </div>
                     </div>
                     @if ($existingSubmission->feedback)
                         <div class="bg-base-200/50 rounded-[1.5rem] p-4">
-                            <span class="text-base-content/40 mb-2 block text-[9px] font-black tracking-[0.2em] uppercase">{{ __('submission.feedback') }}</span>
+                            <span class="text-base-content/40 mb-2 block text-[9px] font-bold tracking-[0.2em] uppercase">{{ __('submission.feedback') }}</span>
                             <p class="text-base-content/70 text-sm">{{ $existingSubmission->feedback }}</p>
                         </div>
                     @endif
@@ -155,7 +155,7 @@
 
                 {{-- Resubmission Form --}}
                 <div class="bg-base-200/30 border-base-content/5 rounded-[2rem] border p-6">
-                    <h4 class="text-base-content mb-6 text-sm font-black tracking-tight uppercase">
+                    <h4 class="text-base-content mb-6 text-sm font-bold tracking-tight uppercase">
                         {{ __('submission.resubmit') }}
                     </h4>
                     <div class="space-y-6">
@@ -172,7 +172,7 @@
                             <x-ts-button
                                 text="{{ __('submission.resubmit') }}"
                                 icon-right="paper-airplane"
-                                class="shadow-warning/30 h-12 rounded-[2rem] px-10 text-[10px] font-black tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-[1.02]"
+                                class="shadow-warning/30 h-12 rounded-[2rem] px-10 text-[10px] font-bold tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-[1.02]"
                                 color="yellow"
                                 wire:click="submit"
                                 loading="submit"
@@ -188,10 +188,10 @@
                             <x-ts-icon name="check-circle" class="size-6" />
                         </div>
                         <div>
-                            <h4 class="text-success text-sm font-black tracking-tight uppercase">
+                            <h4 class="text-success text-sm font-bold tracking-tight uppercase">
                                 {{ __('submission.statuses.submitted') }}
                             </h4>
-                            <p class="text-success/40 mt-1 text-[9px] font-black tracking-[0.3em] uppercase">
+                            <p class="text-success/40 mt-1 text-[9px] font-bold tracking-[0.3em] uppercase">
                                 {{ $existingSubmission->submitted_at?->format('d M Y H:i') ?? __('submission.just_now') }}
                             </p>
                         </div>
@@ -204,22 +204,22 @@
                     @if ($existingSubmission->status->value === 'verified')
                         <div class="bg-success/10 flex items-center gap-4 rounded-[1.5rem] p-4">
                             <x-ts-icon name="shield-check" class="text-success size-5" />
-                            <span class="text-success text-sm font-black tracking-tight uppercase">{{ __('submission.verified_by_mentor') }}</span>
+                            <span class="text-success text-sm font-bold tracking-tight uppercase">{{ __('submission.verified_by_mentor') }}</span>
                         </div>
                         @if ($existingSubmission->feedback)
                             <div class="bg-base-200/50 mt-3 rounded-[1.5rem] p-4">
-                                <span class="text-base-content/40 mb-2 block text-[9px] font-black tracking-[0.2em] uppercase">{{ __('submission.feedback') }}</span>
+                                <span class="text-base-content/40 mb-2 block text-[9px] font-bold tracking-[0.2em] uppercase">{{ __('submission.feedback') }}</span>
                                 <p class="text-base-content/70 text-sm">{{ $existingSubmission->feedback }}</p>
                             </div>
                         @endif
                     @elseif ($existingSubmission->status->value === 'graded')
                         <div class="bg-base-200/50 mt-3 rounded-[1.5rem] p-4">
                             @if ($existingSubmission->score)
-                                <span class="text-base-content/40 mb-2 block text-[9px] font-black tracking-[0.2em] uppercase">{{ __('submission.score') }}</span>
-                                <p class="text-base-content text-sm font-black">{{ $existingSubmission->score }}/100</p>
+                                <span class="text-base-content/40 mb-2 block text-[9px] font-bold tracking-[0.2em] uppercase">{{ __('submission.score') }}</span>
+                                <p class="text-base-content text-sm font-bold">{{ $existingSubmission->score }}/100</p>
                             @endif
                             @if ($existingSubmission->feedback)
-                                <span class="text-base-content/40 mt-3 mb-2 block text-[9px] font-black tracking-[0.2em] uppercase">{{ __('submission.feedback') }}</span>
+                                <span class="text-base-content/40 mt-3 mb-2 block text-[9px] font-bold tracking-[0.2em] uppercase">{{ __('submission.feedback') }}</span>
                                 <p class="text-base-content/70 text-sm">{{ $existingSubmission->feedback }}</p>
                             @endif
                         </div>
@@ -228,7 +228,7 @@
             @elseif (! $selectedAssignment->asAssignmentRules()->isOverdue(now()))
                 {{-- Submission Form --}}
                 <div class="bg-base-200/30 border-base-content/5 rounded-[2rem] border p-6">
-                    <h4 class="text-base-content mb-6 text-sm font-black tracking-tight uppercase">
+                    <h4 class="text-base-content mb-6 text-sm font-bold tracking-tight uppercase">
                         {{ __('submission.submit_your_work') }}
                     </h4>
 
@@ -255,7 +255,7 @@
                             <x-ts-button
                                 :text="__('submission.submit')"
                                 icon-right="paper-airplane"
-                                class="shadow-primary/30 h-12 rounded-[2rem] px-10 text-[10px] font-black tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-[1.02]"
+                                class="shadow-primary/30 h-12 rounded-[2rem] px-10 text-[10px] font-bold tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-[1.02]"
                                 color="primary"
                                 wire:click="submit('{{ $selectedAssignment->id }}')"
                                 spinner="submit"

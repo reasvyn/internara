@@ -12,14 +12,14 @@
                         <x-ts-icon name="document-text" class="size-10" />
                     </div>
                     <div>
-                        <h3 class="text-xl font-black tracking-tight">
+                        <h3 class="text-xl font-bold tracking-tight">
                             {{ __('auth.recovery_slip.generated_title') }}
                         </h3>
                         <p class="text-base-content/60 mt-2 text-sm">{{ __('auth.recovery_slip.generated_desc') }}</p>
                     </div>
                     <div class="bg-base-200 rounded-2xl p-6">
                         @foreach ($generatedCode as $code)
-                            <p class="font-mono text-xl font-black tracking-[0.3em] select-all">{{ $code }}</p>
+                            <p class="font-mono text-xl font-bold tracking-[0.3em] select-all">{{ $code }}</p>
                         @endforeach
                     </div>
                     <div class="bg-warning/5 border-warning/20 rounded-2xl border p-4 text-left">
