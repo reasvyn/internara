@@ -112,11 +112,6 @@ return [
                     'label' => 'user.teacher.title',
                 ],
                 [
-                    'route' => 'admin.users.supervisors',
-                    'icon' => 'o-eye',
-                    'label' => 'user.supervisor.title',
-                ],
-                [
                     'route' => 'admin.users.admins',
                     'icon' => 'o-user-circle',
                     'label' => 'user.admin.title',

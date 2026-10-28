@@ -6,10 +6,13 @@ namespace App\Modules\Assessment\Livewire;
 
 use App\Modules\Assessment\Actions\AutoCalculateAssessmentAction;
 use App\Modules\Assessment\Actions\FinalizeAssessmentAction;
+use App\Modules\Assessment\Actions\GenerateAssessmentMagicLinkAction;
 use App\Modules\Assessment\Actions\InitializeAssessmentAction;
 use App\Modules\Assessment\Actions\ScoreIndicatorAction;
+use App\Modules\Assessment\Data\GenerateMagicLinkData;
 use App\Modules\Assessment\Data\ScoreIndicatorData;
 use App\Modules\Assessment\Models\Assessment;
+use App\Modules\Assessment\Models\AssessmentMagicLink;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\UI\Livewire\BaseFormView;
@@ -29,6 +32,14 @@ class AssessmentGrading extends BaseFormView
     public array $scores = [];
 
     public bool $isFinalized = false;
+
+    public bool $showMagicLinkModal = false;
+
+    public string $magicLinkUrl = '';
+
+    public int $magicLinkValidityDays = 30;
+
+    public ?string $magicLinkExpiresAt = null;
 
     public function mount(string $registrationId, InitializeAssessmentAction $action): void
     {
@@ -238,6 +249,36 @@ class AssessmentGrading extends BaseFormView
             $this->isFinalized = true;
             $this->toast()->success(__('assessment.finalized_success'))->send();
         });
+    }
+
+    public function openMagicLinkModal(GenerateAssessmentMagicLinkAction $action): void
+    {
+        $link = $action->execute(new GenerateMagicLinkData(
+            registrationId: $this->registrationId,
+            creatorId: auth()->id(),
+            validityDays: $this->magicLinkValidityDays,
+        ));
+
+        $this->magicLinkUrl = route('partner-assessment.show', ['token' => $link->token]);
+        $this->magicLinkExpiresAt = $link->expires_at->translatedFormat('d F Y');
+        $this->showMagicLinkModal = true;
+    }
+
+    public function regenerateMagicLink(GenerateAssessmentMagicLinkAction $action): void
+    {
+        AssessmentMagicLink::where('registration_id', $this->registrationId)
+            ->whereNull('submitted_at')
+            ->delete();
+
+        $link = $action->execute(new GenerateMagicLinkData(
+            registrationId: $this->registrationId,
+            creatorId: auth()->id(),
+            validityDays: $this->magicLinkValidityDays,
+        ));
+
+        $this->magicLinkUrl = route('partner-assessment.show', ['token' => $link->token]);
+        $this->magicLinkExpiresAt = $link->expires_at->translatedFormat('d F Y');
+        $this->toast()->success(__('assessment.magic_link_generated'))->send();
     }
 
     public function render(): View

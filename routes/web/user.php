@@ -12,7 +12,6 @@ use App\Modules\UI\Livewire\AboutPage;
 use App\Modules\User\Domain\AccountStatus\Livewire\AccountLifecycleManager;
 use App\Modules\User\Domain\Dashboard\Livewire\AdminDashboard;
 use App\Modules\User\Domain\Dashboard\Livewire\StudentDashboard;
-use App\Modules\User\Domain\Dashboard\Livewire\SupervisorDashboard;
 use App\Modules\User\Domain\Dashboard\Livewire\TeacherDashboard;
 use App\Modules\User\Domain\Notify\Livewire\NotificationCenter;
 use App\Modules\User\Domain\Profile\Livewire\ProfileEditor;
@@ -51,13 +50,6 @@ Route::prefix('teacher')
     ->middleware(['auth', 'role:teacher'])
     ->group(function () {
         Route::livewire('/dashboard', TeacherDashboard::class)->name('dashboard');
-    });
-
-Route::prefix('supervisor')
-    ->name('supervisor.')
-    ->middleware(['auth', 'role:supervisor'])
-    ->group(function () {
-        Route::livewire('/dashboard', SupervisorDashboard::class)->name('dashboard');
     });
 
 Route::middleware(['guest', 'auth.throttle'])->group(function () {

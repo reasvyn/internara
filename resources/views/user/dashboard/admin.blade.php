@@ -5,7 +5,7 @@
     />
 
     {{-- People Overview --}}
-    <div class="mb-6 grid grid-cols-2 gap-3 md:grid-cols-3">
+    <div class="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         <x-ui::widgets.stat-card
             :title="__('dashboard.stats.total_students')"
             :value="$stats['totalStudents']"
@@ -17,12 +17,6 @@
             :value="$stats['totalTeachers']"
             icon="academic-cap"
             color="text-secondary"
-        />
-        <x-ui::widgets.stat-card
-            :title="__('dashboard.stats.supervisors')"
-            :value="$stats['totalSupervisors']"
-            icon="briefcase"
-            color="text-accent"
         />
         <x-ui::widgets.stat-card
             :title="__('dashboard.stats.departments')"

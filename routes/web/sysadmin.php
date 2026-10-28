@@ -12,7 +12,6 @@ use App\Modules\SysAdmin\Http\Controllers\CronController;
 use App\Modules\SysAdmin\Livewire\ApplicationReview;
 use App\Modules\User\Domain\UserManagement\Livewire\AdminManager;
 use App\Modules\User\Domain\UserManagement\Livewire\StudentManager;
-use App\Modules\User\Domain\UserManagement\Livewire\SupervisorManager;
 use App\Modules\User\Domain\UserManagement\Livewire\TeacherManager;
 use App\Modules\User\Domain\UserManagement\Livewire\UserManager;
 
@@ -27,7 +26,6 @@ Route::prefix('admin')
                 Route::get('/admins', AdminManager::class)->name('admins');
                 Route::get('/students', StudentManager::class)->name('students');
                 Route::get('/teachers', TeacherManager::class)->name('teachers');
-                Route::get('/supervisors', SupervisorManager::class)->name('supervisors');
 
                 Route::get('/{user}/account-slip', [AccountSlipController::class, 'download'])->name('account-slip');
 

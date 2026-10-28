@@ -15,7 +15,7 @@ class DashboardService
             $user->hasAnyRole(['super_admin', 'admin']) => 'sysadmin.dashboard',
             $user->hasRole('student') => 'student.dashboard',
             $user->hasRole('teacher') => 'teacher.dashboard',
-            $user->hasRole('supervisor') => 'supervisor.dashboard',
+            $user->hasRole('supervisor') => 'teacher.dashboard',
             // UserDashboard is a base component (template method) — not a routable page.
             // Unknown / missing role is a configuration error; fail closed.
             default => throw new HttpException(403, 'No dashboard assigned for this role.'),

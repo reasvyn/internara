@@ -5,6 +5,9 @@ declare(strict_types=1);
 use App\Modules\Assessment\Domain\Rubric\Livewire\RubricManager;
 use App\Modules\Assessment\Livewire\AssessmentGrading;
 use App\Modules\Assessment\Livewire\AssessmentView;
+use App\Modules\Assessment\Livewire\PartnerAssessmentPage;
+
+Route::get('/partner-assessment/{token}', PartnerAssessmentPage::class)->name('partner-assessment.show');
 
 Route::middleware('auth')->group(function () {
     Route::livewire('/assessments', AssessmentView::class)->name('assessments');

@@ -27,12 +27,20 @@
             </div>
 
             @unless ($this->isFinalized)
-                <div class="mb-4 flex gap-2">
+                <div class="mb-4 flex flex-wrap gap-2">
                     <x-ts-button
                         :text="__('assessment.auto_import')"
                         icon="arrow-down-tray"
                         wire:click="autoImport"
                         color="slate"
+                        outline
+                        sm
+                    />
+                    <x-ts-button
+                        :text="__('assessment.generate_magic_link')"
+                        icon="link"
+                        wire:click="openMagicLinkModal"
+                        color="primary"
                         outline
                         sm
                     />
@@ -175,4 +183,52 @@
         </x-ts-card>
 
     @endif
+
+    {{-- Magic Link Modal --}}
+    <x-ts-modal wire="showMagicLinkModal" :title="__('assessment.magic_link')" blur>
+        <div class="space-y-4">
+            <p class="text-base-content/70 text-sm">{{ __('assessment.magic_link_subtitle') }}</p>
+
+            <div class="flex items-center gap-2">
+                <x-ts-input readonly wire:model="magicLinkUrl" id="magic-link-input" class="font-mono text-xs" />
+                <x-ts-button
+                    type="button"
+                    x-on:click="navigator.clipboard.writeText($wire.magicLinkUrl); $interaction('toast').success('{{ __('assessment.magic_link_copied') }}').send()"
+                    icon="clipboard-document"
+                    color="primary"
+                />
+            </div>
+
+            @if ($magicLinkExpiresAt)
+                <p class="text-success text-xs font-medium">
+                    {{ __('assessment.link_expires_at', ['date' => $magicLinkExpiresAt]) }}
+                </p>
+            @endif
+
+            <div class="border-base-content/10 border-t pt-3">
+                <span class="text-base-content/60 mb-1.5 block text-xs font-medium">
+                    {{ __('assessment.validity_days') }}
+                </span>
+                <div class="flex items-center gap-2">
+                    <x-ts-select.styled
+                        wire:model="magicLinkValidityDays"
+                        :options="[
+                            ['label' => '7 Hari', 'value' => 7],
+                            ['label' => '14 Hari', 'value' => 14],
+                            ['label' => '30 Hari (1 Bulan - Default)', 'value' => 30],
+                            ['label' => '60 Hari (2 Bulan)', 'value' => 60],
+                        ]"
+                        select="label:label|value:value"
+                    />
+                    <x-ts-button
+                        wire:click="regenerateMagicLink"
+                        :text="__('assessment.generate_magic_link_new')"
+                        color="slate"
+                        outline
+                        sm
+                    />
+                </div>
+            </div>
+        </div>
+    </x-ts-modal>
 </div>
