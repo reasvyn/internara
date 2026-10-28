@@ -67,6 +67,7 @@ test('Browser: homepage layout, title normalization, and user-friendly registrat
                 found: true,
                 hasConflictingGradients: iconWells.length > 0,
                 primaryButtonCount: primaryButtons.length,
+                hasRedundantLoginButton: registrationCard.innerText.includes('Masuk Sekarang'),
             }
         })
 
@@ -75,6 +76,11 @@ test('Browser: homepage layout, title normalization, and user-friendly registrat
             cardEvaluation.hasConflictingGradients,
             false,
             'Icon container should not have conflicting primary gradient background'
+        )
+        assert.strictEqual(
+            cardEvaluation.hasRedundantLoginButton,
+            false,
+            'Registration card should not contain redundant login action button'
         )
     } finally {
         await browser.close()

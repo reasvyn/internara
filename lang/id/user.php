@@ -281,7 +281,6 @@ return [
         'registration_closed_desc' => 'Pendaftaran untuk periode ini telah berakhir. Silakan hubungi koordinator PKL sekolah untuk informasi lebih lanjut.',
         'registration_unavailable' => 'Tidak Ada Pendaftaran Terbuka',
         'registration_unavailable_desc' => 'Saat ini belum ada pendaftaran PKL yang terbuka. Silakan periksa kembali secara berkala atau hubungi pihak sekolah.',
-        'registration_not_open_help' => 'Sudah terdaftar sebelumnya? Masuk ke akun Anda.',
         'login_title' => 'Masuk ke Akun',
         'login_desc' => 'Masuk ke akun Anda untuk mengisi jurnal harian, presensi, bimbingan, atau mengelola data PKL.',
         'login_action' => 'Masuk Sekarang',
@@ -300,13 +299,6 @@ return [
         'step_1' => 'Lengkapi formulir biodata & akun',
         'step_2' => 'Pilih program PKL & mitra industri',
         'step_3' => 'Verifikasi sekolah & mulai magang',
-        'portal_badge' => 'Akses Portal',
-        'portal_auth_type' => 'Akun Terdaftar',
-        'accessible_by' => 'Dapat diakses oleh',
-        'role_student' => 'Siswa',
-        'role_teacher' => 'Guru / Pembimbing',
-        'role_partner' => 'Pembimbing Industri',
-        'role_admin' => 'Admin Sekolah',
     ],
 
     'user_management' => [

@@ -170,9 +170,9 @@
                         </div>
                     </div>
 
-                    {{-- Action Row --}}
-                    <div class="mt-auto w-full pt-2">
-                        @if ($registration['status'] === 'open')
+                    {{-- Action Row (Only rendered when registration is open) --}}
+                    @if ($registration['status'] === 'open')
+                        <div class="mt-auto w-full pt-3">
                             <x-ts-button
                                 wire:navigate
                                 href="{{ route('apply') }}"
@@ -183,72 +183,24 @@
                                 lg
                                 class="w-full font-bold shadow-xs transition-all duration-200 hover:shadow-md"
                             />
-                        @else
-                            <div class="border-base-content/10 bg-base-200/50 flex items-center justify-between gap-3 rounded-md border px-3.5 py-2.5 text-xs">
-                                <span class="text-base-content/70">
-                                    {{ __('user.home.registration_not_open_help') }}
-                                </span>
-                                <a
-                                    wire:navigate
-                                    href="{{ route('login') }}"
-                                    class="text-primary hover:text-primary-focus inline-flex shrink-0 items-center gap-1 font-bold transition-colors"
-                                >
-                                    <span>{{ __('user.home.login_action') }}</span>
-                                    <x-ts-icon name="arrow-right" class="size-3.5" />
-                                </a>
-                            </div>
-                        @endif
-                    </div>
+                        </div>
+                    @endif
                 </div>
 
                 {{-- Login Card --}}
                 <div class="bg-base-100 border-base-content/10 hover:border-base-content/20 flex flex-col justify-between rounded-lg border p-5 shadow-xs transition-all duration-300 hover:shadow-md sm:p-6 lg:p-7">
                     <div class="flex w-full flex-col">
-                        {{-- Top Bar: Identity & Portal Tag --}}
-                        <div class="border-base-content/10 flex items-center justify-between gap-3 border-b pb-3.5">
-                            <div class="flex items-center gap-2.5">
-                                <div class="border-base-content/10 bg-base-200/70 text-base-content/75 flex size-10 shrink-0 items-center justify-center rounded-md border shadow-2xs">
-                                    <x-ts-icon name="arrow-right-on-rectangle" class="size-5" />
-                                </div>
-                                <div>
-                                    <span class="text-base-content/50 block text-[10px] font-semibold tracking-wider uppercase">
-                                        {{ __('user.home.portal_badge') }}
-                                    </span>
-                                    <h2 class="text-base-content text-base font-bold sm:text-lg">
-                                        {{ __('user.home.login_title') }}
-                                    </h2>
-                                </div>
-                            </div>
-
-                            <span class="border-base-content/10 bg-base-200/50 text-base-content/60 rounded-sm border px-2 py-0.5 font-mono text-[11px] font-medium">
-                                {{ __('user.home.portal_auth_type') }}
-                            </span>
+                        <div class="border-base-content/10 bg-base-200/70 text-base-content/75 flex size-12 shrink-0 items-center justify-center rounded-md border shadow-2xs">
+                            <x-ts-icon name="arrow-right-on-rectangle" class="size-6" />
                         </div>
 
-                        {{-- Main Description --}}
-                        <p class="text-base-content/65 pt-3.5 text-xs leading-relaxed sm:text-sm">
-                            {{ __('user.home.login_desc') }}
-                        </p>
-
-                        {{-- Role Badges Guidance --}}
-                        <div class="mt-4 mb-2 space-y-2">
-                            <p class="text-base-content/50 text-[10px] font-semibold tracking-wider uppercase">
-                                {{ __('user.home.accessible_by') }}:
+                        <div class="mt-3.5 w-full text-left sm:mt-4">
+                            <h2 class="text-base-content text-base font-bold sm:text-lg lg:text-xl">
+                                {{ __('user.home.login_title') }}
+                            </h2>
+                            <p class="text-base-content/65 mt-1 text-xs leading-relaxed sm:text-sm">
+                                {{ __('user.home.login_desc') }}
                             </p>
-                            <div class="flex flex-wrap gap-1.5">
-                                <span class="border-base-content/10 bg-base-200/50 text-base-content/70 rounded-md border px-2 py-1 text-[11px] font-medium">
-                                    {{ __('user.home.role_student') }}
-                                </span>
-                                <span class="border-base-content/10 bg-base-200/50 text-base-content/70 rounded-md border px-2 py-1 text-[11px] font-medium">
-                                    {{ __('user.home.role_teacher') }}
-                                </span>
-                                <span class="border-base-content/10 bg-base-200/50 text-base-content/70 rounded-md border px-2 py-1 text-[11px] font-medium">
-                                    {{ __('user.home.role_partner') }}
-                                </span>
-                                <span class="border-base-content/10 bg-base-200/50 text-base-content/70 rounded-md border px-2 py-1 text-[11px] font-medium">
-                                    {{ __('user.home.role_admin') }}
-                                </span>
-                            </div>
                         </div>
                     </div>
 

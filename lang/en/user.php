@@ -281,7 +281,6 @@ return [
         'registration_closed_desc' => 'Registration for this period has ended. Please contact your school coordinator for further assistance.',
         'registration_unavailable' => 'No Open Registrations',
         'registration_unavailable_desc' => 'There is currently no open internship registration. Please check back later or contact your school coordinator.',
-        'registration_not_open_help' => 'Already registered before? Sign in to your account.',
         'login_title' => 'Account Sign In',
         'login_desc' => 'Sign in to your account to record daily journals, attendance records, mentoring notes, or manage internship data.',
         'login_action' => 'Sign In',
@@ -300,13 +299,6 @@ return [
         'step_1' => 'Complete profile & account application',
         'step_2' => 'Select internship program & partner',
         'step_3' => 'School verification & commence internship',
-        'portal_badge' => 'Portal Access',
-        'portal_auth_type' => 'Registered Account',
-        'accessible_by' => 'Accessible by',
-        'role_student' => 'Student',
-        'role_teacher' => 'Teacher / Mentor',
-        'role_partner' => 'Industry Supervisor',
-        'role_admin' => 'School Admin',
     ],
 
     'user_management' => [
