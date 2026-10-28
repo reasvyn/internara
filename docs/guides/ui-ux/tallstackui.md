@@ -964,20 +964,36 @@ TallStackUI uses Heroicons by default:
 
 ### Soft Customization
 
-Use the "Customize" button in TallStackUI docs to reveal named blocks:
+Soft Customization replaces named block classes inside a component, so the override applies
+everywhere that component renders — no per-view markup override and no CSS `@apply`. Blocks are
+declared in `app/Providers/AppServiceProvider::boot()`:
 
-```css
-/* Customize input base */
-.input.base {
-    @apply border-gray-300 focus:ring-blue-500;
-}
-
-/* Customize button sizes */
-.wrapper.sizes.sm {
-    @apply px-3 py-1.5 text-sm;
-}
+```php
+// app/Providers/AppServiceProvider.php
+TallStackUi::customize()
+    ->sideBar('item')
+    ->block('item.state.current')
+    ->replace('bg-primary-50', 'bg-primary/10')
+    ->and()
+    ->form('input')
+    ->block('input.base')
+    ->replace('border-gray-300', 'border-base-300')
+    ->replace('focus:ring-blue-500', 'focus:ring-primary');
 
 ```
+
+Rules:
+
+- Replace with **semantic tokens** (`bg-primary/10`, `border-base-300`, `text-base-content`), never
+  raw palette classes (`gray-300`, `blue-500`) — the palette is runtime-configurable.
+- The factory method is per family, not per component: form controls go through
+  `form('input'|'select'|'textarea'|'toggle'|…)`, wrappers through `wrapper('input')`, so
+  `->input()` does not exist.
+- The block name (`input.base`, `item.state.current`, …) comes from the **Customize** button beside
+  each component in the TallStackUI docs; a wrong block name fails silently.
+- Keep the `customize()` chains grouped in `AppServiceProvider` — never scatter overrides across
+  providers or views.
+- Never use `TallStackUi::personalize()`: that is the TallStackUI v2 API and no longer exists.
 
 ### Color Classes
 

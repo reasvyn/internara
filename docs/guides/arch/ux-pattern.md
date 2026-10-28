@@ -51,11 +51,11 @@ Runtime branding: `Theme::cssVariables()` generates inline `<style>` in `ui::lay
 @theme {
   --color-base-100: #ffffff;
   --color-primary: #059669; /* overridden at runtime by Theme::cssVariables() */
-  --color-info: oklch(60% 0.55 250);
+  --color-info: oklch(60% 0.16 250);
   --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
 }
 [data-theme='dark'] {
-  --color-info: oklch(70% 0.38 250);
+  --color-info: oklch(70% 0.14 250);
 }
 
 ```

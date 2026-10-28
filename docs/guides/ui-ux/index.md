@@ -67,18 +67,19 @@ Complete documentation for Internara's UI system, built on the TALL stack:
 ```
 resources/
 ├── css/
-│   └── app.css                    # Tailwind imports + @theme configuration
+│   └── app.css                    # Tailwind imports, @theme tokens, DaisyUI shims
+├── fonts/                         # Self-hosted Instrument Sans 400/500/600/700 (+ OFL.txt)
 ├── js/
-│   └── app.js                     # Alpine.js + Livewire initialization
+│   └── app.js                     # Alpine.js + Livewire init, theme/locale wiring
 └── views/
-    ├── components/                # Blade components (TallStackUI + custom)
-    │   └── ui/                    # Custom UI components
-    ├── layouts/                   # App layouts
-    │   └── app.blade.php          # Main layout (includes tallstackui:script)
-    └── {module}/                  # Module-specific views
+    ├── ui/
+    │   ├── layouts/               # Shell: app, base (+base/head, base/footer), guest, header, sidebar
+    │   ├── components/            # 34 design-system primitives (x-ui::components.*)
+    │   └── widgets/               # 6 composable widgets (x-ui::widgets.*)
+    └── {module}/                  # Module views (+ components/, layouts/)
 
-app/Modules/{Module}/Livewire/     # Livewire components per module
-
+app/Modules/UI/Livewire/           # Livewire base classes (BaseRecordManager, BaseWizard, …)
+app/Modules/{Module}/Domain/{Domain}/Livewire/  # Business Livewire components
 ```
 
 ### Key Conventions
@@ -88,7 +89,7 @@ app/Modules/{Module}/Livewire/     # Livewire components per module
 - **Tailwind config**: CSS-first via `@theme` in `app.css` — v4 standard, no `tailwind.config.js`
 - **Dark mode**: Class-based: `@custom-variant dark` — user-controllable theme toggle
 - **Component size**: `xs`, `sm`, `md` (default), `lg`, `xl` — consistent across TallStackUI
-- **Component color**: `primary` (default), `secondary`, `red`, etc. — Tailwind palette integration
+- **Component color**: semantic variants only — `primary`, `secondary`, `tertiary`, `accent`, `muted`, `ghost`, `neutral`, `info`, `success`, `warning`, `error`. Never Tailwind palette utilities (`bg-red-500`) or arbitrary hex (`bg-[#059669]`)
 
 ---
 
@@ -117,16 +118,18 @@ php artisan vendor:publish --tag=tallstackui.config
 ### CSS Configuration (`resources/css/app.css`)
 
 ```css
-@import "tailwindcss";
+@import 'tailwindcss';
 @import '../../vendor/tallstackui/tallstackui/css/v4.css';
+@import 'flag-icons/css/flag-icons.min.css';
 
-@plugin '@tailwindcss/forms';
-
-@source '../../vendor/tallstackui/tallstackui/**/*.php';
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../vendor/tallstackui/tallstackui/**/*.php';
 
 ```
+
+No `@plugin` line: form styling comes from the TallStackUI v4 CSS import above, not from
+`@tailwindcss/forms`.
 
 ### Layout Setup (`resources/views/ui/layouts/base.blade.php`)
 
@@ -137,19 +140,32 @@ Internara ships the HTML shell as the `ui` view namespace, so a module layout ex
 {{-- resources/views/ui/layouts/base.blade.php --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
-      data-theme="{{ request()->cookie('theme', setting('default_theme', 'system')) }}">
+      data-theme="{{ request()->cookie('theme', setting('default_theme', 'system')) }}"
+      @if (request()->cookie('theme', setting('default_theme', 'system')) === 'dark') class="dark" @endif>
 <head>
     <x-ui::layouts.base.head :$title />
+
+    {{-- Theme::cssVariables() injected as scoped CSS custom properties --}}
+    <style>
+        html[data-theme='light'], html:not(.dark):not([data-theme='dark']) { /* light vars */ }
+        html[data-theme='dark'], html.dark { /* dark vars */ }
+    </style>
+
     @livewireStyles
-    {{-- Theme::cssVariables() injected as CSS custom properties --}}
 </head>
 <body class="{{ $bodyClass }}">
+    <a href="#main-content" class="sr-only focus:not-sr-only …">{{ __('common.skip_to_content') }}</a>
     {{ $slot }}
+    <x-ts-toast />
+    <x-ts-dialog />
     @livewireScripts
 </body>
 </html>
 
 ```
+
+`ui::layouts.base.head` carries the asset order that matters: `<tallstackui:script />` **before**
+`@vite(['resources/css/app.css', 'resources/js/app.js'])`.
 
 ---
 
@@ -157,22 +173,40 @@ Internara ships the HTML shell as the `ui` view namespace, so a module layout ex
 
 ### Color Palette
 
-Internara uses Tailwind's default palette with semantic aliases:
+Internara ships a **self-hosted semantic palette** (no DaisyUI plugin, no Tailwind-default colour
+dependency). `resources/css/app.css` is the single source of truth; the values below mirror it —
+never copy from this page into the CSS.
 
 ```css
 @theme {
-  /* Brand colors */
-  --color-primary: oklch(0.65 0.20 250);
-  --color-secondary: oklch(0.70 0.15 160);
+  /* Surfaces */
+  --color-base-100: #ffffff;
+  --color-base-200: #f4f4f5;
+  --color-base-300: #e4e4e7;
+  --color-base-content: #1a1a1a;
 
-  /* Semantic aliases */
-  --color-success: var(--color-green-500);
-  --color-warning: var(--color-amber-500);
-  --color-danger: var(--color-red-500);
-  --color-info: var(--color-sky-500);
+  /* Brand — overridden at runtime by Theme::cssVariables() */
+  --color-primary: #059669;
+  --color-secondary: #6b7280;
+  --color-accent: #f97316;
+
+  /* Status (oklch, chroma kept under ~0.2 to stay in sRGB gamut) */
+  --color-info: oklch(60% 0.16 250);
+  --color-success: oklch(58% 0.15 150);
+  --color-warning: oklch(75% 0.15 80);
+  --color-error: oklch(57% 0.19 25);
 }
 
 ```
+
+The error variant is `--color-error` (there is no `--color-danger` token; `.btn-danger` exists only
+as a legacy class alias). Runtime brand overrides are injected as inline `<style>` by
+`Theme::cssVariables()`, scoped to `html[data-theme='light']` / `html[data-theme='dark']`.
+
+See [Design System §3](./design-system.md#3-theme-system--color-schema) for the resolution chain,
+presets, and dark-mode computation. For the semantic meaning of each variant (`primary`,
+`secondary`, `accent`, `muted`, `ghost`, `info`, `success`, `warning`, `error`), see
+[§3.1](./design-system.md#31-user-oriented-semantic-variant-architecture).
 
 ### Typography
 

@@ -248,10 +248,15 @@ Non-branded status/neutral colors are **statically defined** in `@theme` and ove
 | Token | Light | Dark |
 | ----- | ----- | ---- |
 | `--color-neutral` | `oklch(50% 0 0)` | `oklch(30% 0 0)` |
-| `--color-info` | `oklch(60% 0.55 250)` | `oklch(70% 0.38 250)` |
-| `--color-success` | `oklch(55% 0.58 150)` | `oklch(65% 0.42 150)` |
-| `--color-warning` | `oklch(70% 0.6 80)` | `oklch(75% 0.45 80)` |
-| `--color-error` | `oklch(55% 0.5 25)` | `oklch(65% 0.38 25)` |
+| `--color-info` | `oklch(60% 0.16 250)` | `oklch(70% 0.14 250)` |
+| `--color-success` | `oklch(58% 0.15 150)` | `oklch(70% 0.14 150)` |
+| `--color-warning` | `oklch(75% 0.15 80)` | `oklch(80% 0.14 80)` |
+| `--color-error` | `oklch(57% 0.19 25)` | `oklch(66% 0.17 25)` |
+
+Chroma stays below ~0.2: values above that leave the sRGB gamut and the browser clamps them to the
+nearest primary, which is what previously made status badges and funnel bars read as neon
+(`resources/css/app.css` carries the same note). `resources/css/app.css` is the single source of
+truth for these numbers — treat this table as a mirror, never as the value to copy from.
 
 Each status token also ships a `-content` counterpart (e.g. `--color-success-content`) that flips
 between white and near-black in dark mode. These are pre-validated for WCAG contrast — never override

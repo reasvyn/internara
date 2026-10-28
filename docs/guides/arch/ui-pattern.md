@@ -2,7 +2,7 @@
 
 ## Description
 
-This pattern governs how Internara builds **elegant, modern, and responsive** user interfaces. It distills global industry standards — Google Material Design 3, Apple Human Interface Guidelines (HIG), W3C Design Tokens Community Group (DTCG), WCAG 2.2, MDN Responsive Design, and Tailwind CSS v4 doctrine — into actionable rules tied to the project's actual stack: Tailwind CSS v4.3 (CSS-first, no `tailwind.config.js`), TallStackUI v4.3 (`x-ts-*`, prefix `ts-`), Vite 8.1 + `laravel-vite-plugin`, Livewire 4.3, Alpine.js, and self-hosted Instrument Sans.
+This pattern governs how Internara builds **elegant, modern, and responsive** user interfaces. It distills global industry standards — Google Material Design 3, Apple Human Interface Guidelines (HIG), W3C Design Tokens Community Group (DTCG), WCAG 2.2, MDN Responsive Design, and Tailwind CSS v4 doctrine — into actionable rules tied to the project's actual stack: Tailwind CSS v4 (CSS-first, no `tailwind.config.js`), TallStackUI v4 (`x-ts-*`, prefix `ts-`), Vite 8 + `laravel-vite-plugin`, Livewire 4, Alpine.js 3, and self-hosted Instrument Sans.
 
 Without it, UIs drift into arbitrary hex values, inconsistent spacing, desktop-only layouts, shadow sprawl, and slow asset delivery. With it, every screen is token-driven, mobile-first, accessible by construction, and performant.
 
@@ -162,7 +162,7 @@ Tailwind v4 doctrine: **CSS is the config.** No `tailwind.config.js` exists nor 
 | **Semantic (purpose)** | Intent, not value | `@theme` semantic + `Theme::cssVariables()` runtime | `--color-primary` → `bg-primary`, `text-primary-content`; `base-100` → `bg-base-100` |
 | **Component (variant)** | Component API | TallStackUI props + `@layer components` shims | `<x-ts-button color="primary">`, `.btn-primary` |
 
-What components MUST use: semantic tokens (`bg-primary`, `text-success`, `border-warning`, `bg-info/10`, `bg-base-100`). Generates via `@theme` → utilities (`bg-*`, `text-*`, `border-*`, `fill-*`). OKLCH for semantic colors (`oklch(60% 0.55 250)`) gives perceptually even scales and safe `color-mix()` tints.
+What components MUST use: semantic tokens (`bg-primary`, `text-success`, `border-warning`, `bg-info/10`, `bg-base-100`). Generates via `@theme` → utilities (`bg-*`, `text-*`, `border-*`, `fill-*`). OKLCH for semantic colors (`oklch(60% 0.16 250)`) gives perceptually even scales and safe `color-mix()` tints — keep chroma under ~0.2 so the value stays inside the sRGB gamut instead of being clamped to the nearest primary.
 
 **Theming bridge:** `app/Modules/Setting/Domain/Theme/Support/Theme.php::cssVariables()` injects inline `<style>` scoped to `html[data-theme='light']` / `html[data-theme='dark']` (light brand → 40% `Color::lighten()` for dark, base → `Color::computeDarkShades()` returns fixed black shades `#262626/#171717/#0a0a0a`). Components consume `var(--color-primary)` — never `brand('primary')` in CSS. `brand()` is for JS/meta only. New token requires entries in both `light` and `dark` scopes and `Color::isValid()` validation.
 

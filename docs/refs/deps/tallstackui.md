@@ -25,7 +25,7 @@ all Internara views.
 |---------|-----------|
 | **`x-ts-*` components** | Prefixed Blade components (`<x-ts-button>`, `<x-ts-input/>`, `<x-ts-table/>`) — consistent API across the app instead of hand-rolled markup |
 | **Interactions** | Built-in client-side behaviors (color transitions, loading states, enter/leave animations) activated via attributes — no custom JS needed |
-| **Personalization** | Component styling customized centrally (theme classes per variant) rather than overriding markup per view |
+| **Soft Customization** | Component styling customized centrally via `TallStackUi::customize()` (per-component block class replacement) rather than overriding markup per view |
 | **Form integration** | Inputs bind natively to Livewire properties (`wire:model` compatible) |
 
 ---
@@ -35,10 +35,12 @@ all Internara views.
 - Standard component vocabulary for every module view — forms, tables, modals, notifications
 - Theming aligned with the self-hosted design system ([`ui-ux/design-system.md`](../../guides/ui-ux/design-system.md),
   [`foundation/branding.md`](../../guides/branding.md))
-- Component conventions and interaction rules documented in the `tallstackui-development`
-  skill
+- Component conventions and interaction rules documented in
+  [`guides/arch/ui-pattern.md`](../../guides/arch/ui-pattern.md) §7 and the usage guide
+  [`guides/ui-ux/tallstackui.md`](../../guides/ui-ux/tallstackui.md); overrides live in
+  `app/Providers/AppServiceProvider.php` (`TallStackUi::customize()…`)
 
 ## Quick References
 
-- [Official docs](https://tallstackui.com/docs) — component reference and personalization guide
+- [Official docs](https://tallstackui.com/docs) — component reference and customization guide
 - [`docs/guides/ui-ux/design-system.md`](../../guides/ui-ux/design-system.md) — design system context
