@@ -22,7 +22,7 @@ class PlacementChangeRequestPolicy extends BasePolicy
 
     public function create(User $user): bool
     {
-        return $this->isStudent($user);
+        return $this->isAdmin($user);
     }
 
     public function update(User $user, PlacementChangeRequest $request): bool

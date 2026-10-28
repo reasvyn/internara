@@ -23,7 +23,7 @@ applications, and registration document uploads.
 | `Domain/Placement/Actions/DeletePlacementAction.php` | `DeletePlacementAction` | `BaseCommandAction` |
 | `Domain/Placement/Actions/DirectPlacementAction.php` | `DirectPlacementAction` | `BaseCommandAction` |
 | `Domain/Placement/Actions/RejectPlacementChangeAction.php` | `RejectPlacementChangeAction` | `BaseCommandAction` |
-| `Domain/Placement/Actions/RequestPlacementChangeAction.php` | `RequestPlacementChangeAction` | `BaseCommandAction` |
+| `Domain/Placement/Actions/RelocateStudentAction.php` | `RelocateStudentAction` | `BaseCommandAction` |
 | `Domain/Placement/Actions/UpdatePlacementAction.php` | `UpdatePlacementAction` | `BaseCommandAction` |
 | `Domain/Registration/Actions/ReadRegistrationAvailabilityAction.php` | `ReadRegistrationAvailabilityAction` | `BaseReadAction` |
 | `Domain/Registration/Actions/RegisterInternshipAction.php` | `RegisterInternshipAction` | `BaseCommandAction` |
@@ -46,6 +46,7 @@ applications, and registration document uploads.
 | File | Class | Extends |
 |---|---|---|
 | `Domain/AccountApplication/Data/RejectAccountApplicationData.php` | `RejectAccountApplicationData` | `BaseData` |
+| `Domain/Placement/Data/RelocateStudentData.php` | `RelocateStudentData` | `BaseData` |
 | `Domain/Registration/Data/RejectRegistrationData.php` | `RejectRegistrationData` | `BaseData` |
 | `Domain/Registration/Data/RegistrationData.php` | `RegistrationData` | `BaseData` |
 | `Domain/Registration/Data/VerifyRegistrationData.php` | `VerifyRegistrationData` | — |
@@ -96,7 +97,6 @@ applications, and registration document uploads.
 | `Domain/Placement/Livewire/Forms/PlacementForm.php` | `PlacementForm` | `Form` |
 | `Domain/Placement/Livewire/PlacementChangeManager.php` | `PlacementChangeManager` | `BaseRecordManager` |
 | `Domain/Placement/Livewire/PlacementIndex.php` | `PlacementIndex` | `BaseRecordManager` |
-| `Domain/Placement/Livewire/StudentPlacementChangeRequest.php` | `StudentPlacementChangeRequest` | `BaseFormView` |
 | `Domain/Registration/Livewire/Forms/RegistrationWizardForm.php` | `RegistrationWizardForm` | `Form` |
 | `Domain/Registration/Livewire/RegistrationCenter.php` | `RegistrationCenter` | `Component` |
 | `Domain/Registration/Livewire/RegistrationDocumentUpload.php` | `RegistrationDocumentUpload` | `BaseFormView` |
@@ -116,7 +116,7 @@ applications, and registration document uploads.
 ## Routes
 
 File: `routes/web/enrollment.php` Named routes: `apply`, `registration.center`,
-`registration.wizard`, `registration.documents`, `student.internships.placement-change`,
+`registration.wizard`, `registration.documents`,
 `enrollment.internships.registrations.pending`, `enrollment.internships.placements`,
 `enrollment.internships.placements.direct`, `enrollment.internships.placements.changes`
 

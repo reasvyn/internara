@@ -6,7 +6,6 @@ use App\Modules\Enrollment\Domain\AccountApplication\Livewire\ApplyPage;
 use App\Modules\Enrollment\Domain\Placement\Livewire\DirectPlacementManager;
 use App\Modules\Enrollment\Domain\Placement\Livewire\PlacementChangeManager;
 use App\Modules\Enrollment\Domain\Placement\Livewire\PlacementIndex;
-use App\Modules\Enrollment\Domain\Placement\Livewire\StudentPlacementChangeRequest;
 use App\Modules\Enrollment\Domain\Registration\Livewire\RegistrationCenter;
 use App\Modules\Enrollment\Domain\Registration\Livewire\RegistrationDocumentUpload;
 use App\Modules\Enrollment\Domain\Registration\Livewire\RegistrationVerification;
@@ -23,16 +22,6 @@ Route::middleware('auth')->group(function () {
         'registration.documents',
     );
 });
-
-Route::prefix('student')
-    ->name('student.')
-    ->middleware(['auth', 'role:student'])
-    ->group(function () {
-        Route::livewire(
-            '/internships/placement-change',
-            StudentPlacementChangeRequest::class,
-        )->name('internships.placement-change');
-    });
 
 Route::prefix('admin')
     ->name('enrollment.')

@@ -44,11 +44,16 @@ describe('J9GBH: PlacementChangeRequestPolicy', function () {
         expect(Gate::allows('view', $request))->toBeFalse();
     });
 
-    test('J9GBH-FR-PLACE-021: student-only create', function () {
+    test('J9GBH-FR-PLACE-021: admin-only create', function () {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+        expect(Gate::allows('create', PlacementChangeRequest::class))->toBeTrue();
+
         $student = User::factory()->create();
         $student->assignRole('student');
         $this->actingAs($student);
-        expect(Gate::allows('create', PlacementChangeRequest::class))->toBeTrue();
+        expect(Gate::allows('create', PlacementChangeRequest::class))->toBeFalse();
 
         $teacher = User::factory()->create();
         $teacher->assignRole('teacher');

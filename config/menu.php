@@ -229,11 +229,7 @@ return [
                     'icon' => 'o-exclamation-triangle',
                     'label' => 'common.sidebar.report_incident',
                 ],
-                [
-                    'route' => 'student.internships.placement-change',
-                    'icon' => 'o-arrows-right-left',
-                    'label' => 'common.sidebar.request_placement_change',
-                ],
+
                 [
                     'route' => 'student.certificates',
                     'icon' => 'o-document-check',

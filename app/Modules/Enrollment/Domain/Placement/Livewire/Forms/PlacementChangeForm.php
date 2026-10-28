@@ -8,6 +8,8 @@ use Livewire\Form;
 
 class PlacementChangeForm extends Form
 {
+    public string $registration_id = '';
+
     public string $to_placement_id = '';
 
     public string $reason = '';
@@ -15,8 +17,9 @@ class PlacementChangeForm extends Form
     public function rules(): array
     {
         return [
+            'registration_id' => ['required', 'exists:registrations,id'],
             'to_placement_id' => ['required', 'exists:placements,id'],
-            'reason' => ['required', 'string', 'min:20', 'max:2000'],
+            'reason' => ['required', 'string', 'min:5', 'max:2000'],
         ];
     }
 }

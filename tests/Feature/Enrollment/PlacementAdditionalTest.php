@@ -6,12 +6,10 @@ use App\Modules\Enrollment\Domain\Placement\Actions\DirectPlacementAction;
 use App\Modules\Enrollment\Domain\Placement\Actions\RejectPlacementChangeAction;
 use App\Modules\Enrollment\Domain\Placement\Livewire\DirectPlacementManager;
 use App\Modules\Enrollment\Domain\Placement\Livewire\PlacementChangeManager;
-use App\Modules\Enrollment\Domain\Placement\Livewire\StudentPlacementChangeRequest;
 use App\Modules\Enrollment\Domain\Placement\Models\Placement;
 use App\Modules\Enrollment\Domain\Placement\Models\PlacementChangeRequest;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Program\Domain\Internship\Models\Internship;
-use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroupMember;
 use App\Modules\User\Domain\Mentor\Entities\MentorEntity;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
@@ -148,24 +146,43 @@ test('J9GBH-FR-PLACE-019: change manager can open and close the rejection modal'
         ->assertSet('showRejectModal', false);
 });
 
-test('J9GBH-FR-PLACE-020: student change page has no registration when student is unplaced', function (): void {
-    $student = additionalPlacementStudent();
-    $this->actingAs($student);
+test('J9GBH-FR-PLACE-020: placement change manager excludes full same-internship targets', function (): void {
+    $this->actingAs(additionalPlacementAdmin());
+    $internship = Internship::factory()->create();
+    $current = Placement::factory()->create(['internship_id' => $internship->id, 'quota' => 2, 'filled_quota' => 1]);
+    $full = Placement::factory()->create(['internship_id' => $internship->id, 'quota' => 1, 'filled_quota' => 1]);
+    $available = Placement::factory()->create(['internship_id' => $internship->id, 'quota' => 2, 'filled_quota' => 0]);
+    $registration = Registration::factory()->create(['internship_id' => $internship->id, 'placement_id' => $current->id, 'status' => 'active']);
 
-    Livewire::test(StudentPlacementChangeRequest::class)->assertSet('registrationId', null);
+    $component = Livewire::test(PlacementChangeManager::class)
+        ->set('form.registration_id', $registration->id);
+
+    expect($component->get('targetPlacements')->pluck('id'))
+        ->toContain($available->id)
+        ->not->toContain($full->id)
+        ->not->toContain($current->id);
 });
 
-test('J9GBH-FR-PLACE-020: student change page excludes full same-internship targets', function (): void {
-    $student = additionalPlacementStudent();
+test('J9GBH-DD-PLACE-004: placement change manager validates and executes direct relocation', function (): void {
+    $admin = additionalPlacementAdmin();
+    $this->actingAs($admin);
     $internship = Internship::factory()->create();
-    $current = Placement::factory()->create(['internship_id' => $internship->id]);
-    $full = Placement::factory()->create(['internship_id' => $internship->id, 'quota' => 1, 'filled_quota' => 1]);
-    $registration = Registration::factory()->create(['student_id' => $student->id, 'internship_id' => $internship->id, 'placement_id' => $current->id, 'status' => 'active']);
-    InternshipGroupMember::factory()->create(['registration_id' => $registration->id, 'user_id' => $student->id]);
-    $this->actingAs($student);
+    $current = Placement::factory()->create(['internship_id' => $internship->id, 'quota' => 2, 'filled_quota' => 1]);
+    $target = Placement::factory()->create(['internship_id' => $internship->id, 'quota' => 2, 'filled_quota' => 0]);
+    $registration = Registration::factory()->create(['internship_id' => $internship->id, 'placement_id' => $current->id, 'status' => 'active']);
 
-    expect(Livewire::test(StudentPlacementChangeRequest::class)->viewData('availablePlacements')->pluck('id'))
-        ->not->toContain($full->id);
+    Livewire::test(PlacementChangeManager::class)
+        ->call('openRelocateModal')
+        ->assertSet('showRelocateModal', true)
+        ->set('form.registration_id', $registration->id)
+        ->set('form.to_placement_id', $target->id)
+        ->set('form.reason', 'Official offline relocation request from student')
+        ->call('relocate')
+        ->assertSet('showRelocateModal', false);
+
+    expect($registration->fresh()->placement_id)->toBe($target->id)
+        ->and($current->fresh()->filled_quota)->toBe(0)
+        ->and($target->fresh()->filled_quota)->toBe(1);
 });
 
 test('J9GBH-FR-PLACE-029: rejection writes a user-facing rejection reason', function (): void {
@@ -194,11 +211,11 @@ test('J9GBH-FR-PLACE-021: only admins can review a change request', function ():
     Livewire::test(PlacementChangeManager::class)->assertForbidden();
 });
 
-test('J9GBH-FR-PLACE-021: only students can open the student change request page', function (): void {
-    $admin = additionalPlacementAdmin();
-    $this->actingAs($admin);
+test('J9GBH-FR-PLACE-021: student self-service change page is decommissioned', function (): void {
+    $student = additionalPlacementStudent();
+    $this->actingAs($student);
 
-    Livewire::test(StudentPlacementChangeRequest::class)->assertForbidden();
+    $this->get('/student/internships/placement-change')->assertNotFound();
 });
 
 test('J9GBH-DD-PLACE-001: direct placement updates registration and quota together', function (): void {

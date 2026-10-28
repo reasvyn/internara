@@ -160,6 +160,7 @@ return [
     'placement_change_approved' => 'Placement change request has been approved.',
     'placement_change_rejected' => 'Placement change request has been rejected.',
     'placement_change_requested' => 'A placement change has been requested.',
+    'placement_student_relocated' => 'Student has been relocated to a new placement.',
     'placement_created' => 'Placement slot has been created.',
     'placement_deleted' => 'Placement slot has been deleted.',
     'placement_updated' => 'Placement slot has been updated.',

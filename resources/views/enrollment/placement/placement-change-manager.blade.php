@@ -1,4 +1,14 @@
 <x-ui::components.record-manager :title="__('placement_change.title')" :subtitle="__('placement_change.subtitle')">
+    <x-slot:headerActions>
+        <x-ts-button
+            :text="__('placement_change.relocate_student')"
+            icon="arrows-right-left"
+            color="primary"
+            sm
+            wire:click="openRelocateModal"
+        />
+    </x-slot:headerActions>
+
     <x-slot:filters>
         <x-ts-select.native
             wire:model.live="filters.status"
@@ -72,6 +82,69 @@
     </div>
 
     <x-slot:modal>
+        <x-ts-modal wire="showRelocateModal" :title="__('placement_change.relocate_modal_title')" blur>
+            <form wire:submit="relocate" class="space-y-4">
+                <p class="text-base-content/60 text-xs">{{ __('placement_change.relocate_modal_subtitle') }}</p>
+
+                <x-ts-select.styled
+                    :label="__('placement_change.select_student')"
+                    wire:model.live="form.registration_id"
+                    :options="$this->activeRegistrations->map(fn ($r) => ['label' => ($r->student?->name ?? '—').' ('.($r->placement?->company?->name ?? '—').')', 'value' => $r->id])->values()->all()"
+                    select="label:label|value:value"
+                    :placeholder="__('placement_change.student_placeholder')"
+                    searchable
+                    required
+                />
+
+                @if ($this->selectedRegistration)
+                    <div class="bg-base-200/50 space-y-1 rounded-xl p-3 text-xs">
+                        <div class="text-base-content/60">{{ __('placement_change.current_placement') }}:</div>
+                        <div class="text-base-content font-medium">
+                            {{ $this->selectedRegistration->placement?->company?->name ?? '—' }} ({{ $this->selectedRegistration->placement?->name ?? '—' }})
+                        </div>
+                        <div class="text-base-content/50 text-[11px]">
+                            {{ __('placement.batch') }}: {{ $this->selectedRegistration->internship?->name ?? '—' }}
+                        </div>
+                    </div>
+
+                    <x-ts-select.styled
+                        :label="__('placement_change.target_placement')"
+                        wire:model="form.to_placement_id"
+                        :options="$this->targetPlacements->map(fn ($p) => ['label' => ($p->company?->name ?? '—').' - '.$p->name.' ('.__('placement.stats.available').': '.$p->availableSlots().')', 'value' => $p->id])->values()->all()"
+                        select="label:label|value:value"
+                        :placeholder="__('placement_change.target_placeholder')"
+                        searchable
+                        required
+                    />
+                @endif
+
+                <x-ts-textarea
+                    :label="__('placement_change.offline_reason')"
+                    wire:model="form.reason"
+                    :placeholder="__('placement_change.offline_reason_placeholder')"
+                    rows="3"
+                    required
+                />
+
+                <div class="mt-6 flex justify-end gap-2">
+                    <x-ts-button
+                        :text="__('common.actions.cancel')"
+                        wire:click="$set('showRelocateModal', false)"
+                        color="slate"
+                        outline
+                        sm
+                    />
+                    <x-ts-button
+                        :text="__('placement_change.relocate_submit')"
+                        color="primary"
+                        sm
+                        type="submit"
+                        loading="relocate"
+                    />
+                </div>
+            </form>
+        </x-ts-modal>
+
         <x-ts-modal wire="showRejectModal" :title="__('placement_change.reject_title')" blur>
             <form wire:submit="reject">
                 <x-ts-textarea :label="__('placement_change.rejection_reason')" wire:model="rejectionReason" rows="3" />

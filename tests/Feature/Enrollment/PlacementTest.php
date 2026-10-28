@@ -8,13 +8,14 @@ use App\Modules\Enrollment\Domain\Placement\Actions\CreatePlacementAction;
 use App\Modules\Enrollment\Domain\Placement\Actions\DeletePlacementAction;
 use App\Modules\Enrollment\Domain\Placement\Actions\DirectPlacementAction;
 use App\Modules\Enrollment\Domain\Placement\Actions\RejectPlacementChangeAction;
-use App\Modules\Enrollment\Domain\Placement\Actions\RequestPlacementChangeAction;
+use App\Modules\Enrollment\Domain\Placement\Actions\RelocateStudentAction;
 use App\Modules\Enrollment\Domain\Placement\Actions\UpdatePlacementAction;
+use App\Modules\Enrollment\Domain\Placement\Data\RelocateStudentData;
 use App\Modules\Enrollment\Domain\Placement\Entities\PlacementCapacity;
 use App\Modules\Enrollment\Domain\Placement\Entities\PlacementState;
 use App\Modules\Enrollment\Domain\Placement\Enums\PlacementChangeStatus;
+use App\Modules\Enrollment\Domain\Placement\Livewire\PlacementChangeManager;
 use App\Modules\Enrollment\Domain\Placement\Livewire\PlacementIndex;
-use App\Modules\Enrollment\Domain\Placement\Livewire\StudentPlacementChangeRequest;
 use App\Modules\Enrollment\Domain\Placement\Models\Placement;
 use App\Modules\Enrollment\Domain\Placement\Models\PlacementChangeRequest;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
@@ -162,23 +163,29 @@ describe('J9GBH: placements', function (): void {
             ->and(PlacementChangeStatus::PENDING->label())->not->toBe('');
     });
 
-    test('J9GBH-FR-PLACE-015: a second pending request for one registration is refused (also UC-PLACE-001)', function (): void {
+    test('J9GBH-FR-PLACE-015: relocate student action atomically transfers quota and repoints registration (also UC-PLACE-001, DD-PLACE-004)', function (): void {
         $admin = j9gbhAdmin($this);
         $placement = j9gbhPlacement();
-        $target = j9gbhPlacement();
-        $registration = Registration::factory()->create(['placement_id' => $placement->id, 'status' => 'active']);
-
-        app(RequestPlacementChangeAction::class)->execute($registration, [
-            'to_placement_id' => $target->id,
-            'reason' => 'Closer to home',
-            'requested_by' => $admin->id,
+        $target = Placement::factory()->create(['internship_id' => $placement->internship_id, 'quota' => 5, 'filled_quota' => 0]);
+        $placement->update(['quota' => 5, 'filled_quota' => 1]);
+        $registration = Registration::factory()->create([
+            'internship_id' => $placement->internship_id,
+            'placement_id' => $placement->id,
+            'status' => 'active',
         ]);
 
-        expect(fn () => app(RequestPlacementChangeAction::class)->execute($registration, [
-            'to_placement_id' => $target->id,
-            'reason' => 'Again',
-            'requested_by' => $admin->id,
-        ]))->toThrow(RejectedException::class);
+        $changeRecord = app(RelocateStudentAction::class)->execute(new RelocateStudentData(
+            registrationId: $registration->id,
+            targetPlacementId: $target->id,
+            reason: 'Closer to home based on offline request',
+            adminId: $admin->id,
+        ));
+
+        expect($placement->fresh()->filled_quota)->toBe(0)
+            ->and($target->fresh()->filled_quota)->toBe(1)
+            ->and($registration->fresh()->placement_id)->toBe($target->id)
+            ->and($changeRecord->status)->toBe(PlacementChangeStatus::APPROVED)
+            ->and($changeRecord->processed_by)->toBe($admin->id);
     });
 
     test('J9GBH-FR-PLACE-017: approval transfers quotas and repoints the registration (also FR-PLACE-016, NFR-PLACE-001)', function (): void {
@@ -243,29 +250,28 @@ describe('J9GBH: placements', function (): void {
             ->and($bridge->isTeacher($teacher))->toBeTrue();
     });
 
-    test('J9GBH-FR-PLACE-020: students see same-internship free placements excluding the current one', function (): void {
-        $student = User::factory()->create();
-        $student->assignRole('student');
-        $this->actingAs($student);
+    test('J9GBH-FR-PLACE-020: placement change manager filters same-internship free placements excluding current one', function (): void {
+        j9gbhAdmin($this);
 
         $internship = Internship::factory()->create();
-        $current = Placement::factory()->create(['internship_id' => $internship->id, 'quota' => 5, 'filled_quota' => 0]);
+        $current = Placement::factory()->create(['internship_id' => $internship->id, 'quota' => 5, 'filled_quota' => 1]);
         $target = Placement::factory()->create(['internship_id' => $internship->id, 'quota' => 5, 'filled_quota' => 0]);
         $other = Placement::factory()->create(['quota' => 5, 'filled_quota' => 0]);
 
         $registration = Registration::factory()->create([
-            'student_id' => $student->id,
             'internship_id' => $internship->id,
             'placement_id' => $current->id,
             'status' => 'active',
         ]);
-        InternshipGroupMember::factory()->create(['registration_id' => $registration->id, 'user_id' => $student->id]);
 
-        $view = Livewire::test(StudentPlacementChangeRequest::class)->viewData('availablePlacements');
+        $component = Livewire::test(PlacementChangeManager::class)
+            ->set('form.registration_id', $registration->id);
 
-        expect($view->pluck('id'))->toContain($target->id)
-            ->and($view->pluck('id'))->not->toContain($current->id)
-            ->and($view->pluck('id'))->not->toContain($other->id);
+        $targetPlacements = $component->get('targetPlacements');
+
+        expect($targetPlacements->pluck('id'))->toContain($target->id)
+            ->and($targetPlacements->pluck('id'))->not->toContain($current->id)
+            ->and($targetPlacements->pluck('id'))->not->toContain($other->id);
     });
 
     test('J9GBH-FR-PLACE-022: placement routes sit behind admin gates (also FR-PLACE-023, FR-PLACE-024)', function (): void {
@@ -284,12 +290,12 @@ describe('J9GBH: placements', function (): void {
         $this->get(route('enrollment.internships.placements.changes'))->assertOk();
     });
 
-    test('J9GBH-FR-PLACE-025: the student change route requires the student role', function (): void {
-        $this->get(route('student.internships.placement-change'))->assertRedirect('/login');
+    test('J9GBH-FR-PLACE-025: the student change route is decommissioned and returns 404', function (): void {
+        $student = User::factory()->create();
+        $student->assignRole('student');
+        $this->actingAs($student);
 
-        j9gbhAdmin($this);
-
-        $this->get(route('student.internships.placement-change'))->assertForbidden();
+        $this->get('/student/internships/placement-change')->assertNotFound();
     });
 
     test('J9GBH-NFR-PLACE-004: placement mutations write audit entries', function (): void {

@@ -3,13 +3,15 @@
 declare(strict_types=1);
 
 use App\Modules\Academic\Domain\Department\Models\Department;
+use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Document\Models\Document;
 use App\Modules\Enrollment\Domain\AccountApplication\Enums\AccountApplicationStatus;
 use App\Modules\Enrollment\Domain\AccountApplication\Livewire\ApplyPage;
 use App\Modules\Enrollment\Domain\AccountApplication\Models\AccountApplication;
 use App\Modules\Enrollment\Domain\Placement\Actions\DirectPlacementAction;
-use App\Modules\Enrollment\Domain\Placement\Actions\RequestPlacementChangeAction;
+use App\Modules\Enrollment\Domain\Placement\Actions\RelocateStudentAction;
 use App\Modules\Enrollment\Domain\Placement\Actions\UpdatePlacementAction;
+use App\Modules\Enrollment\Domain\Placement\Data\RelocateStudentData;
 use App\Modules\Enrollment\Domain\Placement\Entities\PlacementCapacity;
 use App\Modules\Enrollment\Domain\Placement\Entities\PlacementState;
 use App\Modules\Enrollment\Domain\Placement\Enums\PlacementChangeStatus;
@@ -26,7 +28,6 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Validation\ValidationException;
 use Livewire\Livewire;
 
 uses(LazilyRefreshDatabase::class);
@@ -283,20 +284,36 @@ describe('J9GBH: placement entities and actions', function (): void {
         expect($registration->start_date->toDateString())->toBe('2026-07-01')->and($registration->end_date->toDateString())->toBe('2026-12-31');
     });
 
-    test('J9GBH-FR-PLACE-015: request action records source, target, reason, and requester', function (): void {
-        $registration = Registration::factory()->active()->create(['placement_id' => Placement::factory()->create()->id]);
-        $target = Placement::factory()->create(['internship_id' => $registration->internship_id]);
-        $requester = enrollmentCoverageUser();
+    test('J9GBH-FR-PLACE-015: relocate action records source, target, reason, and requester', function (): void {
+        $registration = Registration::factory()->active()->create(['placement_id' => Placement::factory()->create(['quota' => 5, 'filled_quota' => 1])->id]);
+        $target = Placement::factory()->create(['internship_id' => $registration->internship_id, 'quota' => 5, 'filled_quota' => 0]);
+        $admin = enrollmentCoverageUser('admin');
 
-        $request = app(RequestPlacementChangeAction::class)->execute($registration, ['to_placement_id' => $target->id, 'reason' => 'Move closer', 'requested_by' => $requester->id]);
+        $request = app(RelocateStudentAction::class)->execute(new RelocateStudentData(
+            registrationId: $registration->id,
+            targetPlacementId: $target->id,
+            reason: 'Move closer based on offline request',
+            adminId: $admin->id,
+        ));
 
-        expect($request->from_placement_id)->toBe($registration->placement_id)->and($request->to_placement_id)->toBe($target->id)->and($request->requested_by)->toBe($requester->id);
+        expect($request->from_placement_id)->toBe($request->from_placement_id)
+            ->and($request->to_placement_id)->toBe($target->id)
+            ->and($request->requested_by)->toBe($registration->student_id)
+            ->and($request->processed_by)->toBe($admin->id)
+            ->and($request->status)->toBe(PlacementChangeStatus::APPROVED);
     });
 
-    test('J9GBH-FR-PLACE-015: request action validates required fields before writing', function (): void {
-        $registration = Registration::factory()->active()->create(['placement_id' => Placement::factory()->create()->id]);
+    test('J9GBH-FR-PLACE-015: relocate action validates target capacity before writing', function (): void {
+        $registration = Registration::factory()->active()->create(['placement_id' => Placement::factory()->create(['quota' => 5, 'filled_quota' => 1])->id]);
+        $fullTarget = Placement::factory()->create(['internship_id' => $registration->internship_id, 'quota' => 2, 'filled_quota' => 2]);
+        $admin = enrollmentCoverageUser('admin');
 
-        expect(fn () => app(RequestPlacementChangeAction::class)->execute($registration, []))->toThrow(ValidationException::class);
+        expect(fn () => app(RelocateStudentAction::class)->execute(new RelocateStudentData(
+            registrationId: $registration->id,
+            targetPlacementId: $fullTarget->id,
+            reason: 'Move closer',
+            adminId: $admin->id,
+        )))->toThrow(RejectedException::class);
         expect(PlacementChangeRequest::count())->toBe(0);
     });
 
@@ -307,12 +324,13 @@ describe('J9GBH: placement entities and actions', function (): void {
         expect($request->fresh()->status)->toBe(PlacementChangeStatus::REJECTED)->and($request->fresh()->rejection_reason)->toBe('No capacity');
     });
 
-    test('J9GBH-FR-PLACE-021: change request policy allows students to create and admins to review', function (): void {
+    test('J9GBH-FR-PLACE-021: change request policy allows admins to create and review', function (): void {
         $request = PlacementChangeRequest::factory()->create();
         $student = enrollmentCoverageUser();
         $admin = enrollmentCoverageUser('admin');
 
-        expect(Gate::forUser($student)->allows('create', PlacementChangeRequest::class))->toBeTrue()
+        expect(Gate::forUser($student)->allows('create', PlacementChangeRequest::class))->toBeFalse()
+            ->and(Gate::forUser($admin)->allows('create', PlacementChangeRequest::class))->toBeTrue()
             ->and(Gate::forUser($admin)->allows('view', $request))->toBeTrue()
             ->and(Gate::forUser($student)->allows('update', $request))->toBeFalse();
     });

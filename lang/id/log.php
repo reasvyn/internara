@@ -160,6 +160,7 @@ return [
     'placement_change_approved' => 'Permintaan perubahan penempatan telah disetujui.',
     'placement_change_rejected' => 'Permintaan perubahan penempatan telah ditolak.',
     'placement_change_requested' => 'Perubahan penempatan telah diminta.',
+    'placement_student_relocated' => 'Siswa telah dipindahkan ke penempatan baru.',
     'placement_created' => 'Slot penempatan telah dibuat.',
     'placement_deleted' => 'Slot penempatan telah dihapus.',
     'placement_updated' => 'Slot penempatan telah diperbarui.',

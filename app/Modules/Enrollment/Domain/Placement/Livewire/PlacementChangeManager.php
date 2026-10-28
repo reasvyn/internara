@@ -6,11 +6,18 @@ namespace App\Modules\Enrollment\Domain\Placement\Livewire;
 
 use App\Modules\Enrollment\Domain\Placement\Actions\ApprovePlacementChangeAction;
 use App\Modules\Enrollment\Domain\Placement\Actions\RejectPlacementChangeAction;
+use App\Modules\Enrollment\Domain\Placement\Actions\RelocateStudentAction;
+use App\Modules\Enrollment\Domain\Placement\Data\RelocateStudentData;
+use App\Modules\Enrollment\Domain\Placement\Livewire\Forms\PlacementChangeForm;
+use App\Modules\Enrollment\Domain\Placement\Models\Placement;
 use App\Modules\Enrollment\Domain\Placement\Models\PlacementChangeRequest;
+use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\UI\Livewire\BaseRecordManager;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use TallStackUi\Traits\Interactions;
 
@@ -24,6 +31,10 @@ class PlacementChangeManager extends BaseRecordManager
     public ?string $rejectingId = null;
 
     public string $rejectionReason = '';
+
+    public bool $showRelocateModal = false;
+
+    public PlacementChangeForm $form;
 
     public function boot(): void
     {
@@ -80,6 +91,72 @@ class PlacementChangeManager extends BaseRecordManager
             'toPlacement.company',
             'registration.mentee.user',
         ]);
+    }
+
+    public function openRelocateModal(): void
+    {
+        $this->authorize('create', PlacementChangeRequest::class);
+        $this->resetErrorBag();
+        $this->form->reset();
+        $this->showRelocateModal = true;
+    }
+
+    public function relocate(RelocateStudentAction $action): void
+    {
+        $this->authorize('create', PlacementChangeRequest::class);
+        $this->form->validate();
+
+        $action->execute(new RelocateStudentData(
+            registrationId: $this->form->registration_id,
+            targetPlacementId: $this->form->to_placement_id,
+            reason: $this->form->reason,
+            adminId: (string) auth()->id(),
+        ));
+
+        $this->toast()->success(__('placement_change.relocate_success'))->send();
+        $this->showRelocateModal = false;
+        $this->form->reset();
+    }
+
+    #[Computed]
+    public function activeRegistrations(): Collection
+    {
+        return Registration::query()
+            ->where('status', 'active')
+            ->whereNotNull('placement_id')
+            ->with(['student', 'placement.company', 'internship'])
+            ->get();
+    }
+
+    #[Computed]
+    public function selectedRegistration(): ?Registration
+    {
+        if (empty($this->form->registration_id)) {
+            return null;
+        }
+
+        return Registration::with(['student', 'placement.company', 'internship'])->find($this->form->registration_id);
+    }
+
+    #[Computed]
+    public function targetPlacements(): Collection
+    {
+        if (empty($this->form->registration_id)) {
+            return collect();
+        }
+
+        $reg = Registration::find($this->form->registration_id);
+        if (! $reg) {
+            return collect();
+        }
+
+        return Placement::query()
+            ->where('internship_id', $reg->internship_id)
+            ->where('id', '!=', $reg->placement_id)
+            ->whereHas('company')
+            ->with('company')
+            ->get()
+            ->filter(fn (Placement $p) => $p->asPlacementCapacity()->hasAvailableSlots());
     }
 
     public function approve(string $id, ApprovePlacementChangeAction $action): void

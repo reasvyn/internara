@@ -45,9 +45,10 @@ in a single transaction.
 
 ### PlacementChangeRequest
 
-Student-initiated workflow for requesting a company slot change due to workplace conflicts,
-distance, or other reasons. Admin reviews and approves/rejects. Approved changes atomically
-decrement old slot quota and increment new slot quota.
+Admin-driven workflow for relocating a student's company slot based on an offline physical
+request submitted to school administration. Admin directly executes the relocation, which
+atomically decrements the old slot quota, increments the new slot quota, repoints the registration,
+and logs the change with the reason.
 
 ## Key Concepts
 
@@ -103,9 +104,9 @@ Once registered, the student moves through verification of uploaded documents, t
 Verification activates the registration; rejection closes it with a recorded reason and notifies
 the student, so an invalid registration never sits in the queue indefinitely.
 Placement is a slot business — each company exposes a named location with a quota, and the
-system tracks how much of that quota is consumed. Direct placement by staff and student-initiated
-change requests both move a student between slots, and each change is a reviewed decision rather
-than an edit, so the history of a placement is always reconstructable.
+system tracks how much of that quota is consumed. Direct placement and admin-driven relocation
+both move a student between slots, and each change is an audited decision with atomic quota
+transfer, so the history of a placement is always reconstructable.
 
 A student's registration status is the gate on everything downstream: journals, assignments, and
 assessments all key off an active registration, so withdrawing or archiving a student closes
