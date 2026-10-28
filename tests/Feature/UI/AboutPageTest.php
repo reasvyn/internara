@@ -33,21 +33,19 @@ describe('AB0UT: About page and author attribution', function (): void {
             ->assertSeeLivewire(AboutPage::class);
     });
 
-    test('AB0UT-UC-ABOUT-003: user can read Internaras mission vocational internship background and guiding philosophy in Indonesian or English', function (): void {
+    test('AB0UT-UC-ABOUT-003: user can read Internaras mission vocational internship background and PKL management in Indonesian or English', function (): void {
         $enResponse = $this->withSession(['locale' => 'en'])->get(route('about'));
         $enResponse->assertOk()
             ->assertSee(__('about.pkl.title', [], 'en'))
-            ->assertSee(__('about.philosophy.heading', [], 'en'))
-            ->assertSee(__('about.tech_stack.heading', [], 'en'));
+            ->assertSee(__('about.management.heading', [], 'en'));
 
         $idResponse = $this->withSession(['locale' => 'id'])->get(route('about'));
         $idResponse->assertOk()
             ->assertSee(__('about.pkl.title', [], 'id'))
-            ->assertSee(__('about.philosophy.heading', [], 'id'))
-            ->assertSee(__('about.tech_stack.heading', [], 'id'));
+            ->assertSee(__('about.management.heading', [], 'id'));
     });
 
-    test('AB0UT-UC-ABOUT-004: user can view the author profile Reas Vyn open-source MIT license and direct links to GitHub repository', function (): void {
+    test('AB0UT-UC-ABOUT-004: user can view the author profile and attribution links', function (): void {
         $authorName = AppInfo::authorName();
         $authorEmail = AppInfo::authorEmail();
         $gitUrl = AppInfo::gitUrl();
@@ -57,11 +55,10 @@ describe('AB0UT: About page and author attribution', function (): void {
         $response->assertOk()
             ->assertSee($authorName)
             ->assertSee($authorEmail)
-            ->assertSee($gitUrl, false)
-            ->assertSee('MIT');
+            ->assertSee($gitUrl, false);
     });
 
-    test('AB0UT-UC-ABOUT-005: administrator can inspect the current app version and copy diagnostic system metadata to clipboard in one click', function (): void {
+    test('AB0UT-UC-ABOUT-005: user can inspect the current app version and educational PKL context', function (): void {
         $user = User::factory()->create();
         $user->assignRole('super_admin');
 
@@ -69,8 +66,7 @@ describe('AB0UT: About page and author attribution', function (): void {
 
         $response->assertOk()
             ->assertSee('v'.AppInfo::version())
-            ->assertSee('System Diagnostic Snapshot')
-            ->assertSee(__('about.diagnostics.copy_button'));
+            ->assertSee(__('about.pkl.title'));
     });
 
     test('AB0UT-FR-ABOUT-001: route GET /about is registered with route name about wired to AboutPage', function (): void {
@@ -105,47 +101,44 @@ describe('AB0UT: About page and author attribution', function (): void {
             ->assertSee($github, false);
     });
 
-    test('AB0UT-FR-ABOUT-004: the page displays the MIT License badge and attribution terms with link to the project repository', function (): void {
-        $gitUrl = AppInfo::gitUrl();
-
+    test('AB0UT-FR-ABOUT-004: the page displays the PKL definition educational card', function (): void {
         $response = $this->get(route('about'));
 
         $response->assertOk()
-            ->assertSee('MIT')
-            ->assertSee(__('about.license.heading'))
-            ->assertSee($gitUrl, false);
+            ->assertSee(__('about.pkl.title'))
+            ->assertSee(__('about.pkl.badge'))
+            ->assertSee(__('about.pkl.description'));
     });
 
-    test('AB0UT-FR-ABOUT-005: the page presents core philosophy sections', function (): void {
+    test('AB0UT-FR-ABOUT-005: the page presents core PKL management pillars', function (): void {
         $response = $this->get(route('about'));
 
         $response->assertOk()
-            ->assertSee(__('about.philosophy.education_first.title'))
-            ->assertSee(__('about.philosophy.great_tools.title'))
-            ->assertSee(__('about.philosophy.simplicity.title'))
-            ->assertSee(__('about.philosophy.data_sovereignty.title'))
-            ->assertSee(__('about.philosophy.maintainability.title'));
+            ->assertSee(__('about.management.heading'))
+            ->assertSee(__('about.management.partnership.title'))
+            ->assertSee(__('about.management.mentorship.title'))
+            ->assertSee(__('about.management.logbook.title'))
+            ->assertSee(__('about.management.evaluation.title'))
+            ->assertSee(__('about.management.data_sovereignty.title'));
     });
 
-    test('AB0UT-FR-ABOUT-006: the page displays the Technology Stack card', function (): void {
+    test('AB0UT-FR-ABOUT-006: the page focuses strictly on education and omits software technical diagnostic details', function (): void {
         $response = $this->get(route('about'));
 
         $response->assertOk()
-            ->assertSee(__('about.tech_stack.heading'))
-            ->assertSee(__('about.tech_stack.php'))
-            ->assertSee(__('about.tech_stack.laravel'))
-            ->assertSee(__('about.tech_stack.livewire'))
-            ->assertSee(__('about.tech_stack.tallstackui'))
-            ->assertSee(__('about.tech_stack.tailwind'))
-            ->assertSee(__('about.tech_stack.pest'));
+            ->assertDontSee('System Diagnostic Snapshot')
+            ->assertDontSee('PHP 8.4')
+            ->assertDontSee('Laravel 13')
+            ->assertDontSee('Pest 4');
     });
 
-    test('AB0UT-FR-ABOUT-007: the page provides a Copy System Info button using Alpine js clipboard API', function (): void {
+    test('AB0UT-FR-ABOUT-007: the page provides author contact and social links', function (): void {
+        $authorEmail = AppInfo::authorEmail();
+
         $response = $this->get(route('about'));
 
         $response->assertOk()
-            ->assertSee('navigator.clipboard.writeText', false)
-            ->assertSee(__('about.diagnostics.copy_button'));
+            ->assertSee('mailto:'.$authorEmail, false);
     });
 
     test('AB0UT-FR-ABOUT-008: footer navigation in public and dashboard layouts links directly to route about', function (): void {

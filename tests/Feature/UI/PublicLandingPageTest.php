@@ -76,11 +76,12 @@ describe('K8HP1: public landing page lifecycle', function (): void {
             ->assertSee(brand('name'));
     });
 
-    test('K8HP1-FR-LAND-011: pills row renders three status badges with icons and translated labels', function (): void {
+    test('K8HP1-FR-LAND-011: hero renders concise tagline and description without badges', function (): void {
         Livewire::test(HomePage::class)
-            ->assertSee(__('user.home.hero_secure'))
-            ->assertSee(__('user.home.hero_academic'))
-            ->assertSee(__('user.home.hero_global'));
+            ->assertSee(__('user.home.hero_desc'))
+            ->assertDontSee(__('user.home.hero_secure'))
+            ->assertDontSee(__('user.home.hero_academic'))
+            ->assertDontSee(__('user.home.hero_global'));
     });
 
     test('K8HP1-FR-LAND-012: tagline renders as heading with fallback copy', function (): void {
@@ -244,10 +245,10 @@ describe('K8HP1: public landing page lifecycle', function (): void {
 
     test('K8HP1-UC-LAND-006: visitor switches locale or theme with reactive updates', function (): void {
         app()->setLocale('id');
-        expect(__('user.home.hero_secure'))->toBe('Siswa PKL');
+        expect(__('user.home.page_title'))->toBe('Beranda');
 
         app()->setLocale('en');
-        expect(__('user.home.hero_secure'))->toBe('Students');
+        expect(__('user.home.page_title'))->toBe('Home');
     });
 
     test('K8HP1-DD-LAND-001: mount time redirects own setup and auth gating', function (): void {

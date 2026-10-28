@@ -17,65 +17,37 @@ return [
         'badge' => 'Pendidikan Vokasi',
         'description' => 'Praktik Kerja Lapangan (PKL) adalah program pembelajaran dan pelatihan terapan di mana siswa belajar langsung di dunia usaha, dunia industri, atau instansi kerja (DUDI). Program ini dirancang untuk membekali siswa dengan pengalaman kerja nyata, memantapkan kompetensi kejuruan, serta menanamkan etika dan budaya kerja profesional sebelum menyelesaikan pendidikan.',
     ],
+    'management' => [
+        'heading' => 'Tata Kelola & Manajemen PKL',
+        'subheading' => 'Pilar-pilar penting dalam pengelolaan program praktik kerja lapangan yang terarah dan akuntabel.',
+        'partnership' => [
+            'title' => 'Kemitraan DUDI',
+            'desc' => 'Menyelaraskan kebutuhan dunia usaha dan industri dengan kurikulum kompetensi kejuruan sekolah serta memfasilitasi penempatan siswa yang tepat sasaran.',
+        ],
+        'mentorship' => [
+            'title' => 'Pembimbingan & Supervisi',
+            'desc' => 'Kolaborasi aktif antara guru pembimbing sekolah dan instruktur tempat kerja dalam mendampingi dan memantau perkembangan siswa secara berkala.',
+        ],
+        'logbook' => [
+            'title' => 'Jurnal Harian & Presensi',
+            'desc' => 'Pencatatan kegiatan harian (logbook) yang terstruktur dan presensi kehadiran yang transparan serta dapat diverifikasi langsung oleh pembimbing.',
+        ],
+        'evaluation' => [
+            'title' => 'Penilaian & Sertifikasi',
+            'desc' => 'Evaluasi kompetensi terukur berdasarkan rubrik capaian pembelajaran dan penerbitan sertifikat resmi penyelesaian PKL bagi siswa.',
+        ],
+        'data_sovereignty' => [
+            'title' => 'Kedaulatan & Keamanan Data',
+            'desc' => 'Seluruh rekaman data siswa, jurnal kerja, dan penilaian tersimpan mandiri dalam kendali sekolah tanpa pelacakan atau campur tangan pihak ketiga.',
+        ],
+    ],
     'author' => [
         'heading' => 'Author & Atribusi',
         'subheading' => 'Pencipta sistem dan pemelihara arsitektur.',
         'role' => 'Pencipta & Arsitek Utama',
-        'bio' => 'Arsitek dan pengembang utama :app. Berdedikasi menghadirkan solusi digital yang tangguh, mudah diakses, dan self-hosted bagi institusi vokasi tanpa keterikatan vendor (vendor lock-in).',
+        'bio' => 'Arsitek dan pengembang utama :app. Berdedikasi menghadirkan solusi digital yang tangguh, mudah diakses, dan mandiri bagi institusi vokasi tanpa keterikatan vendor.',
         'email_label' => 'Kontak Pengembang',
         'github_label' => 'Profil GitHub',
         'attribution_notice' => 'Atribusi sistem merupakan invariansi arsitektural yang dilindungi oleh AppIntegrity. Hak atribusi kepada pencipta asli diwajibkan oleh lisensi proyek dan invariansi inti sistem.',
-    ],
-    'philosophy' => [
-        'heading' => 'Prinsip & Filosofi',
-        'subheading' => 'Filosofi dasar yang melandasi setiap alur kerja di :app.',
-        'education_first' => [
-            'title' => 'Pendidikan Utama, Teknologi Penunjang',
-            'desc' => 'Teknologi hadir melayani pendidikan, bukan sebaliknya. Setiap fitur diukur dari seberapa besar manfaatnya dalam mempermudah sekolah menyelenggarakan program PKL.',
-        ],
-        'great_tools' => [
-            'title' => 'Setiap Sekolah Berhak Atas Perangkat Terbaik',
-            'desc' => 'Dirancang agar efisien dijalankan dari shared hosting ekonomis hingga kluster komputasi awan, memastikan sekolah dengan keterbatasan sumber daya tetap mendapatkan kapabilitas terbaik.',
-        ],
-        'simplicity' => [
-            'title' => 'Kesederhanaan Mengalahkan Kompleksitas',
-            'desc' => 'Mengutamakan Action berprinsip tanggung jawab tunggal (SRP) dan batas modular yang transparan daripada lapisan abstraksi rumit yang membebani pemeliharaan.',
-        ],
-        'maintainability' => [
-            'title' => 'Keterpeliharaan adalah Fitur Utama',
-            'desc' => 'Standar kode tinggi, type-safety ketat, cakupan pengujian lengkap, dan spesifikasi hidup memastikan sistem ini tetap mudah dipelihara dari tahun ke tahun.',
-        ],
-        'data_sovereignty' => [
-            'title' => 'Kedaulatan Data & Privasi',
-            'desc' => 'Seluruh data siswa, presensi, jurnal, dan penilaian tersimpan di infrastruktur sekolah sendiri. Bebas telemetri eksternal dan pelacakan pihak ketiga tanpa izin.',
-        ],
-    ],
-    'tech_stack' => [
-        'heading' => 'Arsitektur Teknologi',
-        'subheading' => 'Dibangun dengan fondasi teknologi sumber terbuka modern dan teruji.',
-        'php' => 'PHP 8.4 dengan strict typing dan atribut modern',
-        'laravel' => 'Kerangka kerja inti Laravel 13',
-        'livewire' => 'Livewire 4 untuk antarmuka reaktif tanpa beban SPA berlebih',
-        'tallstackui' => 'TallstackUI v4 untuk pustaka komponen yang aksesibel',
-        'tailwind' => 'Tailwind CSS v4 mesin utilitas modern',
-        'alpine' => 'Alpine.js 3 untuk reaktivitas ringan pada peramban',
-        'pest' => 'Pest 4 kerangka kerja pengujian berbasis spesifikasi',
-    ],
-    'diagnostics' => [
-        'heading' => 'Diagnostik Sistem',
-        'subheading' => 'Metadata lingkungan non-sensitif untuk kemudahan pelaporan dan dukungan teknis.',
-        'app_version' => 'Versi Aplikasi',
-        'environment' => 'Lingkungan Sistem',
-        'php_version' => 'Runtime PHP',
-        'laravel_version' => 'Versi Kerangka Kerja',
-        'license' => 'Lisensi Perangkat Lunak',
-        'repository' => 'Repositori Resmi',
-        'copy_button' => 'Salin Informasi Diagnostik',
-        'copied_toast' => 'Informasi diagnostik berhasil disalin ke papan klip.',
-    ],
-    'license' => [
-        'heading' => 'Lisensi & Sumber Terbuka',
-        'text' => ':app adalah perangkat lunak bebas dan sumber terbuka yang didistribusikan di bawah Lisensi MIT. Anda bebas meng-host mandiri, memodifikasi, dan menggunakan sistem ini untuk institusi pendidikan Anda.',
-        'view_repo' => 'Lihat di GitHub',
     ],
 ];

@@ -17,7 +17,6 @@
                     {{ $appName }}
                 </h1>
                 <x-ts-badge :text="'v'.$version" color="primary" light round sm class="font-mono font-bold" />
-                <x-ts-badge :text="$license" color="neutral" outline round sm class="font-mono font-semibold" />
             </div>
 
             <p class="text-primary mx-auto mb-4 max-w-2xl text-base font-semibold sm:text-lg">{{ $tagline }}</p>
@@ -30,7 +29,7 @@
 
     {{-- Main Content Section --}}
     <section class="bg-base-200/40 flex-1 py-10 sm:py-14 lg:py-16">
-        <div class="mx-auto max-w-5xl space-y-12 px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-5xl space-y-10 px-4 sm:px-6 lg:px-8">
             {{-- PKL Educational Context Card --}}
             <article class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-2xl border p-6 transition-all duration-300 sm:p-8 lg:p-10">
                 <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-6">
@@ -50,6 +49,78 @@
                     </div>
                 </div>
             </article>
+
+            {{-- PKL Management Pillars Section --}}
+            <section class="space-y-6">
+                <div class="text-center md:text-left">
+                    <h2 class="text-base-content text-xl font-bold sm:text-2xl">
+                        {{ __('about.management.heading') }}
+                    </h2>
+                    <p class="text-base-content/60 text-xs sm:text-sm">{{ __('about.management.subheading') }}</p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-6 transition-all duration-200">
+                        <div class="bg-primary/10 text-primary mb-3.5 flex size-10 items-center justify-center rounded-xl">
+                            <x-ts-icon name="building-office-2" class="size-5" />
+                        </div>
+                        <h3 class="text-base-content mb-1.5 text-sm font-bold sm:text-base">
+                            {{ __('about.management.partnership.title') }}
+                        </h3>
+                        <p class="text-base-content/70 text-xs leading-relaxed sm:text-sm">
+                            {{ __('about.management.partnership.desc') }}
+                        </p>
+                    </div>
+
+                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-6 transition-all duration-200">
+                        <div class="bg-primary/10 text-primary mb-3.5 flex size-10 items-center justify-center rounded-xl">
+                            <x-ts-icon name="user-group" class="size-5" />
+                        </div>
+                        <h3 class="text-base-content mb-1.5 text-sm font-bold sm:text-base">
+                            {{ __('about.management.mentorship.title') }}
+                        </h3>
+                        <p class="text-base-content/70 text-xs leading-relaxed sm:text-sm">
+                            {{ __('about.management.mentorship.desc') }}
+                        </p>
+                    </div>
+
+                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-6 transition-all duration-200">
+                        <div class="bg-primary/10 text-primary mb-3.5 flex size-10 items-center justify-center rounded-xl">
+                            <x-ts-icon name="clipboard-document-check" class="size-5" />
+                        </div>
+                        <h3 class="text-base-content mb-1.5 text-sm font-bold sm:text-base">
+                            {{ __('about.management.logbook.title') }}
+                        </h3>
+                        <p class="text-base-content/70 text-xs leading-relaxed sm:text-sm">
+                            {{ __('about.management.logbook.desc') }}
+                        </p>
+                    </div>
+
+                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-6 transition-all duration-200">
+                        <div class="bg-primary/10 text-primary mb-3.5 flex size-10 items-center justify-center rounded-xl">
+                            <x-ts-icon name="trophy" class="size-5" />
+                        </div>
+                        <h3 class="text-base-content mb-1.5 text-sm font-bold sm:text-base">
+                            {{ __('about.management.evaluation.title') }}
+                        </h3>
+                        <p class="text-base-content/70 text-xs leading-relaxed sm:text-sm">
+                            {{ __('about.management.evaluation.desc') }}
+                        </p>
+                    </div>
+
+                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-6 transition-all duration-200 md:col-span-2">
+                        <div class="bg-primary/10 text-primary mb-3.5 flex size-10 items-center justify-center rounded-xl">
+                            <x-ts-icon name="shield-check" class="size-5" />
+                        </div>
+                        <h3 class="text-base-content mb-1.5 text-sm font-bold sm:text-base">
+                            {{ __('about.management.data_sovereignty.title') }}
+                        </h3>
+                        <p class="text-base-content/70 text-xs leading-relaxed sm:text-sm">
+                            {{ __('about.management.data_sovereignty.desc') }}
+                        </p>
+                    </div>
+                </div>
+            </section>
 
             {{-- Author Profile & Attribution Spotlight Card --}}
             <article class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-2xl border p-6 transition-all duration-300 sm:p-8 lg:p-10">
@@ -108,241 +179,6 @@
                     </div>
                 </div>
             </article>
-
-            {{-- Philosophy & Principles Section --}}
-            <section class="space-y-6">
-                <div class="text-center md:text-left">
-                    <h2 class="text-base-content text-xl font-bold sm:text-2xl">
-                        {{ __('about.philosophy.heading') }}
-                    </h2>
-                    <p class="text-base-content/60 text-xs sm:text-sm">
-                        {{ __('about.philosophy.subheading', ['app' => $appName]) }}
-                    </p>
-                </div>
-
-                <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
-                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-6 transition-all duration-200">
-                        <div class="bg-primary/10 text-primary mb-3.5 flex size-10 items-center justify-center rounded-xl">
-                            <x-ts-icon name="academic-cap" class="size-5" />
-                        </div>
-                        <h3 class="text-base-content mb-1.5 text-sm font-bold sm:text-base">
-                            {{ __('about.philosophy.education_first.title') }}
-                        </h3>
-                        <p class="text-base-content/70 text-xs leading-relaxed sm:text-sm">
-                            {{ __('about.philosophy.education_first.desc') }}
-                        </p>
-                    </div>
-
-                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-6 transition-all duration-200">
-                        <div class="bg-primary/10 text-primary mb-3.5 flex size-10 items-center justify-center rounded-xl">
-                            <x-ts-icon name="wrench-screwdriver" class="size-5" />
-                        </div>
-                        <h3 class="text-base-content mb-1.5 text-sm font-bold sm:text-base">
-                            {{ __('about.philosophy.great_tools.title') }}
-                        </h3>
-                        <p class="text-base-content/70 text-xs leading-relaxed sm:text-sm">
-                            {{ __('about.philosophy.great_tools.desc') }}
-                        </p>
-                    </div>
-
-                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-6 transition-all duration-200">
-                        <div class="bg-primary/10 text-primary mb-3.5 flex size-10 items-center justify-center rounded-xl">
-                            <x-ts-icon name="cube" class="size-5" />
-                        </div>
-                        <h3 class="text-base-content mb-1.5 text-sm font-bold sm:text-base">
-                            {{ __('about.philosophy.simplicity.title') }}
-                        </h3>
-                        <p class="text-base-content/70 text-xs leading-relaxed sm:text-sm">
-                            {{ __('about.philosophy.simplicity.desc') }}
-                        </p>
-                    </div>
-
-                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-6 transition-all duration-200">
-                        <div class="bg-primary/10 text-primary mb-3.5 flex size-10 items-center justify-center rounded-xl">
-                            <x-ts-icon name="shield-check" class="size-5" />
-                        </div>
-                        <h3 class="text-base-content mb-1.5 text-sm font-bold sm:text-base">
-                            {{ __('about.philosophy.data_sovereignty.title') }}
-                        </h3>
-                        <p class="text-base-content/70 text-xs leading-relaxed sm:text-sm">
-                            {{ __('about.philosophy.data_sovereignty.desc') }}
-                        </p>
-                    </div>
-
-                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-6 transition-all duration-200 md:col-span-2">
-                        <div class="bg-primary/10 text-primary mb-3.5 flex size-10 items-center justify-center rounded-xl">
-                            <x-ts-icon name="arrow-path" class="size-5" />
-                        </div>
-                        <h3 class="text-base-content mb-1.5 text-sm font-bold sm:text-base">
-                            {{ __('about.philosophy.maintainability.title') }}
-                        </h3>
-                        <p class="text-base-content/70 text-xs leading-relaxed sm:text-sm">
-                            {{ __('about.philosophy.maintainability.desc') }}
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            {{-- Technology Architecture Section --}}
-            <section class="space-y-6">
-                <div class="text-center md:text-left">
-                    <h2 class="text-base-content text-xl font-bold sm:text-2xl">
-                        {{ __('about.tech_stack.heading') }}
-                    </h2>
-                    <p class="text-base-content/60 text-xs sm:text-sm">{{ __('about.tech_stack.subheading') }}</p>
-                </div>
-
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-4 transition-colors">
-                        <div class="flex items-center gap-3">
-                            <x-ts-icon name="check-circle" class="text-primary size-5 shrink-0" />
-                            <span class="text-base-content/85 text-xs font-semibold sm:text-sm">{{ __('about.tech_stack.php') }}</span>
-                        </div>
-                    </div>
-                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-4 transition-colors">
-                        <div class="flex items-center gap-3">
-                            <x-ts-icon name="check-circle" class="text-primary size-5 shrink-0" />
-                            <span class="text-base-content/85 text-xs font-semibold sm:text-sm">{{ __('about.tech_stack.laravel') }}</span>
-                        </div>
-                    </div>
-                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-4 transition-colors">
-                        <div class="flex items-center gap-3">
-                            <x-ts-icon name="check-circle" class="text-primary size-5 shrink-0" />
-                            <span class="text-base-content/85 text-xs font-semibold sm:text-sm">{{ __('about.tech_stack.livewire') }}</span>
-                        </div>
-                    </div>
-                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-4 transition-colors">
-                        <div class="flex items-center gap-3">
-                            <x-ts-icon name="check-circle" class="text-primary size-5 shrink-0" />
-                            <span class="text-base-content/85 text-xs font-semibold sm:text-sm">{{ __('about.tech_stack.tallstackui') }}</span>
-                        </div>
-                    </div>
-                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-4 transition-colors">
-                        <div class="flex items-center gap-3">
-                            <x-ts-icon name="check-circle" class="text-primary size-5 shrink-0" />
-                            <span class="text-base-content/85 text-xs font-semibold sm:text-sm">{{ __('about.tech_stack.tailwind') }}</span>
-                        </div>
-                    </div>
-                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-4 transition-colors">
-                        <div class="flex items-center gap-3">
-                            <x-ts-icon name="check-circle" class="text-primary size-5 shrink-0" />
-                            <span class="text-base-content/85 text-xs font-semibold sm:text-sm">{{ __('about.tech_stack.pest') }}</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {{-- Diagnostics & Open Source Details (2 Columns) --}}
-            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                {{-- System Diagnostics Card --}}
-                <div
-                    class="bg-base-100 border-base-content/10 flex flex-col justify-between rounded-xl border p-6"
-                    x-data="{
-                        copied: false,
-                        snippet: @js($diagnosticSnippet),
-                        copy() {
-                            if (navigator.clipboard) {
-                                navigator.clipboard.writeText(this.snippet);
-                                this.copied = true;
-                                setTimeout(() => this.copied = false, 2500);
-                            }
-                        }
-                    }"
-                >
-                    <div class="space-y-4">
-                        <div class="flex items-center gap-3">
-                            <div class="bg-primary/10 text-primary flex size-8 items-center justify-center rounded-lg">
-                                <x-ts-icon name="information-circle" class="size-4" />
-                            </div>
-                            <div>
-                                <h3 class="text-base-content text-base font-bold">
-                                    {{ __('about.diagnostics.heading') }}
-                                </h3>
-                                <p class="text-base-content/60 text-xs">{{ __('about.diagnostics.subheading') }}</p>
-                            </div>
-                        </div>
-
-                        <div class="space-y-2.5 pt-2 text-xs">
-                            <div class="border-base-content/5 flex items-center justify-between border-b pb-2">
-                                <span class="text-base-content/60">{{ __('about.diagnostics.app_version') }}</span>
-                                <x-ts-badge
-                                    :text="'v'.$version"
-                                    color="neutral"
-                                    light
-                                    sm
-                                    class="font-mono font-semibold"
-                                />
-                            </div>
-                            <div class="border-base-content/5 flex items-center justify-between border-b pb-2">
-                                <span class="text-base-content/60">{{ __('about.diagnostics.environment') }}</span>
-                                <span class="text-base-content font-semibold uppercase">{{ $environment }}</span>
-                            </div>
-                            <div class="border-base-content/5 flex items-center justify-between border-b pb-2">
-                                <span class="text-base-content/60">{{ __('about.diagnostics.php_version') }}</span>
-                                <span class="text-base-content font-mono">{{ $phpVersion }}</span>
-                            </div>
-                            <div class="border-base-content/5 flex items-center justify-between border-b pb-2">
-                                <span class="text-base-content/60">{{ __('about.diagnostics.laravel_version') }}</span>
-                                <span class="text-base-content font-mono">{{ $laravelVersion }}</span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-base-content/60">{{ __('about.diagnostics.license') }}</span>
-                                <span class="text-base-content font-medium">{{ $license }}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="border-base-content/10 mt-6 border-t pt-4">
-                        <x-ts-button
-                            type="button"
-                            x-on:click="copy()"
-                            outline
-                            sm
-                            block
-                            class="w-full text-xs font-semibold"
-                        >
-                            <x-ts-icon name="clipboard-document" class="mr-1.5 size-4" x-show="! copied" />
-                            <x-ts-icon name="check" class="text-success mr-1.5 size-4" x-show="copied" x-cloak />
-                            <span x-text="copied ? '{{ __('about.diagnostics.copied_toast') }}' : '{{ __('about.diagnostics.copy_button') }}'"></span>
-                        </x-ts-button>
-                    </div>
-                </div>
-
-                {{-- Open Source & License Card --}}
-                <div class="bg-base-100 border-base-content/10 flex flex-col justify-between rounded-xl border p-6">
-                    <div class="space-y-4">
-                        <div class="flex items-center gap-3">
-                            <div class="bg-primary/10 text-primary flex size-8 items-center justify-center rounded-lg">
-                                <x-ts-icon name="code-bracket" class="size-4" />
-                            </div>
-                            <div>
-                                <h3 class="text-base-content text-base font-bold">{{ __('about.license.heading') }}</h3>
-                                <p class="text-base-content/60 text-xs">
-                                    {{ $license }} {{ __('about.license.view_repo') }}
-                                </p>
-                            </div>
-                        </div>
-
-                        <p class="text-base-content/70 text-xs leading-relaxed sm:text-sm">
-                            {{ __('about.license.text', ['app' => $appName]) }}
-                        </p>
-                    </div>
-
-                    <div class="border-base-content/10 mt-6 border-t pt-4">
-                        <x-ts-button
-                            href="{{ $gitUrl }}"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            color="primary"
-                            sm
-                            block
-                            icon="arrow-top-right-on-square"
-                            position="right"
-                            :text="__('about.license.view_repo')"
-                        />
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
 </div>

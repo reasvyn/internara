@@ -92,7 +92,7 @@ PULL_FLAG=""
 if [ "${FORCE_PULL:-false}" = "true" ]; then
     PULL_FLAG="--pull"
 fi
-docker compose "${ENV_FILE_ARGS[@]}" build $PULL_FLAG $NO_CACHE_FLAG
+docker compose --progress=plain "${ENV_FILE_ARGS[@]}" build $PULL_FLAG $NO_CACHE_FLAG
 
 echo "==> Starting containers"
 # Compose recreates only the app service when its image/config changed.

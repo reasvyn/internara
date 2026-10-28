@@ -22,30 +22,10 @@ final class AboutPage extends Component
             'tagline' => brand('tagline') ?: __('common.app_tagline'),
             'version' => AppInfo::version(),
             'description' => AppInfo::description(),
-            'license' => AppInfo::license() ?: 'MIT',
-            'gitUrl' => AppInfo::gitUrl(),
             'authorName' => AppInfo::authorName(),
             'authorEmail' => AppInfo::authorEmail(),
             'authorGithub' => $authorGithub,
-            'environment' => app()->environment(),
-            'phpVersion' => PHP_VERSION,
-            'laravelVersion' => app()->version(),
         ];
-
-        $diagnostic = implode("\n", [
-            $appData['appName'].' System Diagnostic Snapshot',
-            '------------------------------------',
-            'App Name: '.$appData['appName'],
-            'Version: v'.$appData['version'],
-            'Environment: '.$appData['environment'],
-            'PHP Version: '.$appData['phpVersion'],
-            'Laravel Version: '.$appData['laravelVersion'],
-            'License: '.$appData['license'],
-            'Repository: '.$appData['gitUrl'],
-            'Timestamp: '.now()->toIso8601String(),
-        ]);
-
-        $appData['diagnosticSnippet'] = $diagnostic;
 
         $layout = auth()->check() ? 'ui::layouts.app' : 'ui::layouts.guest';
         $title = __('about.about_app', ['app' => $appData['appName']]);

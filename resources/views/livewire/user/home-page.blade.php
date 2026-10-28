@@ -24,31 +24,6 @@
                 <p class="text-base-content/65 mx-auto max-w-2xl text-xs leading-relaxed sm:text-sm lg:text-base">
                     {{ __('user.home.hero_desc') }}
                 </p>
-
-                {{-- Target Audience Pills --}}
-                <div class="mt-4 flex flex-wrap items-center justify-center gap-1.5 sm:mt-5 sm:gap-2">
-                    <x-ts-badge
-                        color="primary"
-                        round
-                        text="{{ __('user.home.hero_secure') }}"
-                        icon="academic-cap"
-                        class="text-xs"
-                    />
-                    <x-ts-badge
-                        color="primary"
-                        round
-                        text="{{ __('user.home.hero_academic') }}"
-                        icon="user-group"
-                        class="text-xs"
-                    />
-                    <x-ts-badge
-                        color="primary"
-                        round
-                        text="{{ __('user.home.hero_global') }}"
-                        icon="building-office-2"
-                        class="text-xs"
-                    />
-                </div>
             </div>
         </div>
 
