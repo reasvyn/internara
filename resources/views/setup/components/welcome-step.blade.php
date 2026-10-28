@@ -3,7 +3,7 @@
 <div class="p-4.5 sm:p-6 lg:p-7">
     <div class="mb-4 text-center sm:mb-5">
         <div
-            class="border-primary/20 bg-primary/10 text-primary ring-primary/10 mx-auto mb-2.5 flex size-12 items-center justify-center rounded-2xl border shadow-xs ring-4 sm:mb-3 sm:size-14 sm:rounded-3xl"
+            class="border-primary/20 bg-primary/10 text-primary ring-primary/10 mx-auto mb-2.5 flex size-12 items-center justify-center rounded-md border shadow-xs ring-4 sm:mb-3 sm:size-14 sm:rounded-lg"
             aria-hidden="true"
         >
             <x-ts-icon name="rocket-launch" class="size-6 sm:size-7" />
@@ -17,9 +17,9 @@
     </div>
 
     @if ($auditPassed)
-        <div class="border-success/20 bg-success/5 mb-3.5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border p-3 sm:mb-4.5 sm:p-3.5">
+        <div class="border-success/20 bg-success/5 mb-3.5 flex flex-wrap items-center justify-between gap-3 rounded-md border p-3 sm:mb-4.5 sm:p-3.5">
             <div class="flex items-center gap-3">
-                <div class="border-success/20 bg-success/10 text-success flex size-8 shrink-0 items-center justify-center rounded-xl border sm:size-9">
+                <div class="border-success/20 bg-success/10 text-success flex size-8 shrink-0 items-center justify-center rounded-md border sm:size-9">
                     <x-ts-icon name="check-badge" class="size-4 sm:size-5" />
                 </div>
                 <div>
@@ -31,7 +31,7 @@
                     </p>
                 </div>
             </div>
-            <span class="border-success/20 bg-success/10 text-success inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-bold">
+            <span class="border-success/20 bg-success/10 text-success inline-flex items-center gap-1.5 rounded-sm border px-2.5 py-0.5 text-xs font-bold">
                 <span class="bg-success size-1.5 animate-pulse rounded-full"></span>
                 {{ __('setup.wizard.fully_ready') }}
             </span>
@@ -45,25 +45,25 @@
             class="mb-3.5 space-y-2 sm:mb-4.5"
         >
             @foreach ($auditResults['categories'] as $key => $category)
-                <x-ts-accordion shadowless class="border-base-content/10 overflow-hidden rounded-2xl border">
+                <x-ts-accordion shadowless class="border-base-content/10 overflow-hidden rounded-lg border">
                     <x-ts-accordion.items :open="$category['has_issue']" :id="'audit-'.$key">
                         <x-slot:trigger>
                             <div class="flex items-center gap-3 py-1">
                                 @if ($category['icon'] === 'fail')
-                                    <div class="border-error/20 bg-error/10 text-error flex size-7 shrink-0 items-center justify-center rounded-lg border">
+                                    <div class="border-error/20 bg-error/10 text-error flex size-7 shrink-0 items-center justify-center rounded-md border">
                                         <x-ts-icon name="x-mark" class="size-4 stroke-[2.5]" />
                                     </div>
                                 @elseif ($category['icon'] === 'warn')
-                                    <div class="border-warning/20 bg-warning/10 text-warning flex size-7 shrink-0 items-center justify-center rounded-lg border">
+                                    <div class="border-warning/20 bg-warning/10 text-warning flex size-7 shrink-0 items-center justify-center rounded-md border">
                                         <x-ts-icon name="exclamation-triangle" class="size-4" />
                                     </div>
                                 @else
-                                    <div class="border-success/20 bg-success/10 text-success flex size-7 shrink-0 items-center justify-center rounded-lg border">
+                                    <div class="border-success/20 bg-success/10 text-success flex size-7 shrink-0 items-center justify-center rounded-md border">
                                         <x-ts-icon name="check" class="size-4 stroke-[2.5]" />
                                     </div>
                                 @endif
                                 <span class="text-base-content text-sm font-bold">{{ $category['label'] }}</span>
-                                <span class="border-base-content/10 bg-base-200/60 text-base-content/60 rounded-full border px-2 py-0.5 font-mono text-[11px] font-semibold">
+                                <span class="border-base-content/10 bg-base-200/60 text-base-content/60 rounded-sm border px-2 py-0.5 font-mono text-[11px] font-semibold">
                                     {{ count($category['checks']) }}
                                 </span>
                             </div>
@@ -73,7 +73,7 @@
                                 <div
                                     role="listitem"
                                     @class([
-                                        'flex items-center justify-between gap-3 px-4 py-3 rounded-xl border text-sm transition-all',
+                                        'flex items-center justify-between gap-3 px-4 py-3 rounded-md border text-sm transition-all',
                                         'border-base-content/10 bg-base-200/30 hover:bg-base-200/50' => $check['status'] === 'pass',
                                         'border-error/20 bg-error/5' => $check['status'] === 'fail',
                                         'border-warning/20 bg-warning/5' => $check['status'] === 'warn',
@@ -90,7 +90,7 @@
 
                                     <div class="flex min-w-0 flex-1 items-center gap-3">
                                         @if ($check['status'] === 'pass')
-                                            <div class="border-success/20 bg-success/10 text-success flex size-6 shrink-0 items-center justify-center rounded-full border">
+                                            <div class="border-success/20 bg-success/10 text-success flex size-6 shrink-0 items-center justify-center rounded-md border">
                                                 <x-ts-icon
                                                     name="check"
                                                     class="size-3.5 stroke-[2.5]"
@@ -98,7 +98,7 @@
                                                 />
                                             </div>
                                         @elseif ($check['status'] === 'fail')
-                                            <div class="border-error/20 bg-error/10 text-error flex size-6 shrink-0 items-center justify-center rounded-full border">
+                                            <div class="border-error/20 bg-error/10 text-error flex size-6 shrink-0 items-center justify-center rounded-md border">
                                                 <x-ts-icon
                                                     name="x-mark"
                                                     class="size-3.5 stroke-[2.5]"
@@ -106,7 +106,7 @@
                                                 />
                                             </div>
                                         @else
-                                            <div class="border-warning/20 bg-warning/10 text-warning flex size-6 shrink-0 items-center justify-center rounded-full border">
+                                            <div class="border-warning/20 bg-warning/10 text-warning flex size-6 shrink-0 items-center justify-center rounded-md border">
                                                 <x-ts-icon
                                                     name="exclamation-triangle"
                                                     class="size-3.5"
@@ -161,7 +161,7 @@
             />
         @else
             <div class="flex w-full items-center gap-3" role="alert">
-                <div class="bg-warning/5 border-warning/20 flex-1 rounded-2xl border px-3.5 py-2.5">
+                <div class="bg-warning/5 border-warning/20 flex-1 rounded-md border px-3.5 py-2.5">
                     <p class="text-warning/80 text-xs font-medium">{{ __('setup.wizard.requirements_not_met') }}</p>
                     <p class="text-warning/60 mt-0.5 text-[11px] sm:text-xs">
                         {{ __('setup.wizard.audit_must_pass') }}

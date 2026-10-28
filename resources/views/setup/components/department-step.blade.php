@@ -7,8 +7,8 @@
     </div>
 
     {{-- Department Context Banner --}}
-    <div class="border-base-content/10 bg-base-200/40 text-base-content/80 mb-4 flex items-start gap-3 rounded-2xl border p-3 text-xs leading-relaxed shadow-2xs sm:mb-5 sm:p-3.5">
-        <div class="border-primary/20 bg-primary/10 text-primary mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-xl border sm:size-8">
+    <div class="border-base-content/10 bg-base-200/40 text-base-content/80 mb-4 flex items-start gap-3 rounded-md border p-3 text-xs leading-relaxed shadow-2xs sm:mb-5 sm:p-3.5">
+        <div class="border-primary/20 bg-primary/10 text-primary mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-md border sm:size-8">
             <x-ts-icon name="building-library" class="size-4" />
         </div>
         <div>

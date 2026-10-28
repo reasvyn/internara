@@ -15,7 +15,7 @@
                     <x-ui::components.brand size="sm" :invert="false" />
 
                     <div class="flex items-center gap-2">
-                        <div class="border-base-content/10 bg-base-100/90 flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 shadow-xs sm:py-1">
+                        <div class="border-base-content/10 bg-base-100/90 flex items-center gap-1.5 rounded-md border px-2.5 py-0.5 shadow-xs sm:py-1">
                             <x-setting::locale.theme-switch size="xs" />
                             <div class="bg-base-content/10 h-3.5 w-px sm:h-4"></div>
                             <livewire:setting.locale.lang-switch class="px-1" />

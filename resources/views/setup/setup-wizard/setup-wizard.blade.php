@@ -12,7 +12,7 @@
                 </p>
             </div>
             <div
-                class="border-base-content/10 bg-base-100/90 text-base-content/70 inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold shadow-2xs backdrop-blur-xs sm:gap-2 sm:px-3.5"
+                class="border-base-content/10 bg-base-100/90 text-base-content/70 inline-flex items-center gap-1.5 rounded-md border px-3 py-1 text-xs font-semibold shadow-2xs backdrop-blur-xs sm:gap-2 sm:px-3.5"
                 aria-live="polite"
             >
                 <span class="bg-primary size-1.5 animate-pulse rounded-full sm:size-2"></span>
@@ -50,7 +50,7 @@
                 <div class="flex flex-1 flex-col items-center gap-1 sm:gap-1.5">
                     <div
                         @class([
-                            'size-7.5 sm:size-8.5 rounded-xl sm:rounded-2xl flex items-center justify-center text-xs font-bold transition-all duration-300 shrink-0',
+                            'size-7.5 sm:size-8.5 rounded-md sm:rounded-lg flex items-center justify-center text-xs font-bold transition-all duration-300 shrink-0',
                             'bg-primary text-primary-content shadow-xs ring-2 sm:ring-4 ring-primary/10' => $isCompleted,
                             'bg-primary text-primary-content ring-2 sm:ring-4 ring-primary/25 shadow-md scale-105' => $isCurrent,
                             'bg-base-100 text-base-content/40 border border-base-content/15 shadow-2xs' => ! $isCompleted && ! $isCurrent,
@@ -93,7 +93,7 @@
 
     {{-- Step Content Card --}}
     <div
-        class="border-base-content/10 bg-base-100 relative overflow-hidden rounded-3xl border shadow-sm backdrop-blur-xs"
+        class="border-base-content/10 bg-base-100 relative overflow-hidden rounded-lg border shadow-sm backdrop-blur-xs"
         x-data="{ loading: false }"
         x-on:finishing.window="loading = true"
         x-on:finished.window="loading = false"
@@ -136,7 +136,7 @@
         <div
             wire:loading
             wire:target="finish"
-            class="bg-base-100/90 absolute inset-0 z-20 flex items-center justify-center rounded-3xl backdrop-blur-md"
+            class="bg-base-100/90 absolute inset-0 z-20 flex items-center justify-center rounded-lg backdrop-blur-md"
         >
             <div class="p-8 text-center">
                 <div class="mb-5 flex items-center justify-center">

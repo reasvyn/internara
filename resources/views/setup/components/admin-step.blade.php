@@ -7,15 +7,15 @@
     </div>
 
     {{-- Pre-configured Administrator Profile Card --}}
-    <div class="border-base-content/10 bg-base-200/40 mb-2.5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border p-3.5 shadow-2xs sm:rounded-3xl sm:p-4.5">
+    <div class="border-base-content/10 bg-base-200/40 mb-2.5 flex flex-wrap items-center justify-between gap-3 rounded-lg border p-3.5 shadow-2xs sm:p-4.5">
         <div class="flex items-center gap-3">
-            <div class="border-primary/20 bg-primary/10 text-primary flex size-10 items-center justify-center rounded-xl border shadow-2xs sm:size-11 sm:rounded-2xl">
+            <div class="border-primary/20 bg-primary/10 text-primary flex size-10 items-center justify-center rounded-md border shadow-2xs sm:size-11">
                 <x-ts-icon name="shield-check" class="size-5 stroke-[2.2] sm:size-6" />
             </div>
             <div>
                 <div class="flex items-center gap-2">
                     <p class="text-base-content text-sm font-bold sm:text-base">{{ $superAdminForm->name }}</p>
-                    <span class="border-primary/20 bg-primary/10 text-primary rounded-full border px-2 py-0.5 text-[9px] font-bold tracking-wide uppercase sm:text-[10px]">
+                    <span class="border-primary/20 bg-primary/10 text-primary rounded-sm border px-2 py-0.5 text-[9px] font-bold tracking-wide uppercase sm:text-[10px]">
                         Super Admin
                     </span>
                 </div>
@@ -26,13 +26,13 @@
         </div>
         <div class="flex items-center gap-2">
             <span class="text-base-content/60 text-xs font-medium">{{ __('setup.wizard.username') }}:</span>
-            <code class="border-primary/20 bg-primary/10 text-primary rounded-lg border px-2.5 py-1 font-mono text-xs font-bold tracking-wide sm:rounded-xl sm:px-3">
+            <code class="border-primary/20 bg-primary/10 text-primary rounded-md border px-2.5 py-1 font-mono text-xs font-bold tracking-wide sm:px-3">
                 {{ $superAdminForm->username }}
             </code>
         </div>
     </div>
 
-    <div class="border-base-content/10 bg-base-200/20 mb-4 flex items-start gap-2.5 rounded-xl border p-2.5 text-xs sm:mb-5 sm:p-3">
+    <div class="border-base-content/10 bg-base-200/20 mb-4 flex items-start gap-2.5 rounded-md border p-2.5 text-xs sm:mb-5 sm:p-3">
         <x-ts-icon name="information-circle" class="text-base-content/50 mt-0.5 size-4 shrink-0" />
         <p class="text-base-content/60 text-[11px] leading-relaxed sm:text-xs">
             {{ __('setup.wizard.username_notice') }}
@@ -66,8 +66,8 @@
         </div>
 
         {{-- Password Requirements Hint Card --}}
-        <div class="border-info/20 bg-info/5 flex items-start gap-3 rounded-xl border p-3 text-xs sm:rounded-2xl sm:p-3.5">
-            <div class="border-info/20 bg-info/10 text-info mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-lg border sm:size-7">
+        <div class="border-info/20 bg-info/5 flex items-start gap-3 rounded-md border p-3 text-xs sm:p-3.5">
+            <div class="border-info/20 bg-info/10 text-info mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-md border sm:size-7">
                 <x-ts-icon name="key" class="size-3.5 sm:size-4" />
             </div>
             <div class="flex-1">
