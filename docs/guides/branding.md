@@ -106,8 +106,8 @@ page.
 
 | Context              | Typeface        | Weights       | Strategy                                |
 | -------------------- | --------------- | ------------- | --------------------------------------- |
-| UI                   | Instrument Sans | 400, 500, 600 | Self-hosted WOFF2, `font-display: swap` |
-| Headings             | Instrument Sans | 900 (Heavy)   | Tight letter-spacing                    |
+| UI                   | Instrument Sans | 400, 500, 600, 700 | Self-hosted WOFF2, `font-display: swap` |
+| Headings             | Instrument Sans | 700 (Bold)    | Heaviest cut shipped; tight letter-spacing |
 | Email                | Arial           | —             | Maximum email client compatibility      |
 | PDF - recovery codes | Courier New     | —             | Monospace for readability               |
 | PDF - body           | System fonts    | —             | Broad compatibility                     |

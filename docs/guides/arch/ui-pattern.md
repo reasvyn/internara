@@ -49,7 +49,7 @@ Hard rules. Violations are architecture violations.
 | Caption/meta | `text-xs text-base-content/50` | Timestamps, helpers |
 | Stat value | `text-2xl font-bold` | Dashboard KPIs |
 
-Limit to Instrument Sans `400/500/600` + `900` for display `h1`. Line length `max-w-prose` (65ch) for reading passages; use `truncate` + `min-w-0` in flex cards. Never `style="font-size:27px"`.
+Limit to Instrument Sans `400/500/600/700` — `700` (Bold) is the heaviest cut the family ships, so display `h1` tops out at `font-bold`; there is no 900/Black. Line length `max-w-prose` (65ch) for reading passages; use `truncate` + `min-w-0` in flex cards. Never `style="font-size:27px"`.
 
 **Whitespace as separator (Material 3 baseline 4dp / 8-point grid).**
 
@@ -183,9 +183,9 @@ Prevent drift: ESLint/Prettier checks, code review flags arbitrary values (`[val
 
 ### 5. Typography
 
-- **Scale:** Tailwind `text-xs/sm/base/lg/xl/2xl` + `font-normal/medium/semibold/black` + `tracking-tight` for display. `leading-relaxed` (1.6) for body, `leading-none/tight` for badges/buttons.
+- **Scale:** Tailwind `text-xs/sm/base/lg/xl/2xl` + `font-normal/medium/semibold/bold` + `tracking-tight` for display. `leading-relaxed` (1.6) for body, `leading-none/tight` for badges/buttons.
 - **Measure:** `max-w-prose` for articles, `max-w-7xl` for pages, `truncate` in flex.
-- **Font:** Self-hosted Instrument Sans `400/500/600` with `font-display:swap` (already in `app.css`). No external fetch. Email/PDF use `Arial`/`Courier New`. Never load Google Fonts at runtime without CSP update in `SecurityHeadersMiddleware`.
+- **Font:** Self-hosted Instrument Sans `400/500/600/700` with `font-display:swap` (already in `app.css`). No external fetch. Email/PDF use `Arial`/`Courier New`. Never load Google Fonts at runtime without CSP update in `SecurityHeadersMiddleware`.
 - **Responsive type:** `text-sm` base → `lg:text-base`; `text-2xl` for `h1` (not viewport-jacked `clamp()` unless editorial hero — avoid for admin UI).
 
 ### 6. Iconography
