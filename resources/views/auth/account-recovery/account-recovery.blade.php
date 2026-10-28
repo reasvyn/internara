@@ -41,7 +41,7 @@
                 <x-ts-button
                     type="submit"
                     text="{{ __('auth.account_recovery.submit') }}"
-                    class="w-full"
+                    class="w-full font-bold"
                     color="primary"
                     loading="redeem"
                 />

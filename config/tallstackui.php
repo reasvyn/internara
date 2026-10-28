@@ -244,7 +244,7 @@ return [
                 | spinner: controls the default wire:loading spinner variant. (Allowed: null, ring, throbber, gradient, ping, dots, pulse, typing, bars, wave).
                 |
                 */
-                'round' => 'xl',
+                'round' => 'md',
                 'spinner' => null,
             ],
         ],
@@ -282,7 +282,7 @@ return [
             [
                 'shadowless' => false,
                 'bordered' => false,
-                'round' => '2xl',
+                'round' => 'lg',
             ],
         ],
         'chart' => [

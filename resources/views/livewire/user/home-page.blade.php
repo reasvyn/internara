@@ -180,7 +180,8 @@
                                 icon="arrow-right"
                                 icon-right
                                 color="primary"
-                                class="w-full font-semibold shadow-xs"
+                                lg
+                                class="w-full font-bold shadow-xs transition-all duration-200 hover:shadow-md"
                             />
                         @else
                             <x-ts-button
@@ -190,7 +191,8 @@
                                 icon="arrow-right"
                                 icon-right
                                 color="primary"
-                                class="w-full font-semibold sm:hidden"
+                                lg
+                                class="w-full font-bold sm:hidden"
                             />
                         @endif
                     </div>
@@ -257,7 +259,8 @@
                             icon-right
                             :color="$registration['status'] === 'open' ? 'secondary' : 'primary'"
                             :outline="$registration['status'] === 'open'"
-                            class="w-full font-semibold"
+                            lg
+                            class="w-full font-bold"
                         />
 
                         <div class="border-base-content/10 mt-3.5 w-full border-t pt-2.5 text-center sm:mt-4 sm:pt-3">

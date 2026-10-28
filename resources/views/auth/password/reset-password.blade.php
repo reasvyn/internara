@@ -35,7 +35,7 @@
                 <x-ts-button
                     type="submit"
                     :text="__('passwords.reset_password')"
-                    class="w-full"
+                    class="w-full font-bold"
                     color="primary"
                     loading="resetPassword"
                 />

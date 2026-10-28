@@ -36,7 +36,7 @@
                     <x-ts-button
                         type="submit"
                         :text="__('passwords.send_reset_link')"
-                        class="w-full"
+                        class="w-full font-bold"
                         color="primary"
                         loading="sendResetLink"
                     />

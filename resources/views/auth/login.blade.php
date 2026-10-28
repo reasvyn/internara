@@ -53,7 +53,7 @@
                 <x-ts-button
                     type="submit"
                     :text="__('auth.login.submit')"
-                    class="w-full"
+                    class="w-full font-bold"
                     color="primary"
                     loading="login"
                 />
