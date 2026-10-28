@@ -86,7 +86,7 @@
                 @endif
             </div>
 
-            <h2 class="tracking-tightest text-base-content mb-2 text-3xl font-bold">
+            <h2 class="text-base-content mb-2 text-xl font-bold tracking-tight">
                 {{ $selectedAssignment->title }}
             </h2>
 

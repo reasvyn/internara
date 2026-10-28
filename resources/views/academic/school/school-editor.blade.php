@@ -4,7 +4,7 @@
             <x-ts-icon name="building-library" class="size-6" />
         </div>
         <div>
-            <h2 class="text-xl font-bold">{{ __('school.title') }}</h2>
+            <h1 class="text-2xl font-bold tracking-tight">{{ __('school.title') }}</h2>
             <p class="text-base-content/50 mt-0.5 text-sm">{{ __('school.subtitle') }}</p>
         </div>
     </div>

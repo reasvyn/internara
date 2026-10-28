@@ -110,7 +110,7 @@
                 {{-- Evaluator Identification --}}
                 <x-ts-card shadowless class="border-base-content/10 bg-base-100 border">
                     <x-slot:header>
-                        <h2 class="text-base font-semibold text-neutral-900 dark:text-white">
+                        <h2 class="text-xl font-bold tracking-tight text-base-content">
                             {{ __('assessment.evaluator_identity') }}
                         </h2>
                     </x-slot:header>

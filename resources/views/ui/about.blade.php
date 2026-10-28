@@ -39,7 +39,7 @@
 
                     <div class="flex-1 space-y-2 text-center sm:text-left">
                         <div class="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
-                            <h2 class="text-base-content text-xl font-bold sm:text-2xl">{{ __('about.pkl.title') }}</h2>
+                            <h2 class="text-base-content text-xl font-bold tracking-tight">{{ __('about.pkl.title') }}</h2>
                             <x-ts-badge :text="__('about.pkl.badge')" color="primary" light round="sm" sm />
                         </div>
 
@@ -53,7 +53,7 @@
             {{-- PKL Management Pillars Section --}}
             <section class="space-y-6">
                 <div class="text-center md:text-left">
-                    <h2 class="text-base-content text-xl font-bold sm:text-2xl">
+                    <h2 class="text-base-content text-xl font-bold tracking-tight">
                         {{ __('about.management.heading') }}
                     </h2>
                     <p class="text-base-content/60 text-xs sm:text-sm">{{ __('about.management.subheading') }}</p>
@@ -132,7 +132,7 @@
                     <div class="flex-1 space-y-4 text-center md:text-left">
                         <div class="space-y-1">
                             <div class="flex flex-wrap items-center justify-center gap-2 md:justify-start">
-                                <h2 class="text-base-content text-xl font-bold sm:text-2xl">{{ $authorName }}</h2>
+                                <h2 class="text-base-content text-xl font-bold tracking-tight">{{ $authorName }}</h2>
                                 <x-ts-badge :text="__('about.author.role')" color="primary" light round="sm" sm />
                             </div>
                             <p class="text-base-content/60 text-xs sm:text-sm">{{ __('about.author.subheading') }}</p>

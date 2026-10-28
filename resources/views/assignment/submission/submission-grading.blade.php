@@ -2,7 +2,7 @@
     {{-- Header --}}
     <div class="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
         <div>
-            <h2 class="tracking-tightest text-base-content text-3xl font-bold">
+            <h1 class="text-base-content text-2xl font-bold tracking-tight">
                 {{ __('submission.grading_title') }}
             </h2>
             <p class="text-base-content/40 mt-2 text-[10px] font-bold tracking-[0.3em] uppercase">

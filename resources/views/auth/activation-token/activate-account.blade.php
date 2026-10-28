@@ -1,7 +1,7 @@
 <div>
     <div class="bg-base-100 border-base-content/10 rounded-lg border p-5 shadow-xs sm:p-6">
         <div class="mb-4 text-center sm:mb-5">
-            <h2 class="text-base font-bold sm:text-lg">{{ __('auth.activate.title') }}</h2>
+            <h1 class="text-base font-bold sm:text-lg">{{ __('auth.activate.title') }}</h2>
             <p class="text-base-content/60 mt-0.5 text-xs sm:text-sm">{{ __('auth.activate.subtitle') }}</p>
         </div>
 

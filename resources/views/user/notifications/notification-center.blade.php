@@ -1,6 +1,6 @@
 <div class="py-4">
     <div class="mb-6">
-        <h2 class="text-xl font-bold">{{ __('notifications.ui.title') }}</h2>
+        <h1 class="text-2xl font-bold tracking-tight">{{ __('notifications.ui.title') }}</h2>
         <p class="text-base-content/60 mt-1 text-sm">{{ __('notifications.ui.subtitle') }}</p>
     </div>
 

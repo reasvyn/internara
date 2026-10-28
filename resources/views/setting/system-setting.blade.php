@@ -5,7 +5,7 @@
                 <x-ts-icon name="cog-6-tooth" class="size-6" />
             </div>
             <div>
-                <h2 class="text-xl font-bold">{{ __('setting.title') }}</h2>
+                <h1 class="text-2xl font-bold tracking-tight">{{ __('setting.title') }}</h2>
                 <p class="text-base-content/50 mt-0.5 text-sm">{{ __('setting.subtitle') }}</p>
             </div>
         </div>

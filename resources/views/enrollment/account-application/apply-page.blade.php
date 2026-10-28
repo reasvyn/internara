@@ -8,7 +8,7 @@
         <form wire:submit="submit" no-separator>
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div class="mt-4 md:col-span-2">
-                    <h2 class="text-lg font-semibold">{{ __('registration.account_application.personal_info') }}</h2>
+                    <h2 class="text-xl font-bold tracking-tight">{{ __('registration.account_application.personal_info') }}</h2>
                     <hr class="my-2" />
                 </div>
 
@@ -25,7 +25,7 @@
                 </div>
 
                 <div class="mt-4 md:col-span-2">
-                    <h2 class="text-lg font-semibold">{{ __('registration.account_application.student_info') }}</h2>
+                    <h2 class="text-xl font-bold tracking-tight">{{ __('registration.account_application.student_info') }}</h2>
                     <hr class="my-2" />
                 </div>
 
@@ -51,7 +51,7 @@
                 />
 
                 <div class="mt-4 md:col-span-2">
-                    <h2 class="text-lg font-semibold">
+                    <h2 class="text-xl font-bold tracking-tight">
                         {{ __('registration.account_application.internship_registration') }}
                     </h2>
                     <hr class="my-2" />

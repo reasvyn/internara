@@ -16,7 +16,7 @@
                 </div>
 
                 {{-- Tagline --}}
-                <h1 class="from-base-content to-base-content/60 mb-3 bg-gradient-to-br bg-clip-text text-2xl font-black tracking-tight text-transparent sm:mb-4 sm:text-3xl lg:text-4xl">
+                <h1 class="from-base-content to-base-content/60 mb-3 bg-gradient-to-br bg-clip-text text-2xl font-bold tracking-tight text-transparent sm:mb-4 sm:text-3xl lg:text-4xl">
                     {{ brand('tagline') ?: __('common.app_tagline') }}
                 </h1>
 
@@ -78,7 +78,7 @@
 
                         {{-- Title & Subtitle --}}
                         <div class="mt-3.5 w-full text-left sm:mt-4">
-                            <h2 class="text-base-content text-base font-bold sm:text-lg lg:text-xl">
+                            <h2 class="text-base-content text-xl font-bold tracking-tight">
                                 {{ __('user.home.registration_title') }}
                             </h2>
                             <p class="text-base-content/65 mt-1 text-xs leading-relaxed sm:text-sm">
@@ -180,7 +180,7 @@
                         </div>
 
                         <div class="mt-3.5 w-full text-left sm:mt-4">
-                            <h2 class="text-base-content text-base font-bold sm:text-lg lg:text-xl">
+                            <h2 class="text-base-content text-xl font-bold tracking-tight">
                                 {{ __('user.home.login_title') }}
                             </h2>
                             <p class="text-base-content/65 mt-1 text-xs leading-relaxed sm:text-sm">
@@ -217,7 +217,7 @@
                         <x-ts-icon name="academic-cap" class="size-5 sm:size-6" />
                     </div>
                     <div class="space-y-1.5">
-                        <h2 class="text-base-content text-base font-bold sm:text-lg">
+                        <h2 class="text-base-content text-xl font-bold tracking-tight">
                             {{ __('user.home.pkl_definition_title') }}
                         </h2>
                         <p class="text-base-content/75 text-xs leading-relaxed sm:text-sm">
@@ -230,7 +230,7 @@
             {{-- Feature Highlights --}}
             <div class="mx-auto mt-10 max-w-4xl sm:mt-14">
                 <div class="mb-5 text-center sm:mb-8">
-                    <h2 class="text-base-content mb-1.5 text-lg font-bold sm:text-xl lg:text-2xl">
+                    <h2 class="text-base-content mb-1.5 text-xl font-bold tracking-tight">
                         {{ __('user.home.features_title') }}
                     </h2>
                     <p class="text-base-content/55 mx-auto max-w-xl text-xs sm:text-sm">

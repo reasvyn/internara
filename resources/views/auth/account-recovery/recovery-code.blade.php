@@ -4,7 +4,7 @@
             <x-ts-icon name="key" class="size-5 sm:size-6" />
         </div>
         <div>
-            <h2 class="text-lg font-bold sm:text-xl">{{ __('profile.recovery.title') }}</h2>
+            <h1 class="text-lg font-bold sm:text-xl">{{ __('profile.recovery.title') }}</h2>
             <p class="text-base-content/60 mt-0.5 text-xs sm:text-sm">{{ __('profile.recovery.subtitle') }}</p>
         </div>
     </div>

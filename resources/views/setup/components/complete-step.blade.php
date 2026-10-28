@@ -28,7 +28,7 @@
         </style>
     @endpush
 
-    <h2 class="text-base-content mb-1 text-lg font-bold tracking-tight sm:text-2xl">
+    <h2 class="text-base-content mb-1 text-xl font-bold tracking-tight">
         {{ __('setup.wizard.setup_complete') }}
     </h2>
     <p class="text-base-content/60 mx-auto mb-4 max-w-md text-xs leading-relaxed sm:mb-5 sm:text-sm">
