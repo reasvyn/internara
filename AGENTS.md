@@ -399,7 +399,99 @@ running image. Full checklist: `docs/guides/upgrading.md`.
 
 ---
 
-## 9. Decision Gate — Reason Only Until Obvious
+## 9. Multi-Agent Parallel Collaboration Protocol (Provider-Agnostic)
+
+This protocol governs concurrent development when multiple AI agents—regardless of model, provider
+(Anthropic, OpenAI, Google, DeepSeek, local LLMs), or client tool (Cursor, Roo, Windsurf, Aider,
+Cline, Antigravity)—operate simultaneously on this codebase.
+
+### 9.1 Stateless Ground Truth Contract
+
+1. **Repo & Git as the Single Shared Memory:**
+   - Ephemeral chat context or agent-specific scratchpads are NEVER shared truth. Ground truth lives
+     exclusively in the Git commit log, repository files, and GitHub Spec Issues (#442–#509).
+   - Any agent starting a task MUST assume other agents have pushed changes moments before. Never
+     assume the working tree or remote branch is static.
+2. **Standard Entrypoint:**
+   - Every agent MUST load this file (`AGENTS.md`) first. No proprietary agent instruction format
+     overrides the conventions, invariants (C1–C8, D1–D6), or architecture boundaries defined here.
+
+### 9.2 Concurrency Unit & Domain Partitioning
+
+1. **Module / Domain as the Concurrency Unit:**
+   - Work is partitioned strictly along **module and domain boundaries** (`app/Modules/{Module}/Domain/{Domain}/`).
+   - Multiple agents SHALL NOT concurrently edit the same module domain without explicit dependency
+     handover. One agent owns `Academic`, while another owns `Journal`, and a third owns `User`.
+2. **Critical Shared Zones (Serial Access Protocol):**
+   - The following paths are **Critical Shared Zones**:
+     - `app/Modules/Core/` (base classes, shared contracts, common helpers)
+     - `database/migrations/` (schema migrations)
+     - `routes/web/` (route definitions)
+     - `config/` (application configuration)
+     - `resources/css/app.css` & `resources/views/ui/layouts/` (global styling & shells)
+     - `composer.lock` & `package-lock.json` (dependency lockfiles)
+   - **Rule for Shared Zones:** Fetch and rebase immediately before touching shared zones (`git pull --rebase origin main`). Keep edits surgical and localized. Run the arch-guard scanner batch immediately and commit as a single atomic scope before moving on.
+
+### 9.3 Workspace Isolation: Git Worktrees
+
+When multiple agents run concurrently on the same physical host machine, sharing a single Git working
+tree causes file locking, watcher thrashing, and uncommitted collision.
+
+1. **Isolate with Git Worktree:**
+   - Each agent SHOULD operate inside its own dedicated worktree:
+     ```bash
+     git worktree add ../internara-agent-{agent_id} -b {type}/{module}-{short-desc}
+     ```
+2. **Independent Environment & Cache:**
+   - Each worktree maintains its own branch and build state. Do not share ephemeral lockfiles or
+     untracked scratch directories.
+3. **Worktree Cleanup:**
+   - When the agent finishes its scope, commits, and pushes/merges its branch, remove the worktree:
+     ```bash
+     git worktree remove ../internara-agent-{agent_id}
+     ```
+
+### 9.4 Task Claiming & GitHub Spec Protocol
+
+1. **Claim Requirement Before Implementing:**
+   - Before writing code, query the governing GitHub Spec Issue:
+     ```bash
+     gh issue list --label spec --search "[{SPEC_ID}]"
+     python3 scripts/py/scan_spec_tests.py --module {Module}
+     ```
+   - Check the issue task checklist (`- [ ]`). Announce or record which requirement ID (`REQ_ID`)
+     is currently being executed.
+   - If another agent or commit is actively touching that requirement, stop and pick an unassigned
+     requirement or orthogonal module.
+2. **Update Checklists on Verification:**
+   - When a requirement passes its targeted tests, check the box (`- [x]`) in the GitHub Issue body.
+3. **Strict Commit Traceability:**
+   - Every commit must link to its governing Spec ID and Issue number:
+     `type(module): [SPEC_ID] implement REQ_ID (ref #ISSUE_NO)`
+
+### 9.5 Rebase-First Synchronization & Non-Destructive Testing
+
+1. **Always Rebase, Never Merge-Bubble:**
+   - Keep Git history linear. Always pull with rebase before pushing:
+     ```bash
+     git fetch origin main
+     git rebase origin/main
+     ```
+   - Never push merge bubbles (`Merge branch 'main' of ...`) to shared branches.
+2. **Database Concurrency in Local Testing:**
+   - Never run global destructive database commands (`migrate:fresh --seed`) on a shared SQLite
+     database while a sibling agent is executing Feature tests.
+   - Use targeted test filters (`php artisan test --compact --filter={ClassName}`) or Pest parallel
+     test runner (`vendor/bin/pest --parallel`), which spins isolated per-process SQLite test databases.
+3. **Conflict Resolution Invariant:**
+   - If a merge conflict occurs with a sibling agent's commit during rebase:
+     1. Respect SSoT priority: `adr > specs > guides > code > refs`.
+     2. The governing GitHub Spec requirement takes precedence over ad-hoc implementation choices.
+     3. Never force-push (`git push --force`) to `main`, `staging`, or `hotfix`.
+
+---
+
+## 10. Decision Gate — Reason Only Until Obvious
 
 Most actions need no deliberative loop: a governing requirement, template/validator, or existing
 sibling makes the answer obvious — then **act**. Deep reasoning is reserved for genuine conflicts
@@ -415,7 +507,7 @@ sibling makes the answer obvious — then **act**. Deep reasoning is reserved fo
 
 ---
 
-## 10. Self-Improvement Loop (Judgment-Based)
+## 11. Self-Improvement Loop (Judgment-Based)
 
 `docs/` is authored by and for **human developers** — agents never write documentation there for
 themselves. When a session produced a durable decision or recurring pattern:
@@ -425,7 +517,7 @@ themselves. When a session produced a durable decision or recurring pattern:
 
 ---
 
-## 11. Project Snapshot
+## 12. Project Snapshot
 
 | Fact | Value |
 |---|---|
@@ -440,7 +532,7 @@ Module roster, dependency graph, and module health: `docs/refs/modules/index.md`
 
 ---
 
-## 12. Quick References
+## 13. Quick References
 
 - `docs/architecture.md` — 4-layer architecture, data flow, dependency rules R1–R7
 - `docs/conventions.md` — C1–C8, D1–D6 invariants, pre-commit & code-review checklists
