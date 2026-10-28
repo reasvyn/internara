@@ -279,8 +279,6 @@ return [
         'registration_not_open_yet' => 'Registration is not open yet. Please come back when the window starts.',
         'registration_closed' => 'Registration closed',
         'registration_closed_desc' => 'Registration for this period has ended. Please contact your school coordinator for further assistance.',
-        'registration_unavailable' => 'No Open Registrations',
-        'registration_unavailable_desc' => 'There is currently no open internship registration. Please check back later or contact your school coordinator.',
         'login_title' => 'Account Sign In',
         'login_desc' => 'Sign in to your account to record daily journals, attendance records, mentoring notes, or manage internship data.',
         'login_action' => 'Sign In',

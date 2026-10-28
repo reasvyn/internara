@@ -141,16 +141,6 @@
                                         {{ __('user.home.registration_closed_desc') }}
                                     </p>
                                 </div>
-                            @else
-                                <div class="border-base-content/10 bg-base-200/50 flex items-start gap-2.5 rounded-md border p-3.5 text-xs">
-                                    <x-ts-icon
-                                        name="question-mark-circle"
-                                        class="text-base-content/60 mt-0.5 size-4 shrink-0"
-                                    />
-                                    <p class="text-base-content/75 text-xs leading-relaxed">
-                                        {{ __('user.home.registration_unavailable_desc') }}
-                                    </p>
-                                </div>
                             @endif
                         </div>
                     </div>
