@@ -36,12 +36,6 @@
             icon="check-badge"
             color="text-success"
         />
-        <x-ui::widgets.stat-card
-            :title="__('dashboard.teacher.unresolved_incidents')"
-            :value="$unresolvedIncidents"
-            icon="shield-exclamation"
-            color="text-error"
-        />
     </div>
 
     {{-- Main + Sidebar --}}

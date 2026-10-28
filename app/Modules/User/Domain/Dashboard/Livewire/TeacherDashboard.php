@@ -19,8 +19,6 @@ class TeacherDashboard extends UserDashboard
 
     public int $supervisionLogsCount = 0;
 
-    public int $unresolvedIncidents = 0;
-
     public function boot(): void
     {
         $user = auth()->user();
@@ -49,7 +47,6 @@ class TeacherDashboard extends UserDashboard
         $this->activeCompanies = $stats['activeCompanies'];
         $this->ungradedSubmissions = $stats['ungradedSubmissions'];
         $this->supervisionLogsCount = $stats['supervisionLogsCount'];
-        $this->unresolvedIncidents = $stats['unresolvedIncidents'];
     }
 
     public function render(): View

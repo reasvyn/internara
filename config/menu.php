@@ -177,11 +177,6 @@ return [
                     'label' => 'common.sidebar.logbook',
                 ],
                 [
-                    'route' => 'sysadmin.incidents',
-                    'icon' => 'o-exclamation-triangle',
-                    'label' => 'common.sidebar.incidents',
-                ],
-                [
                     'route' => 'monitoring-visits.index',
                     'icon' => 'o-map-pin',
                     'label' => 'common.sidebar.visits',
@@ -223,11 +218,6 @@ return [
                     'route' => 'assessments',
                     'icon' => 'o-clipboard-document-check',
                     'label' => 'common.sidebar.assessments',
-                ],
-                [
-                    'route' => 'student.incidents.report',
-                    'icon' => 'o-exclamation-triangle',
-                    'label' => 'common.sidebar.report_incident',
                 ],
 
                 [
