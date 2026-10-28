@@ -382,6 +382,10 @@ size. If a screen seems to need a fifth visual tier, the nesting is the problem,
   already renders `page-header`.
 - **Hero exception.** Landing/marketing surfaces may scale `h1` to `text-3xl sm:text-4xl lg:text-5xl`
   with `text-balance`; admin surfaces never do.
+- **Compact shells are the other exception.** Auth cards and the setup wizard render their `h1` at
+  `text-base`/`text-lg` because the shell is a single narrow panel — level is what matters, not size.
+  The rule this must never break is *one `h1` per page*: an auth page whose only heading was `h2`
+  announced no page title at all.
 - **Desktop scaling** is `sm:`-based and reserved for the `h1` hero variant; section and card headings
   stay fixed, so tiers cannot collide at any breakpoint. No viewport-jacked `clamp()` outside hero
   surfaces.
