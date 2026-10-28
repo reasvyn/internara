@@ -99,6 +99,11 @@ return [
         'timeline' => 'Timeline Activity',
         'timeline_empty' => 'No recent activity',
         'view_evaluations' => 'View Evaluations',
+        'internship_details' => 'Internship Placement Details',
+        'placement_location' => 'Placement Location',
+        'internship_period' => 'Internship Period',
+        'academic_mentor' => 'Academic Supervisor',
+        'no_mentor_assigned' => 'Not yet assigned',
     ],
 
     'teacher' => [

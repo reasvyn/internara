@@ -5,7 +5,7 @@
     />
 
     {{-- Stats --}}
-    <div class="mb-6 grid grid-cols-2 gap-3 md:grid-cols-3">
+    <div class="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         <x-ui::widgets.stat-card
             :title="__('dashboard.stats.supervised_students')"
             :value="$supervisedStudents"
@@ -55,7 +55,7 @@
                     :title="__('dashboard.teacher.no_journals')"
                 />
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
                     <x-ui::widgets.action-button
                         :label="__('dashboard.teacher.verify_logbooks')"
                         icon="pencil-square"

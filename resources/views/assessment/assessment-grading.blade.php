@@ -213,10 +213,10 @@
                     <x-ts-select.styled
                         wire:model="magicLinkValidityDays"
                         :options="[
-                            ['label' => '7 Hari', 'value' => 7],
-                            ['label' => '14 Hari', 'value' => 14],
-                            ['label' => '30 Hari (1 Bulan - Default)', 'value' => 30],
-                            ['label' => '60 Hari (2 Bulan)', 'value' => 60],
+                            ['label' => __('assessment.days_7'), 'value' => 7],
+                            ['label' => __('assessment.days_14'), 'value' => 14],
+                            ['label' => __('assessment.days_30_default'), 'value' => 30],
+                            ['label' => __('assessment.days_60'), 'value' => 60],
                         ]"
                         select="label:label|value:value"
                     />

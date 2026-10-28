@@ -60,7 +60,7 @@
                         {{ $this->registration?->internship?->title ?? '—' }}
                     </span>
                     <span class="text-base-content/60 text-xs">
-                        {{ $this->registration?->start_date?->format('d M Y') ?? '—' }} - {{ $this->registration?->end_date?->format('d M Y') ?? '—' }}
+                        {{ $this->registration?->start_date?->translatedFormat('d M Y') ?? '—' }} - {{ $this->registration?->end_date?->translatedFormat('d M Y') ?? '—' }}
                     </span>
                 </div>
 

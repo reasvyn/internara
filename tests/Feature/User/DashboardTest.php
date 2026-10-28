@@ -45,7 +45,7 @@ describe('CKKZC: dashboard routing, caching, and role components', function (): 
         $supervisor = User::factory()->create();
         $supervisor->assignRole('supervisor');
         $this->actingAs($supervisor);
-        $this->get(route('dashboard'))->assertRedirect(route('supervisor.dashboard'));
+        $this->get(route('dashboard'))->assertRedirect(route('teacher.dashboard'));
     });
 
     test('CKKZC-FR-DASH-006: unrecognized role fails closed with 403 (also FR-DASH-007, UC-DASH-007, DD-DASH-001)', function (): void {

@@ -99,6 +99,11 @@ return [
         'timeline' => 'Aktivitas Terbaru',
         'timeline_empty' => 'Belum ada aktivitas',
         'view_evaluations' => 'Lihat Evaluasi',
+        'internship_details' => 'Informasi Penempatan PKL',
+        'placement_location' => 'Lokasi Penempatan',
+        'internship_period' => 'Periode PKL',
+        'academic_mentor' => 'Guru Pembimbing',
+        'no_mentor_assigned' => 'Belum Ditugaskan',
     ],
 
     'teacher' => [

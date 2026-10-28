@@ -290,7 +290,7 @@ return [
                     'label' => 'common.sidebar.reports',
                 ],
                 [
-                    'route' => 'sysadmin.student-reports.index',
+                    'route' => 'sysadmin.student-report.index',
                     'icon' => 'o-academic-cap',
                     'label' => 'common.sidebar.student_reports',
                 ],

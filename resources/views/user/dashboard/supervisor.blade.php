@@ -55,18 +55,12 @@
                     :title="__('dashboard.supervisor.no_verifications')"
                 />
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 gap-4">
                     <x-ui::widgets.action-button
                         :label="__('dashboard.supervisor.verify_logbooks')"
                         icon="pencil-square"
                         link="{{ route('sysadmin.logbook') }}"
                         color="primary"
-                    />
-                    <x-ui::widgets.action-button
-                        :label="__('dashboard.supervisor.submit_evaluation')"
-                        icon="star"
-                        link="#"
-                        color="secondary"
                     />
                 </div>
             </x-ts-card>

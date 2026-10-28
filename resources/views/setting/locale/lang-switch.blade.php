@@ -74,7 +74,10 @@
                         </span>
                     </x-ts-dropdown.items>
                 @else
-                    <x-ts-dropdown.items :href="route('locale.switch', $code)" :active="$current === $code">
+                    <x-ts-dropdown.items
+                        x-on:click="document.cookie='locale={{ $code }};path=/'; location.reload()"
+                        :active="$current === $code"
+                    >
                         <span class="inline-flex items-center gap-2">
                             <span
                                 class="fi fi-{{ $meta['country_code'] }} text-base leading-none rounded-xs shadow-xs"

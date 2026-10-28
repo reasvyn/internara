@@ -167,11 +167,90 @@
     {{-- Bottom Row --}}
     <div class="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div class="lg:col-span-2">
-            <x-ui::widgets.profile-summary :showEdit="true" />
+            @if ($registration)
+                <x-ts-card shadowless class="border-base-content/10 bg-base-100 border">
+                    <x-slot:header>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="bg-primary/10 text-primary flex size-6 items-center justify-center rounded-md">
+                                    <x-ts-icon name="building-office" class="size-3.5" />
+                                </div>
+                                <span class="text-sm font-semibold">{{ __('dashboard.student.internship_details') }}</span>
+                            </div>
+                            <span class="badge badge-primary badge-outline text-xs capitalize">
+                                {{ $registration->status }}
+                            </span>
+                        </div>
+                    </x-slot:header>
+
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div>
+                            <span class="text-base-content/50 block text-xs font-medium uppercase">
+                                {{ __('dashboard.student.company') }}
+                            </span>
+                            <span class="text-base-content mt-1 block text-sm font-semibold">
+                                {{ $registration->placement?->company?->name ?? '—' }}
+                            </span>
+                            @if ($registration->placement?->company?->industry_sector)
+                                <span class="text-base-content/60 text-xs">
+                                    {{ $registration->placement->company->industry_sector }}
+                                </span>
+                            @endif
+                        </div>
+
+                        <div>
+                            <span class="text-base-content/50 block text-xs font-medium uppercase">
+                                {{ __('dashboard.student.position') }}
+                            </span>
+                            <span class="text-base-content mt-1 block text-sm font-semibold">
+                                {{ $registration->placement?->name ?? '—' }}
+                            </span>
+                            @if ($registration->placement?->address)
+                                <span
+                                    class="text-base-content/60 block truncate text-xs"
+                                    title="{{ $registration->placement->address }}"
+                                >
+                                    {{ $registration->placement->address }}
+                                </span>
+                            @endif
+                        </div>
+
+                        <div>
+                            <span class="text-base-content/50 block text-xs font-medium uppercase">
+                                {{ __('dashboard.student.internship_period') }}
+                            </span>
+                            <span class="text-base-content mt-1 block text-sm font-medium">
+                                {{ $registration->start_date?->translatedFormat('d M Y') ?? '—' }} &mdash; {{ $registration->end_date?->translatedFormat('d M Y') ?? '—' }}
+                            </span>
+                            <span class="text-base-content/60 text-xs">
+                                {{ $registration->internship?->name ?? '—' }}
+                            </span>
+                        </div>
+
+                        <div>
+                            <span class="text-base-content/50 block text-xs font-medium uppercase">
+                                {{ __('dashboard.student.academic_mentor') }}
+                            </span>
+                            <span class="text-base-content mt-1 block text-sm font-medium">
+                                {{ $registration->mentors?->first()?->name ?? __('dashboard.student.no_mentor_assigned') }}
+                            </span>
+                            @if ($registration->mentors?->first()?->email)
+                                <span class="text-base-content/60 text-xs">
+                                    {{ $registration->mentors->first()->email }}
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                </x-ts-card>
+            @else
+                <x-ui::widgets.profile-summary :showEdit="true" />
+            @endif
         </div>
 
         <div class="space-y-4">
-            <x-ui::widgets.profile-summary :showEdit="true" />
+            @if ($registration)
+                <x-ui::widgets.profile-summary :showEdit="true" />
+            @endif
             <x-ts-card shadowless :header="__('dashboard.quick_links')">
                 <div class="space-y-1">
                     <x-ui::widgets.quick-link
@@ -189,7 +268,11 @@
                         icon="bell"
                         link="{{ route('notifications') }}"
                     />
-                    <x-ui::widgets.quick-link :label="__('dashboard.student.view_evaluations')" icon="star" link="#" />
+                    <x-ui::widgets.quick-link
+                        :label="__('dashboard.student.view_evaluations')"
+                        icon="star"
+                        link="{{ route('assessments') }}"
+                    />
                 </div>
             </x-ts-card>
         </div>

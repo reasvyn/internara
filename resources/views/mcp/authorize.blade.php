@@ -47,26 +47,24 @@
                     </div>
 
                     <h3 class="text-center text-2xl leading-none font-semibold tracking-tight">
-                        Authorize {{ $client->name }}
+                        {{ __('mcp.authorize_client', ['client' => $client->name]) }}
                     </h3>
 
-                    <p class="text-muted-foreground text-center text-sm">
-                        This application will be able to:<br />Use available MCP functionality.
-                    </p>
+                    <p class="text-muted-foreground text-center text-sm">{{ __('mcp.mcp_description') }}</p>
                 </div>
 
                 <!-- Content -->
                 <div class="space-y-4 p-6 pt-0">
                     <!-- User Info -->
                     <div class="bg-muted/50 border-base-content/10 rounded-xl border p-4">
-                        <p class="text-muted-foreground mb-2 text-sm">Logged in as:</p>
+                        <p class="text-muted-foreground mb-2 text-sm">{{ __('mcp.logged_in_as') }}</p>
                         <p class="font-medium">{{ $user->email }}</p>
                     </div>
 
                     <!-- Scopes / Permissions -->
                     @if (count($scopes) > 0)
                         <div class="space-y-2">
-                            <p class="text-sm font-medium">Permissions:</p>
+                            <p class="text-sm font-medium">{{ __('mcp.permissions') }}</p>
 
                             <ul class="space-y-2">
                                 @foreach ($scopes as $scope)
@@ -98,7 +96,7 @@
                             <svg class="mr-2 h-4 w-4" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                             </svg>
-                            Cancel
+                            {{ __('mcp.cancel') }}
                         </button>
                     </form>
 

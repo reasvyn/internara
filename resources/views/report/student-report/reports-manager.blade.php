@@ -66,7 +66,7 @@
                 @endif
                 <x-ui::components.table-action
                     action="download"
-                    href="{{ route('sysadmin.student-reports.download', $report) }}"
+                    href="{{ route('sysadmin.student-report.download', $report) }}"
                     :label="__('report.download')"
                 />
                 @if ($report->status->value === 'draft')
