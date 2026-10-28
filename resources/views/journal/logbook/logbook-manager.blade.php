@@ -57,8 +57,7 @@
         @interact('column_status', $entry)
             <x-ts-badge
                 :text="__('logbook.statuses.'.$entry->status->value)"
-                class="font-bold text-[10px] uppercase tracking-tighter 
-                {{ $entry->status->value === 'verified' ? 'badge-success' : ($entry->status->value === 'submitted' ? 'badge-info' : ($entry->status->value === 'revision_required' ? 'badge-warning' : 'badge-ghost')) }}"
+                class="font-bold text-xs uppercase tracking-tighter {{ $entry->status->value === 'verified' ? 'badge-success' : ($entry->status->value === 'submitted' ? 'badge-info' : ($entry->status->value === 'revision_required' ? 'badge-warning' : 'badge-ghost')) }}"
             />
         @endinteract
 

@@ -26,7 +26,7 @@
                     <p class="text-base-content text-xs font-bold sm:text-sm">
                         {{ __('setup.wizard.system_requirements') }}
                     </p>
-                    <p class="text-base-content/60 text-[11px] sm:text-xs">
+                    <p class="text-base-content/60 text-xs">
                         {{ __('setup.system.pass') }} — {{ __('setup.wizard.all_requirements_met') }}
                     </p>
                 </div>
@@ -63,7 +63,7 @@
                                     </div>
                                 @endif
                                 <span class="text-base-content text-sm font-bold">{{ $category['label'] }}</span>
-                                <span class="border-base-content/10 bg-base-200/60 text-base-content/60 rounded-sm border px-2 py-0.5 font-mono text-[11px] font-semibold">
+                                <span class="border-base-content/10 bg-base-200/60 text-base-content/60 rounded-sm border px-2 py-0.5 font-mono text-xs font-semibold">
                                     {{ count($category['checks']) }}
                                 </span>
                             </div>
@@ -119,7 +119,7 @@
                                             <p class="text-base-content text-xs font-semibold sm:text-sm">
                                                 {{ __('setup.checks.' . $check['name'], $check['name_params'] ?? []) }}
                                             </p>
-                                            <p class="text-base-content/50 text-[11px] sm:text-xs">
+                                            <p class="text-base-content/50 text-xs">
                                                 {{ __('setup.checks.' . $check['message'], $check['message_params'] ?? []) }}
                                             </p>
                                         </div>
@@ -128,15 +128,15 @@
                                     <span class="sr-only">{{ $statusLabel }}</span>
 
                                     @if ($check['status'] === 'pass')
-                                        <span class="border-success/20 bg-success/10 text-success shrink-0 rounded-md border px-2 py-0.5 text-[11px] font-bold">
+                                        <span class="border-success/20 bg-success/10 text-success shrink-0 rounded-md border px-2 py-0.5 text-xs font-bold">
                                             {{ __('setup.system.pass') }}
                                         </span>
                                     @elseif ($check['status'] === 'fail')
-                                        <span class="border-error/20 bg-error/10 text-error shrink-0 rounded-md border px-2 py-0.5 text-[11px] font-bold">
+                                        <span class="border-error/20 bg-error/10 text-error shrink-0 rounded-md border px-2 py-0.5 text-xs font-bold">
                                             {{ __('setup.system.fail') }}
                                         </span>
                                     @else
-                                        <span class="border-warning/20 bg-warning/10 text-warning shrink-0 rounded-md border px-2 py-0.5 text-[11px] font-bold">
+                                        <span class="border-warning/20 bg-warning/10 text-warning shrink-0 rounded-md border px-2 py-0.5 text-xs font-bold">
                                             {{ __('setup.system.warn') }}
                                         </span>
                                     @endif
@@ -163,7 +163,7 @@
             <div class="flex w-full items-center gap-3" role="alert">
                 <div class="bg-warning/5 border-warning/20 flex-1 rounded-md border px-3.5 py-2.5">
                     <p class="text-warning/80 text-xs font-medium">{{ __('setup.wizard.requirements_not_met') }}</p>
-                    <p class="text-warning/60 mt-0.5 text-[11px] sm:text-xs">
+                    <p class="text-warning/60 mt-0.5 text-xs">
                         {{ __('setup.wizard.audit_must_pass') }}
                     </p>
                 </div>

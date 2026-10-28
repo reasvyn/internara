@@ -16,7 +16,7 @@
             <x-ts-checkbox wire:model.live="dataVerified" color="primary" class="mt-0.5" />
             <div class="flex-1">
                 <span class="text-base-content mb-0.5 block text-xs font-bold sm:text-sm">{{ __('setup.wizard.data_verified') }}</span>
-                <span class="text-base-content/60 block text-[11px] leading-relaxed sm:text-xs">{{ __('setup.wizard.data_verified_long') }}</span>
+                <span class="text-base-content/60 block text-xs leading-relaxed">{{ __('setup.wizard.data_verified_long') }}</span>
             </div>
         </label>
 
@@ -28,7 +28,7 @@
             <x-ts-checkbox wire:model.live="securityAware" color="primary" class="mt-0.5" />
             <div class="flex-1">
                 <span class="text-base-content mb-0.5 block text-xs font-bold sm:text-sm">{{ __('setup.wizard.security_aware') }}</span>
-                <span class="text-base-content/60 block text-[11px] leading-relaxed sm:text-xs">{{ __('setup.wizard.security_aware_long') }}</span>
+                <span class="text-base-content/60 block text-xs leading-relaxed">{{ __('setup.wizard.security_aware_long') }}</span>
             </div>
         </label>
     </div>
@@ -42,7 +42,7 @@
                 </div>
                 <h4 class="text-base-content text-xs font-bold sm:text-sm">{{ __('setup.wizard.summary') }}</h4>
             </div>
-            <span class="border-base-content/10 bg-base-100 text-base-content/60 rounded-sm border px-2 py-0.5 font-mono text-[10px] font-semibold sm:px-2.5 sm:text-[11px]">
+            <span class="border-base-content/10 bg-base-100 text-base-content/60 rounded-sm border px-2 py-0.5 font-mono text-xs font-semibold sm:px-2.5">
                 {{ __('setup.wizard.readiness_audit') }}
             </span>
         </div>
@@ -52,7 +52,7 @@
                 <div class="flex min-w-0 items-center gap-2 sm:gap-2.5">
                     <x-ts-icon name="academic-cap" class="text-base-content/40 size-4 shrink-0" />
                     <div>
-                        <dt class="text-base-content/50 text-[10px] font-medium sm:text-[11px]">
+                        <dt class="text-base-content/50 text-xs font-medium">
                             {{ __('setup.wizard.school_name') }}
                         </dt>
                         <dd class="text-base-content truncate text-xs font-bold">{{ $schoolForm->name ?: '—' }}</dd>
@@ -64,7 +64,7 @@
                 <div class="flex min-w-0 items-center gap-2 sm:gap-2.5">
                     <x-ts-icon name="building-library" class="text-base-content/40 size-4 shrink-0" />
                     <div>
-                        <dt class="text-base-content/50 text-[10px] font-medium sm:text-[11px]">
+                        <dt class="text-base-content/50 text-xs font-medium">
                             {{ __('setup.wizard.department_name') }}
                         </dt>
                         <dd class="text-base-content truncate text-xs font-bold">{{ $departmentForm->name ?: '—' }}</dd>
@@ -76,7 +76,7 @@
                 <div class="flex min-w-0 items-center gap-2 sm:gap-2.5">
                     <x-ts-icon name="shield-check" class="text-base-content/40 size-4 shrink-0" />
                     <div>
-                        <dt class="text-base-content/50 text-[10px] font-medium sm:text-[11px]">
+                        <dt class="text-base-content/50 text-xs font-medium">
                             {{ __('setup.wizard.full_name') }}
                         </dt>
                         <dd class="text-base-content text-xs font-bold">
@@ -84,7 +84,7 @@
                         </dd>
                     </div>
                 </div>
-                <span class="text-base-content/60 font-mono text-[11px] sm:text-xs">{{ $superAdminForm->email }}</span>
+                <span class="text-base-content/60 font-mono text-xs">{{ $superAdminForm->email }}</span>
             </div>
         </dl>
     </div>

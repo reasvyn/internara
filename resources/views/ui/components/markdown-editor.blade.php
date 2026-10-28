@@ -28,9 +28,7 @@
         <button
             type="button"
             @click="tab = 'write'"
-            :class="tab === 'write'
-                ? 'border-b-2 border-primary text-primary font-medium'
-                : 'text-base-content/50 hover:text-base-content'"
+            :class="tab === 'write' ? 'border-b-2 border-primary text-primary font-medium' : 'text-base-content/50 hover:text-base-content'"
             class="pb-2 text-sm transition-colors"
         >
             {{ __('common.write') }}
@@ -38,9 +36,7 @@
         <button
             type="button"
             @click="tab = 'preview'"
-            :class="tab === 'preview'
-                ? 'border-b-2 border-primary text-primary font-medium'
-                : 'text-base-content/50 hover:text-base-content'"
+            :class="tab === 'preview' ? 'border-b-2 border-primary text-primary font-medium' : 'text-base-content/50 hover:text-base-content'"
             class="pb-2 text-sm transition-colors"
         >
             {{ __('common.preview') }}

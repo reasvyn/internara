@@ -251,7 +251,7 @@
                             @endif
                         </div>
                         <x-ts-error name="avatar" />
-                        <p class="text-base-content/40 text-center text-[11px]">{{ __('profile.avatar_hint') }}</p>
+                        <p class="text-base-content/40 text-center text-xs">{{ __('profile.avatar_hint') }}</p>
                     </div>
 
                     <h3 class="mt-2 text-lg font-semibold">{{ $user->name }}</h3>

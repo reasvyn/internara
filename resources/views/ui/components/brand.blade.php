@@ -48,7 +48,7 @@
                 {{ brand('name') }}
             </span>
             @if ($withTagline)
-                <span class="mt-1 text-[9px] font-bold tracking-[0.3em] uppercase opacity-60">
+                <span class="mt-1 text-xs font-bold tracking-[0.3em] uppercase opacity-60">
                     {{ brand('tagline') ?? __('common.management_system') }}
                 </span>
             @endif

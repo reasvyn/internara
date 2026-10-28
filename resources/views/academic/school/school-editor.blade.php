@@ -167,7 +167,7 @@
                             </button>
                         @endif
                     </div>
-                    <p class="text-base-content/40 text-center text-[10px]">{{ __('school.logo_hint') }}</p>
+                    <p class="text-base-content/40 text-center text-xs">{{ __('school.logo_hint') }}</p>
                 </div>
 
                 @include('ui.components.confirm', [

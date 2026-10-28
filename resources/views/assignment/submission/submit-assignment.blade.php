@@ -109,7 +109,7 @@
                         </div>
                         <div>
                             <h4 class="text-primary text-sm font-bold">{{ $selectedAssignment->document->name }}</h4>
-                            <p class="text-primary/40 mt-1 text-[9px] font-bold tracking-[0.3em] uppercase">
+                            <p class="text-primary/40 mt-1 text-xs font-bold tracking-[0.3em] uppercase">
                                 {{ __('submission.template_guide') }}
                             </p>
                         </div>
@@ -140,14 +140,14 @@
                             <h4 class="text-warning text-sm font-bold tracking-tight uppercase">
                                 {{ __('submission.statuses.revision_required') }}
                             </h4>
-                            <p class="text-warning/40 mt-1 text-[9px] font-bold tracking-[0.3em] uppercase">
+                            <p class="text-warning/40 mt-1 text-xs font-bold tracking-[0.3em] uppercase">
                                 {{ __('submission.revise_hint') }}
                             </p>
                         </div>
                     </div>
                     @if ($existingSubmission->feedback)
                         <div class="bg-base-200/50 rounded-[1.5rem] p-4">
-                            <span class="text-base-content/40 mb-2 block text-[9px] font-bold tracking-[0.2em] uppercase">{{ __('submission.feedback') }}</span>
+                            <span class="text-base-content/40 mb-2 block text-xs font-bold tracking-[0.2em] uppercase">{{ __('submission.feedback') }}</span>
                             <p class="text-base-content/70 text-sm">{{ $existingSubmission->feedback }}</p>
                         </div>
                     @endif
@@ -172,7 +172,7 @@
                             <x-ts-button
                                 text="{{ __('submission.resubmit') }}"
                                 icon-right="paper-airplane"
-                                class="shadow-warning/30 h-12 rounded-[2rem] px-10 text-[10px] font-bold tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-[1.02]"
+                                class="shadow-warning/30 h-12 rounded-[2rem] px-10 text-xs font-bold tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-[1.02]"
                                 color="yellow"
                                 wire:click="submit"
                                 loading="submit"
@@ -191,7 +191,7 @@
                             <h4 class="text-success text-sm font-bold tracking-tight uppercase">
                                 {{ __('submission.statuses.submitted') }}
                             </h4>
-                            <p class="text-success/40 mt-1 text-[9px] font-bold tracking-[0.3em] uppercase">
+                            <p class="text-success/40 mt-1 text-xs font-bold tracking-[0.3em] uppercase">
                                 {{ $existingSubmission->submitted_at?->format('d M Y H:i') ?? __('submission.just_now') }}
                             </p>
                         </div>
@@ -208,18 +208,18 @@
                         </div>
                         @if ($existingSubmission->feedback)
                             <div class="bg-base-200/50 mt-3 rounded-[1.5rem] p-4">
-                                <span class="text-base-content/40 mb-2 block text-[9px] font-bold tracking-[0.2em] uppercase">{{ __('submission.feedback') }}</span>
+                                <span class="text-base-content/40 mb-2 block text-xs font-bold tracking-[0.2em] uppercase">{{ __('submission.feedback') }}</span>
                                 <p class="text-base-content/70 text-sm">{{ $existingSubmission->feedback }}</p>
                             </div>
                         @endif
                     @elseif ($existingSubmission->status->value === 'graded')
                         <div class="bg-base-200/50 mt-3 rounded-[1.5rem] p-4">
                             @if ($existingSubmission->score)
-                                <span class="text-base-content/40 mb-2 block text-[9px] font-bold tracking-[0.2em] uppercase">{{ __('submission.score') }}</span>
+                                <span class="text-base-content/40 mb-2 block text-xs font-bold tracking-[0.2em] uppercase">{{ __('submission.score') }}</span>
                                 <p class="text-base-content text-sm font-bold">{{ $existingSubmission->score }}/100</p>
                             @endif
                             @if ($existingSubmission->feedback)
-                                <span class="text-base-content/40 mt-3 mb-2 block text-[9px] font-bold tracking-[0.2em] uppercase">{{ __('submission.feedback') }}</span>
+                                <span class="text-base-content/40 mt-3 mb-2 block text-xs font-bold tracking-[0.2em] uppercase">{{ __('submission.feedback') }}</span>
                                 <p class="text-base-content/70 text-sm">{{ $existingSubmission->feedback }}</p>
                             @endif
                         </div>
@@ -255,7 +255,7 @@
                             <x-ts-button
                                 :text="__('submission.submit')"
                                 icon-right="paper-airplane"
-                                class="shadow-primary/30 h-12 rounded-[2rem] px-10 text-[10px] font-bold tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-[1.02]"
+                                class="shadow-primary/30 h-12 rounded-[2rem] px-10 text-xs font-bold tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-[1.02]"
                                 color="primary"
                                 wire:click="submit('{{ $selectedAssignment->id }}')"
                                 spinner="submit"

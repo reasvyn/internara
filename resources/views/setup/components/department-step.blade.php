@@ -13,7 +13,7 @@
         </div>
         <div>
             <p class="text-base-content text-xs font-bold">{{ __('setup.wizard.department') }}</p>
-            <p class="text-base-content/60 mt-0.5 text-[11px] sm:text-xs">{{ __('setup.wizard.department_desc') }}</p>
+            <p class="text-base-content/60 mt-0.5 text-xs">{{ __('setup.wizard.department_desc') }}</p>
         </div>
     </div>
 

@@ -123,12 +123,12 @@
                                                     <div class="text-xs font-medium">
                                                         @if ($member->registration?->student)
                                                             {{ $member->registration->student->name }}
-                                                            <span class="text-base-content/50 block text-[11px] font-normal">
+                                                            <span class="text-base-content/50 block text-xs font-normal">
                                                                 {{ $member->registration->student->email }}
                                                             </span>
                                                         @elseif ($member->user)
                                                             {{ $member->user->name }}
-                                                            <span class="text-base-content/50 block text-[11px] font-normal">
+                                                            <span class="text-base-content/50 block text-xs font-normal">
                                                                 {{ $member->user->email }}
                                                             </span>
                                                         @else

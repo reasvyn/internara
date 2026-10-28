@@ -137,7 +137,7 @@
                 @endphp
                 <x-ts-badge
                     :text="__('internship.statuses.'.$internship->status->value)"
-                    class="{{ $statusClass }} font-bold text-[10px] uppercase tracking-tighter"
+                    class="{{ $statusClass }} font-bold text-xs uppercase tracking-tighter"
                 />
             @endinteract
 

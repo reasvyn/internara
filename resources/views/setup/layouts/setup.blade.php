@@ -38,7 +38,7 @@
                         &copy; {{ date('Y') }} {{ brand('author.name') }}. {{ __('All rights reserved.') }}
                     </p>
                     <div class="flex items-center gap-2">
-                        <span class="border-base-content/10 bg-base-100 text-base-content/70 inline-flex items-center gap-1.5 rounded-md border px-2.5 py-0.5 font-mono text-[11px] shadow-xs">
+                        <span class="border-base-content/10 bg-base-100 text-base-content/70 inline-flex items-center gap-1.5 rounded-md border px-2.5 py-0.5 font-mono text-xs shadow-xs">
                             <span class="bg-success size-1.5 rounded-full"></span>
                             v{{ app_info('version') }}
                         </span>

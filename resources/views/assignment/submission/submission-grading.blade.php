@@ -5,7 +5,7 @@
             <h1 class="text-base-content text-2xl font-bold tracking-tight">
                 {{ __('submission.grading_title') }}
             </h2>
-            <p class="text-base-content/40 mt-2 text-[10px] font-bold tracking-[0.3em] uppercase">
+            <p class="text-base-content/40 mt-2 text-xs font-bold tracking-[0.3em] uppercase">
                 {{ __('submission.grading_subtitle') }}
             </p>
         </div>
@@ -57,12 +57,12 @@
                             <div class="min-w-0 flex-1">
                                 <div class="mb-1 flex items-center gap-3">
                                     <span class="text-base-content text-sm font-bold">{{ $submission->student->name }}</span>
-                                    <span class="text-[10px] opacity-50">{{ $submission->assignment->assignment_type ?? '—' }}</span>
+                                    <span class="text-xs opacity-50">{{ $submission->assignment->assignment_type ?? '—' }}</span>
                                 </div>
                                 <p class="text-base-content/60 truncate text-sm">
                                     {{ $submission->assignment->title }}
                                 </p>
-                                <p class="text-base-content/40 mt-1 text-[10px]">
+                                <p class="text-base-content/40 mt-1 text-xs">
                                     {{ __('submission.submitted_at') }} {{ $submission->submitted_at?->diffForHumans() ?? '—' }}
                                 </p>
                             </div>
@@ -117,7 +117,7 @@
                             @endphp
                             <x-ts-badge :text="$selectedSubmission->status->label()" :color="$badgeColor" xs />
                         </div>
-                        <p class="text-base-content/40 mt-3 text-[10px]">
+                        <p class="text-base-content/40 mt-3 text-xs">
                             Submitted {{ $selectedSubmission->submitted_at?->format('d M Y H:i') ?? '—' }}
                             @if ($selectedSubmission->due_date)
                                 &middot; Due {{ $selectedSubmission->assignment->due_date?->format('d M Y') }}
@@ -149,7 +149,7 @@
                         </div>
                         <div>
                             <h4 class="text-primary text-sm font-bold">{{ $media->file_name }}</h4>
-                            <p class="text-primary/40 mt-1 text-[9px] font-bold tracking-[0.3em] uppercase">
+                            <p class="text-primary/40 mt-1 text-xs font-bold tracking-[0.3em] uppercase">
                                 {{ __('submission.attached_file') }}
                             </p>
                         </div>
@@ -208,7 +208,7 @@
                             <x-ts-button
                                 :text="__('submission.verify')"
                                 icon="shield-check"
-                                class="h-12 rounded-[2rem] px-10 text-[10px] font-bold tracking-[0.2em] uppercase"
+                                class="h-12 rounded-[2rem] px-10 text-xs font-bold tracking-[0.2em] uppercase"
                                 color="green"
                                 wire:click="askVerify('{{ $selectedSubmission->id }}')"
                                 loading="confirmVerify"
@@ -217,14 +217,14 @@
                         <x-ts-button
                             :text="__('common.actions.cancel')"
                             wire:click="back"
-                            class="rounded-[1.5rem] px-8 text-[10px] font-bold tracking-widest uppercase"
+                            class="rounded-[1.5rem] px-8 text-xs font-bold tracking-widest uppercase"
                             color="slate"
                             outline
                         />
                         <x-ts-button
                             :text="__('submission.submit_grade')"
                             icon="check-circle"
-                            class="shadow-primary/30 h-12 rounded-[2rem] px-10 text-[10px] font-bold tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-[1.02]"
+                            class="shadow-primary/30 h-12 rounded-[2rem] px-10 text-xs font-bold tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-[1.02]"
                             color="primary"
                             wire:click="grade"
                             loading="grade"

@@ -15,11 +15,11 @@
             <div>
                 <div class="flex items-center gap-2">
                     <p class="text-base-content text-sm font-bold sm:text-base">{{ $superAdminForm->name }}</p>
-                    <span class="border-primary/20 bg-primary/10 text-primary rounded-sm border px-2 py-0.5 text-[9px] font-bold tracking-wide uppercase sm:text-[10px]">
+                    <span class="border-primary/20 bg-primary/10 text-primary rounded-sm border px-2 py-0.5 text-xs font-bold tracking-wide uppercase">
                         Super Admin
                     </span>
                 </div>
-                <p class="text-base-content/50 text-[11px] font-medium sm:text-xs">
+                <p class="text-base-content/50 text-xs font-medium">
                     {{ __('setup.wizard.full_name') }}
                 </p>
             </div>
@@ -34,7 +34,7 @@
 
     <div class="border-base-content/10 bg-base-200/20 mb-4 flex items-start gap-2.5 rounded-md border p-2.5 text-xs sm:mb-5 sm:p-3">
         <x-ts-icon name="information-circle" class="text-base-content/50 mt-0.5 size-4 shrink-0" />
-        <p class="text-base-content/60 text-[11px] leading-relaxed sm:text-xs">
+        <p class="text-base-content/60 text-xs leading-relaxed">
             {{ __('setup.wizard.username_notice') }}
         </p>
     </div>
@@ -74,7 +74,7 @@
                 <p class="text-base-content/80 mb-0.5 text-xs font-semibold">
                     {{ __('setup.wizard.password_requirements') }}
                 </p>
-                <p class="text-base-content/60 text-[11px] leading-relaxed sm:text-xs">
+                <p class="text-base-content/60 text-xs leading-relaxed">
                     {{ __('setup.wizard.password_hint') }}
                 </p>
             </div>

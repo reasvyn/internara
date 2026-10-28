@@ -44,7 +44,7 @@
                     <span class="text-base-content font-medium">{{ $laravelVersion }}</span>
                 </div>
             </div>
-            <p class="text-base-content/40 pt-2 text-[10px] leading-relaxed">{{ __('dashboard.app_info.tagline') }}</p>
+            <p class="text-base-content/40 pt-2 text-xs leading-relaxed">{{ __('dashboard.app_info.tagline') }}</p>
         @endif
     </div>
 </x-ts-card>

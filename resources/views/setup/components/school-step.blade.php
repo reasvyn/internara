@@ -11,7 +11,7 @@
         <div class="border-primary/20 bg-primary/10 text-primary mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-md border sm:size-8">
             <x-ts-icon name="academic-cap" class="size-4" />
         </div>
-        <p class="text-base-content/70 pt-0.5 text-[11px] sm:text-xs">
+        <p class="text-base-content/70 pt-0.5 text-xs">
             {{ __('setup.wizard.school_identity_notice') }}
         </p>
     </div>

@@ -82,15 +82,15 @@
         <div class="border-base-content/10 mt-4 grid grid-cols-3 gap-4 border-t pt-4">
             <div class="text-center">
                 <span class="text-primary text-lg font-bold tabular-nums">{{ $pipelineAbsorption }}%</span>
-                <p class="text-base-content/50 mt-0.5 text-[10px]">{{ __('dashboard.pipeline.absorption') }}</p>
+                <p class="text-base-content/50 mt-0.5 text-xs">{{ __('dashboard.pipeline.absorption') }}</p>
             </div>
             <div class="text-center">
                 <span class="text-success text-lg font-bold tabular-nums">{{ $pipelineCompletionRate }}%</span>
-                <p class="text-base-content/50 mt-0.5 text-[10px]">{{ __('dashboard.pipeline.completion_rate') }}</p>
+                <p class="text-base-content/50 mt-0.5 text-xs">{{ __('dashboard.pipeline.completion_rate') }}</p>
             </div>
             <div class="text-center">
                 <span class="{{ $bottleneckClass }} text-lg font-bold tabular-nums">{{ $pipelineBottleneck }}%</span>
-                <p class="text-base-content/50 mt-0.5 text-[10px]">{{ __('dashboard.pipeline.bottleneck') }}</p>
+                <p class="text-base-content/50 mt-0.5 text-xs">{{ __('dashboard.pipeline.bottleneck') }}</p>
             </div>
         </div>
     </div>
@@ -226,7 +226,7 @@
                     />
                     <div class="min-w-0">
                         <p class="truncate text-xs font-medium">{{ $status['label'] }}</p>
-                        <p class="{{ $status['passed'] ? 'text-success' : 'text-error' }} text-[10px]">
+                        <p class="{{ $status['passed'] ? 'text-success' : 'text-error' }} text-xs">
                             {{ $status['status'] }}
                         </p>
                     </div>

@@ -27,7 +27,7 @@
                     {{ __('sysadmin.account_slip.activation_code') }}
                 </p>
                 <p class="text-primary font-mono text-2xl font-bold tracking-[0.25em] select-all">{{ $slipCode }}</p>
-                <p class="text-base-content/40 mt-2 text-[10px]">
+                <p class="text-base-content/40 mt-2 text-xs">
                     {{ __('sysadmin.account_slip.code_expiry', ['days' => 30]) }}
                 </p>
             </div>

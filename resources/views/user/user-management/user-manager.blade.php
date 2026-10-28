@@ -189,7 +189,7 @@
                     default => 'badge-ghost',
                 };
             @endphp
-            <span class="badge badge-sm {{ $badgeClass }} font-medium text-[10px]">
+            <span class="badge badge-sm {{ $badgeClass }} font-medium text-xs">
                 {{ __("user.manager.status_{$status}") }}
             </span>
         @endinteract

@@ -16,6 +16,7 @@ Rules:
   UI-COMPONENT Duplicate layout markup instead of Core reusable component (Navbar/Sidebar/Header/Footer)
   UI-WEIGHT    font-black/font-extrabold — weights the self-hosted family does not ship
   UI-HEADING   Heading structure: page without h1, or h2 deviating from the canonical scale
+  UI-TYPE_SCALE Arbitrary px font size below the 12px floor, or inline font-size
 """
 
 from __future__ import annotations
@@ -60,6 +61,8 @@ RE_CORE_COMPONENTS = re.compile(r"<x-(core|ui)::(layouts|ui)\.")
 RE_HEADING_TAG = re.compile(r"<h([1-6])\b([^>]*)>", re.IGNORECASE | re.DOTALL)
 RE_CLASS_ATTR = re.compile(r"""class\s*=\s*["']([^"']*)["']""", re.DOTALL)
 RE_FORBIDDEN_WEIGHT = re.compile(r"\bfont-(black|extrabold)\b")
+RE_ARBITRARY_SIZE = re.compile(r"\btext-\[(\d+)px\]")
+RE_INLINE_FONT_SIZE = re.compile(r"""style\s*=\s*["'][^"']*font-size:\s*\d+px""", re.DOTALL)
 RE_BLADE_COMMENT = re.compile(r"\{\{--.*?--\}\}", re.DOTALL)
 RE_HTML_COMMENT = re.compile(r"<!--.*?-->", re.DOTALL)
 
@@ -67,6 +70,9 @@ RE_HTML_COMMENT = re.compile(r"<!--.*?-->", re.DOTALL)
 H1_SOURCES = ("<x-ui::components.page-header", "<x-ui::components.record-manager", "<h1")
 HEADING_REFERENCE = "docs/guides/ui-ux/design-system.md §5.2"
 WEIGHT_REFERENCE = "docs/guides/ui-ux/design-system.md §5.1"
+SIZE_REFERENCE = "docs/guides/ui-ux/design-system.md §5.3"
+# design-system.md §5.3 — text-xs (12px) is the floor for readable text
+TYPE_SCALE_FLOOR_PX = 12
 
 
 def discover_core_components() -> list[str]:
@@ -231,6 +237,41 @@ def check_blade(path: Path) -> list[Finding]:
                 context={"class": m.group(0)},
             ))
 
+    # UI-TYPE_SCALE: text-xs (12px) is the floor; arbitrary px sizes bypass the scale
+    if uses_design_system:
+        for m in RE_ARBITRARY_SIZE.finditer(markup):
+            px = int(m.group(1))
+            if px >= TYPE_SCALE_FLOOR_PX:
+                continue
+            line_no = markup[: m.start()].count("\n") + 1
+            findings.append(Finding(
+                id="UI-0000",
+                rule="UI_TYPE_SCALE",
+                severity="low",
+                category="convention",
+                file=rel,
+                line=line_no,
+                message=f"'{m.group(0)}' is below the {TYPE_SCALE_FLOOR_PX}px floor — arbitrary sizes bypass the type scale and are unreadable at default zoom",
+                suggestion="Use text-xs; if the label genuinely cannot afford 12px, reduce container padding or hide it at the densest breakpoint",
+                reference=SIZE_REFERENCE,
+                context={"size": f"{px}px"},
+            ))
+
+        for m in RE_INLINE_FONT_SIZE.finditer(markup):
+            line_no = markup[: m.start()].count("\n") + 1
+            findings.append(Finding(
+                id="UI-0000",
+                rule="UI_TYPE_SCALE",
+                severity="low",
+                category="convention",
+                file=rel,
+                line=line_no,
+                message="Inline font-size bypasses the type scale and does not respond to the user's text-size preference",
+                suggestion="Use a scale utility (text-xs … text-4xl) instead of style=\"font-size:…\"",
+                reference=SIZE_REFERENCE,
+                context={"style": m.group(0)[:120]},
+            ))
+
     # UI-HEADING: one h1 per page, and h2 must sit on the canonical scale
     if not uses_design_system:
         return findings
@@ -308,7 +349,7 @@ def main() -> None:
 
     core_comps = discover_core_components()
     metadata = {"total_files": len(blade_files), "core_components": ", ".join(core_comps[:20]), "core_components_total": len(core_comps)}
-    result = build_report(findings, SCAN_NAME, "full" if not args.module else "module", args.module, start, metadata, total_checks=len(blade_files) * 5)
+    result = build_report(findings, SCAN_NAME, "full" if not args.module else "module", args.module, start, metadata, total_checks=len(blade_files) * 6)
 
     # Uniform output via _output.py
     exit_code = handle_output(result, args)

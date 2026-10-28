@@ -110,9 +110,7 @@
                                 <summary class="[&::-webkit-details-marker]:hidden flex cursor-pointer list-none items-start gap-3">
                                     <div
                                         role="status"
-                                        x-bind:class="
-                                            read ? 'bg-base-200 text-base-content/40' : 'bg-primary/10 text-primary'
-                                        "
+                                        x-bind:class="read ? 'bg-base-200 text-base-content/40' : 'bg-primary/10 text-primary'"
                                         class="flex size-8 shrink-0 items-center justify-center rounded-lg max-sm:hidden"
                                         aria-hidden="true"
                                     >
@@ -139,7 +137,7 @@
                                         >
                                             {{ $notification->message }}
                                         </div>
-                                        <div class="text-base-content/50 mt-0.5 text-[11px] sm:hidden">
+                                        <div class="text-base-content/50 mt-0.5 text-xs sm:hidden">
                                             {{ $notification->created_at->diffForHumans() }}
                                         </div>
                                     </div>
@@ -166,9 +164,7 @@
                             >
                                 <div
                                     role="status"
-                                    x-bind:class="
-                                        read ? 'bg-base-200 text-base-content/40' : 'bg-primary/10 text-primary'
-                                    "
+                                    x-bind:class="read ? 'bg-base-200 text-base-content/40' : 'bg-primary/10 text-primary'"
                                     class="flex size-8 shrink-0 items-center justify-center rounded-lg max-sm:hidden"
                                     aria-hidden="true"
                                 >
@@ -189,7 +185,7 @@
                                             aria-label="{{ __('notifications.ui.unread') }}"
                                         ></span>
                                     </div>
-                                    <div class="text-base-content/50 mt-0.5 text-[11px] sm:hidden">
+                                    <div class="text-base-content/50 mt-0.5 text-xs sm:hidden">
                                         {{ $notification->created_at->diffForHumans() }}
                                     </div>
                                 </div>
@@ -206,7 +202,7 @@
                         >
                             {{ $notification->created_at?->diffForHumans() }}
                         </time>
-                        <span class="text-base-content/50 text-[11px] whitespace-nowrap">
+                        <span class="text-base-content/50 text-xs whitespace-nowrap">
                             {{ $notification->created_at?->translatedFormat('d M Y, H:i') }}
                         </span>
                     </div>

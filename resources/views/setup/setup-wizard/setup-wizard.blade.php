@@ -8,7 +8,7 @@
                 </h1>
                 <p class="text-base-content/50 mt-0.5 text-xs font-medium">
                     {{ $appName }}
-                    <span class="bg-base-content/10 text-base-content/70 rounded-md px-1.5 py-0.5 font-mono text-[10px] sm:text-[11px]">v{{ $appVersion }}</span>
+                    <span class="bg-base-content/10 text-base-content/70 rounded-md px-1.5 py-0.5 font-mono text-xs">v{{ $appVersion }}</span>
                 </p>
             </div>
             <div
@@ -65,11 +65,11 @@
                         @elseif ($isCurrent)
                             <x-ts-icon :name="$icon" class="size-3.5 sm:size-4" />
                         @else
-                            <span class="font-mono text-[11px] sm:text-xs">{{ $stepNum }}</span>
+                            <span class="font-mono text-xs">{{ $stepNum }}</span>
                         @endif
                     </div>
                     <span @class([
-                        'text-[10px] sm:text-[11px] font-bold tracking-tight transition-colors text-center leading-tight hidden sm:block',
+                        'text-xs font-bold tracking-tight transition-colors text-center leading-tight hidden sm:block',
                         'text-primary' => $isCurrent,
                         'text-base-content/70' => $isCompleted,
                         'text-base-content/40' => ! $isCurrent && ! $isCompleted,

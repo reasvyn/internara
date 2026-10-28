@@ -46,7 +46,7 @@
             @interact('column_created_at', $r)
                 <div class="text-xs">
                     <span class="text-base-content font-medium">{{ $r->created_at?->translatedFormat('d M Y') ?? '—' }}</span>
-                    <span class="text-base-content/50 block text-[11px]">{{ $r->created_at?->format('H:i') }}</span>
+                    <span class="text-base-content/50 block text-xs">{{ $r->created_at?->format('H:i') }}</span>
                 </div>
             @endinteract
 
@@ -102,7 +102,7 @@
                         <div class="text-base-content font-medium">
                             {{ $this->selectedRegistration->placement?->company?->name ?? '—' }} ({{ $this->selectedRegistration->placement?->name ?? '—' }})
                         </div>
-                        <div class="text-base-content/50 text-[11px]">
+                        <div class="text-base-content/50 text-xs">
                             {{ __('placement.batch') }}: {{ $this->selectedRegistration->internship?->name ?? '—' }}
                         </div>
                     </div>

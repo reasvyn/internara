@@ -408,7 +408,9 @@ size. If a screen seems to need a fifth visual tier, the nesting is the problem,
 
 **`text-xs` (12px) is the floor** for text a user must read: no `text-[11px]`, and no inline
 `style="font-size:27px"` — the scale is the only source of sizes. `tracking-tight` belongs to `h1`–`h2`
-only; body copy keeps Tailwind's default tracking.
+only; body copy keeps Tailwind's default tracking. `scan_ui_consistency.py` enforces both halves
+(`UI_TYPE_SCALE`); if a label genuinely cannot afford 12px, reduce container padding or hide it at
+the densest breakpoint rather than reaching for a smaller arbitrary size.
 
 ### 5.4 Visual hierarchy
 

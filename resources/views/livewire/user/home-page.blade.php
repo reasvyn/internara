@@ -105,15 +105,15 @@
                                 {{-- 3-Step Flow --}}
                                 <div class="border-base-content/10 bg-base-200/30 space-y-2 rounded-md border p-3 text-xs">
                                     <div class="text-base-content/75 flex items-center gap-2.5">
-                                        <span class="border-base-content/15 bg-base-100 flex size-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold shadow-2xs">1</span>
+                                        <span class="border-base-content/15 bg-base-100 flex size-5 shrink-0 items-center justify-center rounded-full text-xs font-bold shadow-2xs">1</span>
                                         <span>{{ __('user.home.step_1') }}</span>
                                     </div>
                                     <div class="text-base-content/75 flex items-center gap-2.5">
-                                        <span class="border-base-content/15 bg-base-100 flex size-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold shadow-2xs">2</span>
+                                        <span class="border-base-content/15 bg-base-100 flex size-5 shrink-0 items-center justify-center rounded-full text-xs font-bold shadow-2xs">2</span>
                                         <span>{{ __('user.home.step_2') }}</span>
                                     </div>
                                     <div class="text-base-content/75 flex items-center gap-2.5">
-                                        <span class="border-base-content/15 bg-base-100 flex size-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold shadow-2xs">3</span>
+                                        <span class="border-base-content/15 bg-base-100 flex size-5 shrink-0 items-center justify-center rounded-full text-xs font-bold shadow-2xs">3</span>
                                         <span>{{ __('user.home.step_3') }}</span>
                                     </div>
                                 </div>

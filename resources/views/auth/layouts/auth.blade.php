@@ -12,7 +12,7 @@
                         <span class="text-base-content group-hover:text-primary text-lg font-bold transition-colors sm:text-xl">
                             {{ brand('name') }}
                         </span>
-                        <span class="text-base-content/40 text-[10px] font-medium tracking-wider uppercase">
+                        <span class="text-base-content/40 text-xs font-medium tracking-wider uppercase">
                             {{ __('auth.title') }}
                         </span>
                     </div>

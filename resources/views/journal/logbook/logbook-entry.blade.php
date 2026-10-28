@@ -30,7 +30,7 @@
                     @interact('column_date', $journal)
                         <div class="flex flex-col">
                             <span class="text-base-content text-sm font-bold tracking-tight">{{ $journal->date->format('d M Y') }}</span>
-                            <span class="text-base-content/60 mt-0.5 text-[10px] leading-none font-bold tracking-widest uppercase">{{ $journal->date->format('l') }}</span>
+                            <span class="text-base-content/60 mt-0.5 text-xs leading-none font-bold tracking-widest uppercase">{{ $journal->date->format('l') }}</span>
                         </div>
                     @endinteract
 
@@ -161,7 +161,7 @@
                     </div>
                 @endif
 
-                <p class="text-base-content/60 text-[10px]">{{ __('logbook.supported_formats') }}</p>
+                <p class="text-base-content/60 text-xs">{{ __('logbook.supported_formats') }}</p>
             </div>
         </div>
 
@@ -169,7 +169,7 @@
             <x-ts-button
                 :text="__('logbook.discard')"
                 @click="$wire.showModal = false"
-                class="text-[10px] font-bold tracking-widest uppercase"
+                class="text-xs font-bold tracking-widest uppercase"
                 color="slate"
                 outline
             />
