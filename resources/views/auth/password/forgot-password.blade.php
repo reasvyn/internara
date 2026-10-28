@@ -1,13 +1,13 @@
 <div>
-    <div class="bg-base-100 border-base-content/10 rounded-xl border p-5 shadow-xs sm:p-6">
+    <div class="bg-base-100 border-base-content/10 rounded-lg border p-5 shadow-xs sm:p-6">
         <div class="mb-4 text-center sm:mb-5">
             <h2 class="text-base font-bold sm:text-lg">{{ __('passwords.reset_password_title') }}</h2>
             <p class="text-base-content/60 mt-0.5 text-xs sm:text-sm">{{ __('auth.forgot_password.subtitle') }}</p>
         </div>
 
         @if ($linkSent)
-            <div class="bg-success/5 border-success/20 rounded-xl border p-5 text-center sm:p-6">
-                <div class="bg-success/10 text-success mx-auto mb-3 flex size-10 items-center justify-center rounded-full sm:size-12">
+            <div class="bg-success/5 border-success/20 rounded-md border p-5 text-center sm:p-6">
+                <div class="bg-success/10 text-success mx-auto mb-3 flex size-10 items-center justify-center rounded-md sm:size-12">
                     <x-ts-icon name="check-circle" class="size-5 sm:size-6" />
                 </div>
                 <h3 class="text-success mb-1.5 text-sm font-semibold sm:text-base">{{ __('passwords.sent') }}</h3>

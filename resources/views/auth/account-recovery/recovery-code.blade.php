@@ -1,6 +1,6 @@
 <div>
     <div class="mb-5 flex items-center gap-3.5 sm:mb-6">
-        <div class="bg-primary/10 text-primary flex size-11 shrink-0 items-center justify-center rounded-2xl sm:size-12">
+        <div class="bg-primary/10 text-primary flex size-11 shrink-0 items-center justify-center rounded-md sm:size-12">
             <x-ts-icon name="key" class="size-5 sm:size-6" />
         </div>
         <div>
@@ -10,10 +10,10 @@
     </div>
 
     <div class="mx-auto max-w-lg">
-        <x-ts-card shadowless class="bg-base-100 border-base-content/10 rounded-2xl border">
+        <x-ts-card shadowless class="bg-base-100 border-base-content/10 rounded-lg border">
             @if (! empty($codes))
                 <div class="space-y-4 text-center sm:space-y-5">
-                    <div class="bg-success/10 text-success mx-auto flex size-12 items-center justify-center rounded-full sm:size-14">
+                    <div class="bg-success/10 text-success mx-auto flex size-12 items-center justify-center rounded-md sm:size-14">
                         <x-ts-icon name="document-text" class="size-6 sm:size-7" />
                     </div>
 
@@ -22,16 +22,16 @@
                         <p class="text-base-content/60 mt-1 text-xs">{{ __('profile.recovery.generated_desc') }}</p>
                     </div>
 
-                    <div class="bg-base-200 space-y-2 rounded-2xl p-4 text-left sm:p-5">
+                    <div class="bg-base-200 space-y-2 rounded-md p-4 text-left sm:p-5">
                         @foreach ($codes as $index => $code)
-                            <div class="bg-base-100 border-base-content/10 flex items-center gap-3 rounded-xl border px-3.5 py-2 font-mono text-xs font-bold tracking-wider select-all sm:px-4 sm:py-2.5 sm:text-sm">
+                            <div class="bg-base-100 border-base-content/10 flex items-center gap-3 rounded-md border px-3.5 py-2 font-mono text-xs font-bold tracking-wider select-all sm:px-4 sm:py-2.5 sm:text-sm">
                                 <span class="text-base-content/60 w-6 shrink-0 font-mono text-xs">{{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}</span>
                                 <span class="flex-1">{{ $code }}</span>
                             </div>
                         @endforeach
                     </div>
 
-                    <div class="bg-warning/5 border-warning/20 space-y-2 rounded-2xl border p-4 text-left text-xs">
+                    <div class="bg-warning/5 border-warning/20 space-y-2 rounded-md border p-4 text-left text-xs">
                         <p class="flex items-start gap-2">
                             <x-ts-icon name="shield-exclamation" class="mt-0.5 size-3 shrink-0" />
                             {{ __('profile.recovery.one_time_per_code') }}
@@ -63,7 +63,7 @@
                 </div>
             @else
                 <div class="space-y-4 text-center sm:space-y-5">
-                    <div class="bg-base-200 text-base-content/30 mx-auto flex size-12 items-center justify-center rounded-full sm:size-14">
+                    <div class="bg-base-200 text-base-content/30 mx-auto flex size-12 items-center justify-center rounded-md sm:size-14">
                         <x-ts-icon name="key" class="size-6 sm:size-7" />
                     </div>
 
@@ -72,7 +72,7 @@
                         <p class="text-base-content/60 mt-1 text-xs">{{ __('profile.recovery.empty_desc') }}</p>
                     </div>
 
-                    <div class="bg-info/5 border-info/20 rounded-2xl border p-4 text-left">
+                    <div class="bg-info/5 border-info/20 rounded-md border p-4 text-left">
                         <p class="text-info mb-2 text-xs font-semibold">{{ __('profile.recovery.how_it_works') }}</p>
                         <ol class="text-base-content/60 list-inside list-decimal space-y-1 text-xs">
                             <li>{{ __('profile.recovery.step_1') }}</li>

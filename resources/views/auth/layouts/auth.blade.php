@@ -5,7 +5,7 @@
         <div class="w-full max-w-sm px-4 sm:max-w-md">
             <div class="mb-5 text-center sm:mb-6">
                 <a class="group inline-flex flex-col items-center gap-2.5" href="{{ route('home') }}" wire:navigate>
-                    <div class="bg-base-100 border-base-content/10 flex size-12 items-center justify-center rounded-xl border shadow-xs transition-transform group-hover:scale-105 sm:size-14">
+                    <div class="bg-base-100 border-base-content/10 flex size-12 items-center justify-center rounded-md border shadow-xs transition-transform group-hover:scale-105 sm:size-14">
                         <x-ui::components.logo size="7" />
                     </div>
                     <div class="flex flex-col items-center">
