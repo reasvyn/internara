@@ -492,7 +492,7 @@ on every request.
 
 ### Theme Switcher
 
-The theme switcher is **not** a Livewire component. It is the Blade partial `ui::components.theme-switch` (or `resources/views/setting/locale/theme-switch.blade.php`) wrapping TallstackUI's `<x-ts-theme-switch>` (`tallstackui_darkTheme` Alpine scope). See §3 for persistence and JS wiring. Legacy `ThemeSwitcher.php` Livewire component and its test were removed in `0.15.0`.
+The theme switcher is **not** a Livewire component. It is the Blade partial `resources/views/setting/locale/theme-switch.blade.php`, consumed as `<x-setting::locale.theme-switch>`, wrapping TallstackUI's `<x-ts-theme-switch>` (`tallstackui_darkTheme` Alpine scope). See §3 for persistence and JS wiring. Legacy `ThemeSwitcher.php` Livewire component and its test were removed in `0.15.0`.
 
 ### Date & Number Formatting
 

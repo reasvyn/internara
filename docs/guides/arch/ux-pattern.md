@@ -14,7 +14,7 @@ Hard rules. Violations are architecture or accessibility violations.
 
 1. **WCAG 2.2 Level AA is a design constraint, not a backlog item.** Every user-facing surface MUST meet WCAG 2.2 AA across the four principles — Perceivable, Operable, Understandable, Robust. 4.5:1 text contrast, 3:1 large/UI contrast, keyboard operability, visible focus, `lang` attribute, form labels, `aria-live` for dynamic content, semantic landmarks. No audit-after-ship. See §2.
 
-2. **Dual-signal theming — no bare `bg-white` without `dark:`.** Theme is `data-theme="light|dark"` (palette variables) **plus** `.dark` class (Tailwind `dark:` variant). `resources/js/app.js` `applyTheme()` sets both; cookie `theme` mirrors for SSR to avoid FOUC. Every surface MUST have a dark counterpart — no bare `bg-white`/`text-black` without `dark:bg-base-100` or token equivalent. Use `<x-ui::components.theme-switch>` (`<x-ts-theme-switch>`), never hand-roll toggle.
+2. **Dual-signal theming — no bare `bg-white` without `dark:`.** Theme is `data-theme="light|dark"` (palette variables) **plus** `.dark` class (Tailwind `dark:` variant). `resources/js/app.js` `applyTheme()` sets both; cookie `theme` mirrors for SSR to avoid FOUC. Every surface MUST have a dark counterpart — no bare `bg-white`/`text-black` without `dark:bg-base-100` or token equivalent. Use `<x-setting::locale.theme-switch />` (which wraps `<x-ts-theme-switch>`), never hand-roll toggle.
 
 3. **Semantic tokens only for theme.** New colors require entries in both `Theme::cssVariables()` `light` and `dark` scopes and `Color::isValid()` validation. Never hardcode hex in Blade/CSS. Always `bg-primary`, `text-success`, `border-warning`, `bg-info/10` — never `bg-blue-500` or `bg-[#059669]`.
 
@@ -66,7 +66,7 @@ Runtime branding: `Theme::cssVariables()` generates inline `<style>` in `ui::lay
   <x-ts-badge color="success" :text="__('common.verified')" />
 </div>
 {{-- Theme switch — always this component --}}
-<x-ui::components.theme-switch />
+<x-setting::locale.theme-switch />
 
 ```
 
@@ -254,7 +254,7 @@ Canonical: `resources/views/setup/components/setup-guide.blade.php` (now `<x-ts-
 |----------|---------------|-----------|
 | `bg-white text-black` without `dark:` counterpart | `bg-base-100 dark:bg-base-100 text-base-content` or semantic token pair | Dual-signal dark mode, FOUC / unreadable in dark |
 | New hex `#123456` in Blade/CSS or `bg-blue-500` decorative | `@theme --color-*` + `Theme::cssVariables()` light+dark + `bg-info` semantic | Token drift, fails contrast gate |
-| Hand-rolled theme toggle `onclick="toggleDark()"` | `<x-ui::components.theme-switch />` / `<x-ts-theme-switch>` | Breaks SSR cookie sync, `.dark` + `data-theme` dual-signal |
+| Hand-rolled theme toggle `onclick="toggleDark()"` | `<x-setting::locale.theme-switch />` (wraps `<x-ts-theme-switch>`) | Breaks SSR cookie sync, `.dark` + `data-theme` dual-signal |
 | `<input placeholder="Name">` without `label` | `<x-ts-input label="{{ __('common.name') }}" required />` | WCAG 3.3.2 Labels, 1.3.1 Info & Relationships |
 | `style="outline:none"` without `focus:ring` | Keep TallStackUI `focus:ring` (default) | WCAG 2.4.7 Focus Visible |
 | Icon-only `<button><svg>…</svg></button>` | `<x-ts-button icon="trash" aria-label="{{ __('common.delete') }}" />` | WCAG 4.1.2 Name/Role/Value |
