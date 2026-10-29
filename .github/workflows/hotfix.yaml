@@ -87,6 +87,7 @@ jobs:
     deploy:
         name: Deploy hotfix to VPS
         runs-on: ubuntu-latest
+        timeout-minutes: 60
         needs: lint
         if: github.ref == 'refs/heads/hotfix'
         # Uncomment to require manual approval in GitHub Environments:
@@ -120,7 +121,7 @@ jobs:
                   envs: VERSION_TAG,HEALTH_URL,DEPLOY_DIR,ENV_FILE,DB_PASSWORD
                   # Fail fast, no pseudo-TTY — reduces surface
                   request_pty: false
-                  command_timeout: 30m
+                  command_timeout: 60m
                   script: |
                       set -euo pipefail
                       echo "==> Hotfix deploy: ${VERSION_TAG} @ ${{ github.sha }}"
@@ -183,4 +184,3 @@ jobs:
               run: |
                   echo "::error::Hotfix deploy failed for ${{ github.sha }}"
                   echo "Manual rollback: ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} 'cd \${DEPLOY_DIR:-\$HOME/app} && bash .github/scripts/rollback.sh'"
-

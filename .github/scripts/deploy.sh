@@ -14,7 +14,7 @@ cd "$DEPLOY_DIR"
 # Serialize deployments on this host to prevent Docker container recreation conflicts
 LOCK_FILE="${TMPDIR:-/tmp}/internara-deploy.lock"
 exec 200>"$LOCK_FILE"
-flock -w 600 200 || { echo "==> Failed to acquire deploy lock after 600s" >&2; exit 1; }
+flock -w 1800 200 || { echo "==> Failed to acquire deploy lock after 1800s" >&2; exit 1; }
 
 # Build context is the checkout itself, so the version tag is informational only
 # (logging/traceability); no remote GIT_URL pinning is needed.
@@ -115,10 +115,10 @@ if [ -n "$APP_CONTAINER_ID" ]; then
     docker cp "$APP_CONTAINER_ID:/app/public/build/." "$DEPLOY_DIR/public/build/" || true
 fi
 
-echo "==> Waiting for health check (max 60s)"
+echo "==> Waiting for health check (max 120s)"
 HEALTH_CHECK_PASSED=false
 HEALTH_TMP="${TMPDIR:-/tmp}/internara-health-body"
-for i in {1..30}; do
+for i in {1..60}; do
     HTTP_CODE=$(curl -sSL -o "$HEALTH_TMP" -w "%{http_code}" -m 10 "$HEALTH_URL" 2>/dev/null || echo "000")
     if { [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "302" ]; } && ! grep -q "Core system metadata (composer.json) is missing" "$HEALTH_TMP"; then
         echo "==> Deploy OK: $HEALTH_URL reachable (HTTP $HTTP_CODE, healthy body)"
@@ -129,7 +129,7 @@ for i in {1..30}; do
 done
 
 if [ "$HEALTH_CHECK_PASSED" = false ]; then
-    echo "==> Deploy FAILED: $HEALTH_URL not healthy after 60s (http=${HTTP_CODE})" >&2
+    echo "==> Deploy FAILED: $HEALTH_URL not healthy after 120s (http=${HTTP_CODE})" >&2
 
     if [ "$ROLLBACK_ON_FAILURE" = true ] && [ "$PREVIOUS_REVISION" != "unknown" ]; then
         echo "==> Initiating automatic rollback to $PREVIOUS_REVISION"
