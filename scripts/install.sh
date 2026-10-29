@@ -11,7 +11,7 @@
 #   bash scripts/install.sh --help
 #
 # Steps: git clone → composer install → npm install && npm run build → php artisan setup:install
-# Requirements: git, php >=8.4, composer, node >=20, npm >=10
+# Requirements: git, php >=8.5, composer, node >=20, npm >=10
 
 set -euo pipefail
 
@@ -105,9 +105,9 @@ cd "$PROJECT_DIR"
 if [[ $SKIP_COMPOSER -eq 0 ]]; then
   check_cmd php
   check_cmd composer
-  # php version check (>=8.4)
-  if ! php -r 'exit(version_compare(PHP_VERSION, "8.4.0", ">=") ? 0 : 1);'; then
-    die "PHP >= 8.4 is required (found $(php -r 'echo PHP_VERSION;'))."
+  # php version check (>=8.5)
+  if ! php -r 'exit(version_compare(PHP_VERSION, "8.5.0", ">=") ? 0 : 1);'; then
+    die "PHP >= 8.5 is required (found $(php -r 'echo PHP_VERSION;'))."
   fi
   info "Installing PHP dependencies (composer install)…"
   composer install --no-interaction --prefer-dist

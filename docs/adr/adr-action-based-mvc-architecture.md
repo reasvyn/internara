@@ -32,7 +32,7 @@ The 4 architectural layers framing every slice:
 Layer 4 — Presentation/UI (Livewire, Blade, Controllers, Middleware, Policies, Routes, Console)
 Layer 3 — Business/Domain Ops (Command, Read, Process Actions, Events, Listeners, Notifications)
 Layer 2 — Data/Persistent (Models, Entities, DTOs, Enums, Database, Config, Cache, Queue)
-Layer 1 — Framework/Infrastructure/Utilities (PHP 8.4, Laravel 13, Core base classes, Contracts, Support, packages)
+Layer 1 — Framework/Infrastructure/Utilities (PHP 8.5, Laravel 13, Core base classes, Contracts, Support, packages)
 
 ```
 

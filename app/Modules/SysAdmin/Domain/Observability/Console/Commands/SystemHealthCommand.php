@@ -137,7 +137,7 @@ class SystemHealthCommand extends Command
 
     protected function checkPhpVersion(): array
     {
-        $required = config('setup.requirements.php_version', '8.4.0');
+        $required = config('setup.requirements.php_version', '8.5.0');
         $current = PHP_VERSION;
 
         if (version_compare($current, $required, '>=')) {

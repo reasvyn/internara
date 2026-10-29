@@ -45,7 +45,7 @@ Automated checks displayed to the user:
 
 | Check | What It Verifies |
 | ----- | ---------------- |
-| PHP version | >= 8.4.0 |
+| PHP version | >= 8.5.0 |
 | Extensions | All required extensions loaded |
 | Permissions | `storage/` and `bootstrap/cache/` writable |
 | Database | Connection works |

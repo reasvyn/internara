@@ -79,7 +79,7 @@ PHP OpCache caches compiled PHP bytecode in shared memory — essential for prod
 Without it, PHP re-parses and compiles every PHP file on every request.
 
 ```ini
-; /etc/php/8.4/cli/conf.d/opcache.ini
+; /etc/php/8.5/cli/conf.d/opcache.ini
 opcache.enable=1
 opcache.memory_consumption=256          ; 256 MB for bytecode
 opcache.max_accelerated_files=20000     ; Enough for 2000+ PHP files

@@ -101,7 +101,7 @@ only on layers below it — never the reverse.
 │  Exception Hierarchy: AppException + ModuleException (dual tree)            │
 │  Services (infrastructure logic — instance methods, constructor injection)  │
 │  Support (static utilities — no side effects, no DI)                       │
-│  PHP 8.4 + Laravel + Composer/Spatie packages                              │
+│  PHP 8.5 + Laravel + Composer/Spatie packages                              │
 │                                                                             │
 │  app/Modules/Core/{Actions,Models,Policies,Livewire,Data,Events,Exceptions,...}    │
 │  app/Modules/Core/Services/  app/Modules/Core/Support/                                     │

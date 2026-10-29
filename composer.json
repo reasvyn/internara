@@ -21,7 +21,7 @@
     },
     "license": "MIT",
     "require": {
-        "php": "^8.4",
+        "php": "^8.5",
         "barryvdh/laravel-dompdf": "^3.1",
         "fakerphp/faker": "^1.23",
         "laravel-lang/lang": "^15.26",

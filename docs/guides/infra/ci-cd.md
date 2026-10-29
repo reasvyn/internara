@@ -139,7 +139,7 @@ Single workflow, eight jobs:
    `git reset --hard $VERSION_TAG`, then `HEALTH_URL="https://internara.web.id" VERSION_TAG=$VERSION_TAG bash .github/scripts/deploy.sh`.
    Includes automatic rollback on failure.
 
-Environment: PHP 8.4, SQLite in-memory for tests, `concurrency` grouped by tag to avoid parallel
+Environment: PHP 8.5, SQLite in-memory for tests, `concurrency` grouped by tag to avoid parallel
 runs for a re-pushed tag. Dependency caching enabled for both Composer and npm.
 
 ---

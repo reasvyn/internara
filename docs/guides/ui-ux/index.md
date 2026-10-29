@@ -98,7 +98,7 @@ app/Modules/{Module}/Domain/{Domain}/Livewire/  # Business Livewire components
 ### Prerequisites
 
 ```bash
-# PHP 8.4+, Composer 2.x, Node.js 20+, npm 10+
+# PHP 8.5+, Composer 2.x, Node.js 20+, npm 10+
 composer install
 npm install
 

@@ -1,4 +1,4 @@
-FROM php:8.4-apache
+FROM php:8.5-apache
 
 # === Shared hosting simulation ===
 # This image mimics a basic shared hosting environment:

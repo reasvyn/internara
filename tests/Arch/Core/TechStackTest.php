@@ -10,7 +10,7 @@ describe('FB792: Tech Stack manifest and architecture guarantees', function (): 
     test('FB792-FR-STACK-001/002/003: language and framework floors', function (): void {
         $composer = json_decode(file_get_contents(base_path('composer.json')), true);
 
-        expect($composer['require']['php'])->toBe('^8.4')
+        expect($composer['require']['php'])->toBe('^8.5')
             ->and($composer['require']['laravel/framework'])->toBe('^13.0')
             ->and($composer['require']['livewire/livewire'])->toBe('^4.0');
     });

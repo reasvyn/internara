@@ -24,7 +24,7 @@ contributor must know, and how this repository builds on them. Component-specifi
 |---|---|
 | Installed | `laravel/framework v13.24.0` (`composer.json`: `^13.0`) |
 | Released | March 17, 2026 (annual cadence) |
-| PHP requirement | 8.3 – 8.5 (Internara pins `^8.4`) |
+| PHP requirement | 8.3 – 8.5 (Internara pins `^8.5`) |
 | Bug fixes until | Q3 2027 |
 | Security fixes until | March 17, 2028 |
 | Upgrade character | Minor-effort from 12.x — most apps upgrade without changing application code |

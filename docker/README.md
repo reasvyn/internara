@@ -21,7 +21,7 @@ docker compose -f docker-compose.dev.yml exec laravel.test php artisan migrate -
 docker compose -f docker-compose.dev.yml exec laravel.test npm run dev
 ```
 
-**Includes:** `laravel.test` (PHP 8.4) + `queue` worker, SQLite, Composer, Node.js.
+**Includes:** `laravel.test` (PHP 8.5) + `queue` worker, SQLite, Composer, Node.js.
 **URL:** http://localhost (override with `APP_PORT`)
 
 ## 2. Production (Docker Compose)

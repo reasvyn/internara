@@ -77,7 +77,7 @@ Do NOT scale preemptively. Scale when you observe these symptoms:
 **Steps:**
 
 1. Provision a VPS (2 CPU, 4 GB RAM, 50 GB SSD)
-2. Install PHP 8.4 + extensions (bcmath, curl, gd, intl, mbstring, openssl, pdo_mysql, xml, zip,
+2. Install PHP 8.5 + extensions (bcmath, curl, gd, intl, mbstring, openssl, pdo_mysql, xml, zip,
    opcache, redis)
 3. Install MySQL 8+ or PostgreSQL 14+
 4. Install Redis 7+
@@ -412,7 +412,7 @@ Examples:
 ### Tier 1 -> Tier 2 Transition Checklist
 
 - [ ] VPS provisioned (2 CPU, 4 GB RAM, 50 GB SSD)
-- [ ] PHP 8.4 + all extensions installed (`system:health` passes)
+- [ ] PHP 8.5 + all extensions installed (`system:health` passes)
 - [ ] MySQL 8+ / PostgreSQL 14+ installed and tuned
 - [ ] Redis 7+ installed
 - [ ] Nginx configured with HTTPS

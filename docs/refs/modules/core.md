@@ -10,7 +10,7 @@ implementations, and architectural mechanisms that every other module depends on
 Core provides the non-negotiable foundation for the entire application. It defines the architectural
 patterns (Action Triad, Entity separation, exception hierarchy) and enforces them through
 code review. Core has **zero dependencies** on any business module — it depends only on
-Laravel, Spatie packages, and PHP 8.4.
+Laravel, Spatie packages, and PHP 8.5.
 
 The module is split into two conceptual layers:
 
@@ -112,7 +112,7 @@ components, route directories, and cache keys dynamically. Results are cached in
 
 - Laravel 13 framework
 - `spatie/laravel-permission` — Role-based access control integration
-- PHP 8.4
+- PHP 8.5
 
 ## Used By
 
@@ -120,7 +120,7 @@ Every module in the application.
 
 ## Design Principles
 
-- **Zero upward dependencies** — Core depends only on Laravel, Spatie packages, and PHP 8.4. It must never import from any business module. If a business concept feels like it belongs in Core, it almost certainly does not — push it back to its owning module and expose a contract.
+- **Zero upward dependencies** — Core depends only on Laravel, Spatie packages, and PHP 8.5. It must never import from any business module. If a business concept feels like it belongs in Core, it almost certainly does not — push it back to its owning module and expose a contract.
 - **Abstract and concrete stay separate** — abstract contracts and base classes (the framework) live alongside concrete reusable implementations (DTOs, enums, exceptions, support) but are clearly partitioned. Never bury an abstract contract inside a concrete namespace; the boundary is the architectural invariant.
 - **Action Triad is non-negotiable** — mutations are `Command Actions` (transaction + audit + event), reads are plain classes (no transaction, no logging), and multi-step coordination is a `Process Action` extending `BaseAction`. The triad shape is enforced by type, not convention.
 - **Exceptions are dual hierarchies** — `AppException` (system failures) and `ModuleException` (business invariants) never mix. Use `AppException` for infrastructure (DB, Redis, filesystem); use `ModuleException` (with `RejectedException`) for business rule violations.

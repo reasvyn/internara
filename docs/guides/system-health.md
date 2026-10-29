@@ -40,7 +40,7 @@ php artisan system:health
 | - | ----- | ---------------- | -------------- |
 | 1 | Environment | `.env` file exists | Missing `.env` |
 | 2 | Setup Status | System has been installed | Wizard not completed |
-| 3 | PHP Version | >= 8.4.0 | Version < 8.4.0 |
+| 3 | PHP Version | >= 8.5.0 | Version < 8.5.0 |
 | 4 | Required Extensions | All12 extensions loaded | Missing extension |
 | 5 | Recommended Extensions | Redis, PCNTL, POSIX | Missing (warning only) |
 | 6 | PHP Memory | >= 128 MB | memory_limit < 128M |

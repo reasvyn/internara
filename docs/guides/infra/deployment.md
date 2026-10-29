@@ -23,7 +23,7 @@ Any shared hosting plan with these features works:
 
 | Feature       | Minimum Requirement                             |
 | ------------- | ----------------------------------------------- |
-| PHP           | 8.4+                                            |
+| PHP           | 8.5+                                            |
 | Database      | MySQL 8+ or MariaDB 10.6+                       |
 | Document root | Configurable to `public/` directory             |
 | SSH access    | Recommended (cPanel/S FTP fallback available)   |
@@ -126,7 +126,7 @@ If response times degrade, upgrade to [Tier 2 (VPS)](#deployment-path-b-vps--ded
 
 When the institution outgrows shared hosting:
 
-1. Set up a VPS with PHP 8.4, Redis, Supervisor
+1. Set up a VPS with PHP 8.5, Redis, Supervisor
 2. Install the same codebase following [Installation](../installation.md)
 3. Change `.env`:
 
@@ -170,7 +170,7 @@ server {
     error_page 404 /index.php;
 
     location ~ \.php$ {
-        fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php8.5-fpm.sock;
         fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
         include fastcgi_params;
     }
@@ -188,7 +188,7 @@ rewriting.
 ### 2. PHP-FPM Tuning
 
 ```ini
-; /etc/php/8.4/fpm/pool.d/www.conf
+; /etc/php/8.5/fpm/pool.d/www.conf
 pm = dynamic
 pm.max_children = 50
 pm.start_servers = 5
@@ -369,7 +369,7 @@ The compose file pins the shared-hosting drivers (`DB_CONNECTION=sqlite`,
 volume while compiled frontend assets live in the `app_data` volume (`/app/public`). The container
 caps itself at `mem_limit: 384m` / `cpus: 1.0` and restarts `unless-stopped`.
 
-The runtime image is built from the repo-root `Dockerfile` (multi-stage `php:8.4-fpm`): the builder
+The runtime image is built from the repo-root `Dockerfile` (multi-stage `php:8.5-fpm`): the builder
 stage runs `composer install --no-dev`, `npm ci`, and `npm run build`; the runtime stage ships
 `/app` plus `docker/entrypoint.sh`, `docker/fpm-healthcheck`, `docker/php-fpm/www.conf`, and
 `docker/php-fpm/opcache.ini`. On every start the entrypoint writes a stub `/app/.env` when missing,
@@ -652,7 +652,7 @@ Since the container uses SQLite, no database password is required. Do not commit
 
 ```
 
-`docker-compose.dev.yml` defines two services — `laravel.test` (PHP 8.4, port `APP_PORT`, default 80)
+`docker-compose.dev.yml` defines two services — `laravel.test` (PHP 8.5, port `APP_PORT`, default 80)
 and `queue` (`queue:work` against the database queue). Both use SQLite; there is no MySQL service.
 
 See `docker-compose.dev.yml` for the Sail configuration.

@@ -348,7 +348,7 @@ All 19 modules are vertical slices cross-cutting the 4-layer architecture define
 - **Layer 3 — Business/Domain Ops** — Command/Read/Process Actions, Events, Listeners, Notifications
 - **Layer 2 — Data/Persistent** — Eloquent models, Entities (final readonly), DTOs, Enums, Database,
   Config
-- **Layer 1 — Framework/Infra** — PHP 8.4, Laravel 13, Core base classes, Contracts, Exceptions,
+- **Layer 1 — Framework/Infra** — PHP 8.5, Laravel 13, Core base classes, Contracts, Exceptions,
   Services
 
 ## Rules

@@ -41,7 +41,7 @@ period** (~50–100 peak concurrent) with no external services beyond MySQL/Mari
 |  PKL period (~50-100 concurrent)                |
 +-------------------------------------------------+
 |  Web:     Apache / Nginx (cPanel)               |
-|  PHP:     8.4 FPM                               |
+|  PHP:     8.5 FPM                               |
 |  DB:      MySQL / MariaDB (shared)              |
 |  Queue:   sync (inline)                         |
 |  Cache:   file / database                       |
@@ -67,7 +67,7 @@ dedicated resources.
 |  Target: 500-2000 registered users              |
 +-------------------------------------------------+
 |  Web:     Nginx + HTTPS (Let's Encrypt)         |
-|  PHP:     8.4 FPM + OpCache                     |
+|  PHP:     8.5 FPM + OpCache                     |
 |  DB:      MySQL 8 / PostgreSQL 14+              |
 |  Queue:   Redis (dual pipelines)                |
 |  Cache:   Redis                                 |
@@ -92,7 +92,7 @@ For large institutions requiring redundancy, read replicas, and horizontal scali
 |  Target: 2000+ registered users                 |
 +-------------------------------------------------+
 |  Web:     Nginx (2+ app servers)                |
-|  PHP:     8.4 FPM pool (per server)             |
+|  PHP:     8.5 FPM pool (per server)             |
 |  DB:      MySQL 8 + read replica                |
 |  Queue:   Redis cluster (dual pipelines)        |
 |  Cache:   Redis cluster                         |

@@ -11,7 +11,7 @@ return [
     */
 
     'requirements' => [
-        'php_version' => '8.4.0',
+        'php_version' => '8.5.0',
         'extensions' => [
             'bcmath',
             'ctype',

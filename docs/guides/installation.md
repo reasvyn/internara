@@ -14,7 +14,7 @@ installation, environment configuration, database provisioning, and signed URL g
 
 | Requirement | Minimum | Recommended |
 | ----------- | ------- | ----------- |
-| PHP | 8.4.0 | 8.4+ with OpCache |
+| PHP | 8.5.0 | 8.5+ with OpCache |
 | Composer | 2.0 | 2.5+ |
 | Node.js | 20 | 20+ LTS |
 | npm | 10 | 10+ |
@@ -176,7 +176,7 @@ php artisan setup:install --check-only  # Audit without provisioning
 | Setup URL 404 | Already installed | `php artisan setup:install --force` |
 | "Class not found" | Dependencies not installed | `composer install --no-interaction` |
 | "APP_KEY not set" | Key not generated | `php artisan key:generate` |
-| "PHP version X required" | Wrong PHP version | Install PHP 8.4+ |
+| "PHP version X required" | Wrong PHP version | Install PHP 8.5+ |
 | "Extension X not found" | Missing PHP extension | Install the listed extension |
 
 ---

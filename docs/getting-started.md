@@ -8,7 +8,7 @@ End-to-end walkthrough from cloning the repository to completing the setup wizar
 
 | Requirement | Development         | Production                        |
 | ----------- | ------------------- | --------------------------------- |
-| PHP         | 8.4.0+              | 8.4.0+                            |
+| PHP         | 8.5.0+              | 8.5.0+                            |
 | Composer    | 2.5+                | 2.5+                              |
 | Node.js     | 20+                 | 20+ (build only)                  |
 | NPM         | 10+                 | 10+ (build only)                  |
@@ -121,7 +121,7 @@ php artisan setup:install
 
 This command will:
 
-1. **Audit the environment** — checks PHP version (≥ 8.4.0), required extensions, storage
+1. **Audit the environment** — checks PHP version (≥ 8.5.0), required extensions, storage
    permissions, database connectivity, and CLI tools. Stops with detailed output if any check fails.
 2. **Provision the system** — creates `.env` from `.env.example` if missing, generates `APP_KEY`,
    runs database migrations, creates the storage symlink, and seeds initial data.
