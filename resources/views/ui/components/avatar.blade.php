@@ -1,10 +1,19 @@
 @props([
     'user',
     'size' => 'size-9',
+    'textSize' => null,
 ])
 
 @php
     $avatarUrl = $user?->getAvatarUrl();
+    $initials = filled($user?->initials()) ? $user->initials() : '?';
+    $fontSize = $textSize ?? match ($size) {
+        'size-24', 'size-20' => 'text-2xl font-bold',
+        'size-16' => 'text-lg font-bold',
+        'size-14', 'size-12' => 'text-base font-semibold',
+        'size-10' => 'text-sm font-semibold',
+        default => 'text-xs font-medium',
+    };
 @endphp
 
 <div
@@ -19,10 +28,8 @@
             x-show="! imgFailed"
             x-on:error="imgFailed = true"
         />
-        <span x-show="imgFailed" x-cloak class="text-base-content/60 text-xs font-medium">
-            {{ $user?->initials() ?? '?' }}
-        </span>
+        <span x-show="imgFailed" x-cloak class="text-base-content/60 {{ $fontSize }}"> {{ $initials }} </span>
     @else
-        <span class="text-base-content/60 text-xs font-medium">{{ $user?->initials() ?? '?' }}</span>
+        <span class="text-base-content/60 {{ $fontSize }}">{{ $initials }}</span>
     @endif
 </div>
