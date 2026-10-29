@@ -4,14 +4,162 @@ declare(strict_types=1);
 
 return [
     'groups' => [
-        // Dashboard
+        // ==========================================
+        // Dashboard / Navigation (All Roles)
+        // ==========================================
         'dashboard' => [
             'roles' => ['super_admin', 'admin', 'teacher', 'supervisor', 'student'],
             'title' => 'common.sidebar.navigation',
-            'items' => [['route' => 'dashboard', 'icon' => 'o-home', 'label' => 'dashboard.title']],
+            'items' => [
+                [
+                    'route' => 'dashboard',
+                    'icon' => 'o-home',
+                    'label' => 'dashboard.title',
+                ],
+            ],
         ],
 
-        // Institution Foundation
+        // ==========================================
+        // STUDENT JOURNEY
+        // 1. Pra-Pendaftaran & Pendaftaran (Pre-Internship & Registration)
+        // 2. Pelaksanaan Magang (Active Internship Activities)
+        // 3. Penilaian & Kelulusan (Assessment & Certification)
+        // ==========================================
+        'student_registration' => [
+            'roles' => ['student'],
+            'title' => 'common.sidebar.registration',
+            'items' => [
+                [
+                    'route' => 'registration.center',
+                    'icon' => 'o-briefcase',
+                    'label' => 'common.sidebar.browse_programs',
+                ],
+                [
+                    'route' => 'registration.wizard',
+                    'icon' => 'o-document-plus',
+                    'label' => 'common.sidebar.register_internship',
+                ],
+                [
+                    'route' => 'registration.documents',
+                    'icon' => 'o-document-arrow-up',
+                    'label' => 'common.sidebar.my_documents',
+                ],
+                [
+                    'route' => 'student.handbooks',
+                    'icon' => 'o-bookmark-square',
+                    'label' => 'common.sidebar.handbooks',
+                ],
+            ],
+        ],
+
+        'student_portal' => [
+            'roles' => ['student'],
+            'title' => 'common.sidebar.student_portal',
+            'items' => [
+                [
+                    'route' => 'student.attendance',
+                    'icon' => 'o-clock',
+                    'label' => 'common.sidebar.attendance',
+                ],
+                [
+                    'route' => 'student.attendance.absence',
+                    'icon' => 'o-exclamation-circle',
+                    'label' => 'common.sidebar.absence',
+                ],
+                [
+                    'route' => 'student.logbook',
+                    'icon' => 'o-book-open',
+                    'label' => 'common.sidebar.logbook',
+                ],
+                [
+                    'route' => 'student.assignments',
+                    'icon' => 'o-document-duplicate',
+                    'label' => 'common.sidebar.assignments',
+                ],
+                [
+                    'route' => 'student.supervision-logs',
+                    'icon' => 'o-user-group',
+                    'label' => 'common.sidebar.supervision',
+                ],
+                [
+                    'route' => 'student.monitoring-visits',
+                    'icon' => 'o-map-pin',
+                    'label' => 'common.sidebar.visits',
+                ],
+            ],
+        ],
+
+        'student_assessment' => [
+            'roles' => ['student'],
+            'title' => 'common.sidebar.assessment',
+            'items' => [
+                [
+                    'route' => 'assessments',
+                    'icon' => 'o-clipboard-document-check',
+                    'label' => 'common.sidebar.assessments',
+                ],
+                [
+                    'route' => 'student.certificates',
+                    'icon' => 'o-document-check',
+                    'label' => 'common.sidebar.my_certificates',
+                ],
+            ],
+        ],
+
+        // ==========================================
+        // TEACHER JOURNEY
+        // 1. Mentoring, Visits & Grading Portal
+        // ==========================================
+        'teacher_portal' => [
+            'roles' => ['teacher'],
+            'title' => 'common.sidebar.teacher_portal',
+            'items' => [
+                [
+                    'route' => 'monitoring-visits.index',
+                    'icon' => 'o-map-pin',
+                    'label' => 'common.sidebar.visits',
+                ],
+                [
+                    'route' => 'supervision.logs',
+                    'icon' => 'o-clipboard-document-check',
+                    'label' => 'common.sidebar.supervision_logs',
+                ],
+                [
+                    'route' => 'teacher.submissions.grading',
+                    'icon' => 'o-check-badge',
+                    'label' => 'common.sidebar.submissions',
+                ],
+            ],
+        ],
+
+        // ==========================================
+        // SUPERVISOR (INDUSTRY) JOURNEY
+        // 1. Mentoring & Grading Portal
+        // ==========================================
+        'supervisor_portal' => [
+            'roles' => ['supervisor'],
+            'title' => 'common.sidebar.supervisor_portal',
+            'items' => [
+                [
+                    'route' => 'supervision.logs',
+                    'icon' => 'o-clipboard-document-check',
+                    'label' => 'common.sidebar.supervision_logs',
+                ],
+                [
+                    'route' => 'supervision.submissions.grading',
+                    'icon' => 'o-check-badge',
+                    'label' => 'common.sidebar.submissions',
+                ],
+            ],
+        ],
+
+        // ==========================================
+        // ADMIN JOURNEY
+        // 1. Foundation & Master Data
+        // 2. People Management
+        // 3. Internship Programs & Partnerships
+        // 4. Registration & Placements
+        // ==========================================
         'foundation' => [
             'roles' => ['super_admin', 'admin'],
             'title' => 'common.sidebar.foundation',
@@ -34,63 +182,6 @@ return [
             ],
         ],
 
-        // Internship Planning
-        'internship' => [
-            'roles' => ['super_admin', 'admin'],
-            'title' => 'common.sidebar.internship',
-            'items' => [
-                [
-                    'route' => 'sysadmin.internships',
-                    'icon' => 'o-briefcase',
-                    'label' => 'internship.title',
-                ],
-                [
-                    'route' => 'sysadmin.internships.groups',
-                    'icon' => 'o-user-group',
-                    'label' => 'common.sidebar.groups',
-                ],
-                [
-                    'route' => 'partner.companies',
-                    'icon' => 'o-building-office',
-                    'label' => 'company.title',
-                ],
-                [
-                    'route' => 'enrollment.internships.placements',
-                    'icon' => 'o-map-pin',
-                    'label' => 'common.sidebar.placements',
-                ],
-                [
-                    'route' => 'enrollment.internships.placements.changes',
-                    'icon' => 'o-arrows-right-left',
-                    'label' => 'common.sidebar.placement_changes',
-                ],
-            ],
-        ],
-
-        // Registration
-        'registration' => [
-            'roles' => ['super_admin', 'admin'],
-            'title' => 'common.sidebar.registration',
-            'items' => [
-                [
-                    'route' => 'sysadmin.applications',
-                    'icon' => 'o-document-plus',
-                    'label' => 'common.sidebar.applications',
-                ],
-                [
-                    'route' => 'enrollment.internships.registrations.pending',
-                    'icon' => 'o-clipboard-document-check',
-                    'label' => 'common.sidebar.registrations',
-                ],
-                [
-                    'route' => 'enrollment.internships.placements.direct',
-                    'icon' => 'o-arrow-right-circle',
-                    'label' => 'common.sidebar.direct_placement',
-                ],
-            ],
-        ],
-
-        // People Management
         'people' => [
             'roles' => ['super_admin', 'admin'],
             'title' => 'common.sidebar.people',
@@ -119,7 +210,105 @@ return [
             ],
         ],
 
-        // Operations & Assessment
+        'internship' => [
+            'roles' => ['super_admin', 'admin'],
+            'title' => 'common.sidebar.internship',
+            'items' => [
+                [
+                    'route' => 'partner.companies',
+                    'icon' => 'o-building-office',
+                    'label' => 'company.title',
+                ],
+                [
+                    'route' => 'sysadmin.internships',
+                    'icon' => 'o-briefcase',
+                    'label' => 'internship.title',
+                ],
+                [
+                    'route' => 'sysadmin.internships.groups',
+                    'icon' => 'o-user-group',
+                    'label' => 'common.sidebar.groups',
+                ],
+            ],
+        ],
+
+        'registration' => [
+            'roles' => ['super_admin', 'admin'],
+            'title' => 'common.sidebar.registration',
+            'items' => [
+                [
+                    'route' => 'sysadmin.applications',
+                    'icon' => 'o-document-plus',
+                    'label' => 'common.sidebar.applications',
+                ],
+                [
+                    'route' => 'enrollment.internships.registrations.pending',
+                    'icon' => 'o-clipboard-document-check',
+                    'label' => 'common.sidebar.registrations',
+                ],
+                [
+                    'route' => 'enrollment.internships.placements',
+                    'icon' => 'o-map-pin',
+                    'label' => 'common.sidebar.placements',
+                ],
+                [
+                    'route' => 'enrollment.internships.placements.direct',
+                    'icon' => 'o-arrow-right-circle',
+                    'label' => 'common.sidebar.direct_placement',
+                ],
+                [
+                    'route' => 'enrollment.internships.placements.changes',
+                    'icon' => 'o-arrows-right-left',
+                    'label' => 'common.sidebar.placement_changes',
+                ],
+            ],
+        ],
+
+        // ==========================================
+        // OPERATIONS & MONITORING (Admin, Teacher, Supervisor)
+        // Daily active phase: Announcements, Attendance, Logbooks, Assignments, Visits, Notifications
+        // ==========================================
+        'operations' => [
+            'roles' => ['super_admin', 'admin', 'teacher', 'supervisor'],
+            'title' => 'common.sidebar.operations',
+            'items' => [
+                [
+                    'route' => 'sysadmin.announcements',
+                    'icon' => 'o-megaphone',
+                    'label' => 'common.sidebar.announcements',
+                ],
+                [
+                    'route' => 'sysadmin.attendance',
+                    'icon' => 'o-clock',
+                    'label' => 'common.sidebar.attendance',
+                ],
+                [
+                    'route' => 'sysadmin.logbook',
+                    'icon' => 'o-book-open',
+                    'label' => 'common.sidebar.logbook',
+                ],
+                [
+                    'route' => 'sysadmin.assignments',
+                    'icon' => 'o-document-duplicate',
+                    'label' => 'common.sidebar.assignments',
+                ],
+                [
+                    'route' => 'monitoring-visits.index',
+                    'icon' => 'o-map-pin',
+                    'label' => 'common.sidebar.visits',
+                    'roles' => ['super_admin', 'admin', 'teacher'],
+                ],
+                [
+                    'route' => 'notifications',
+                    'icon' => 'o-bell',
+                    'label' => 'common.sidebar.notifications',
+                ],
+            ],
+        ],
+
+        // ==========================================
+        // ASSESSMENT & EVALUATION (Admin)
+        // ==========================================
         'assessment' => [
             'roles' => ['super_admin', 'admin'],
             'title' => 'common.sidebar.assessment',
@@ -137,158 +326,13 @@ return [
             ],
         ],
 
-        'operations' => [
-            'roles' => ['super_admin', 'admin', 'teacher', 'supervisor'],
-            'title' => 'common.sidebar.operations',
-            'items' => [
-                [
-                    'route' => 'notifications',
-                    'icon' => 'o-bell',
-                    'label' => 'common.sidebar.notifications',
-                ],
-                [
-                    'route' => 'sysadmin.announcements',
-                    'icon' => 'o-megaphone',
-                    'label' => 'common.sidebar.announcements',
-                ],
-                [
-                    'route' => 'sysadmin.attendance',
-                    'icon' => 'o-clock',
-                    'label' => 'common.sidebar.attendance',
-                ],
-                [
-                    'route' => 'sysadmin.assignments',
-                    'icon' => 'o-document-duplicate',
-                    'label' => 'common.sidebar.assignments',
-                ],
-                [
-                    'route' => 'sysadmin.logbook',
-                    'icon' => 'o-book-open',
-                    'label' => 'common.sidebar.logbook',
-                ],
-                [
-                    'route' => 'monitoring-visits.index',
-                    'icon' => 'o-map-pin',
-                    'label' => 'common.sidebar.visits',
-                ],
-            ],
-        ],
-
-        // Student Portal
-        'student_portal' => [
-            'roles' => ['student'],
-            'title' => 'common.sidebar.student_portal',
-            'items' => [
-                [
-                    'route' => 'student.logbook',
-                    'icon' => 'o-book-open',
-                    'label' => 'common.sidebar.logbook',
-                ],
-                [
-                    'route' => 'student.attendance',
-                    'icon' => 'o-clock',
-                    'label' => 'common.sidebar.attendance',
-                ],
-                [
-                    'route' => 'student.attendance.absence',
-                    'icon' => 'o-exclamation-circle',
-                    'label' => 'common.sidebar.absence',
-                ],
-                [
-                    'route' => 'student.assignments',
-                    'icon' => 'o-document-duplicate',
-                    'label' => 'common.sidebar.assignments',
-                ],
-                [
-                    'route' => 'student.supervision-logs',
-                    'icon' => 'o-user-group',
-                    'label' => 'common.sidebar.supervision',
-                ],
-                [
-                    'route' => 'assessments',
-                    'icon' => 'o-clipboard-document-check',
-                    'label' => 'common.sidebar.assessments',
-                ],
-
-                [
-                    'route' => 'student.certificates',
-                    'icon' => 'o-document-check',
-                    'label' => 'common.sidebar.my_certificates',
-                ],
-                [
-                    'route' => 'student.handbooks',
-                    'icon' => 'o-bookmark-square',
-                    'label' => 'common.sidebar.handbooks',
-                ],
-                [
-                    'route' => 'student.monitoring-visits',
-                    'icon' => 'o-map-pin',
-                    'label' => 'common.sidebar.visits',
-                ],
-                [
-                    'route' => 'registration.center',
-                    'icon' => 'o-briefcase',
-                    'label' => 'common.sidebar.browse_programs',
-                ],
-                [
-                    'route' => 'registration.wizard',
-                    'icon' => 'o-document-plus',
-                    'label' => 'common.sidebar.register_internship',
-                ],
-                [
-                    'route' => 'registration.documents',
-                    'icon' => 'o-document-arrow-up',
-                    'label' => 'common.sidebar.my_documents',
-                ],
-            ],
-        ],
-
-        // Teacher Portal
-        'teacher_portal' => [
-            'roles' => ['teacher'],
-            'title' => 'common.sidebar.teacher_portal',
-            'items' => [
-                [
-                    'route' => 'teacher.submissions.grading',
-                    'icon' => 'o-check-badge',
-                    'label' => 'common.sidebar.submissions',
-                ],
-                [
-                    'route' => 'supervision.logs',
-                    'icon' => 'o-clipboard-document-check',
-                    'label' => 'common.sidebar.supervision_logs',
-                ],
-            ],
-        ],
-
-        // Supervisor Portal
-        'supervisor_portal' => [
-            'roles' => ['supervisor'],
-            'title' => 'common.sidebar.supervisor_portal',
-            'items' => [
-                [
-                    'route' => 'supervision.logs',
-                    'icon' => 'o-clipboard-document-check',
-                    'label' => 'common.sidebar.supervision_logs',
-                ],
-                [
-                    'route' => 'supervision.submissions.grading',
-                    'icon' => 'o-check-badge',
-                    'label' => 'common.sidebar.submissions',
-                ],
-            ],
-        ],
-
-        // Reports & Archive
+        // ==========================================
+        // REPORTS & CERTIFICATES (Admin)
+        // ==========================================
         'reports' => [
             'roles' => ['super_admin', 'admin'],
             'title' => 'common.sidebar.reports',
             'items' => [
-                [
-                    'route' => 'sysadmin.reports.index',
-                    'icon' => 'o-document-chart-bar',
-                    'label' => 'common.sidebar.reports',
-                ],
                 [
                     'route' => 'sysadmin.student-report.index',
                     'icon' => 'o-academic-cap',
@@ -305,19 +349,16 @@ return [
                     'label' => 'common.sidebar.certificate_templates',
                 ],
                 [
-                    'route' => 'sysadmin.accounts.lifecycle',
-                    'icon' => 'o-arrow-path',
-                    'label' => 'common.sidebar.account_lifecycle',
-                ],
-                [
-                    'route' => 'admin.gdpr-logs',
-                    'icon' => 'o-shield-exclamation',
-                    'label' => 'common.sidebar.gdpr_logs',
+                    'route' => 'sysadmin.reports.index',
+                    'icon' => 'o-document-chart-bar',
+                    'label' => 'common.sidebar.reports',
                 ],
             ],
         ],
 
-        // Configuration (rarely changed, at bottom)
+        // ==========================================
+        // SYSTEM CONFIGURATION & LIFECYCLE (Admin)
+        // ==========================================
         'system' => [
             'roles' => ['super_admin', 'admin'],
             'title' => 'common.sidebar.system',
@@ -338,10 +379,22 @@ return [
                     'icon' => 'o-key',
                     'label' => 'common.sidebar.recovery_slips',
                 ],
+                [
+                    'route' => 'sysadmin.accounts.lifecycle',
+                    'icon' => 'o-arrow-path',
+                    'label' => 'common.sidebar.account_lifecycle',
+                ],
+                [
+                    'route' => 'admin.gdpr-logs',
+                    'icon' => 'o-shield-exclamation',
+                    'label' => 'common.sidebar.gdpr_logs',
+                ],
             ],
         ],
 
-        // Information
+        // ==========================================
+        // INFORMATION (All Roles)
+        // ==========================================
         'information' => [
             'roles' => ['super_admin', 'admin', 'teacher', 'supervisor', 'student'],
             'title' => 'common.sidebar.information',
