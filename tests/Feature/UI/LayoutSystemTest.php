@@ -262,6 +262,20 @@ describe('8XMYS: Layout and UI System', function (): void {
 
     test('8XMYS-UC-UI-003: menu additions from config appear for permitted roles', function (): void {
         expect(config('menu.groups'))->toHaveKey('dashboard');
+
+        $groups = config('menu.groups');
+        $studentGroups = array_keys(array_filter($groups, fn ($g) => in_array('student', (array) ($g['roles'] ?? []))));
+        expect($studentGroups)->toBe([
+            'dashboard',
+            'student_pre_registration',
+            'student_registration',
+            'student_portal',
+            'student_assessment',
+            'information',
+        ]);
+
+        expect($groups['operations']['roles'])->not()->toContain('teacher')
+            ->and($groups['operations']['roles'])->not()->toContain('supervisor');
     });
 
     test('8XMYS-FR-UI-035: sidebar categories are collapsible with keyboard and aria-expanded', function (): void {

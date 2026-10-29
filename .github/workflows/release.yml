@@ -27,7 +27,7 @@ concurrency:
     cancel-in-progress: false
 
 env:
-    PHP_VERSION: '8.4'
+    PHP_VERSION: '8.5'
     DB_CONNECTION: sqlite
     DB_DATABASE: ':memory:'
 
