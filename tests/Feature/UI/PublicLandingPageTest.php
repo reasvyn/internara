@@ -107,13 +107,11 @@ describe('K8HP1: public landing page lifecycle', function (): void {
     });
 
     test('K8HP1-FR-LAND-016: registration card body branches across availability states', function (): void {
-        // Not configured — the card renders its identity only; the negative
-        // "no open registration" notice was removed from the landing page.
+        // Not configured
         Livewire::test(HomePage::class)
             ->set('registration', ['status' => 'not_configured'])
-            ->assertSee(__('user.home.registration_title'))
-            ->assertDontSee(__('user.home.registration_closed_desc'))
-            ->assertDontSee(__('user.home.registration_upcoming'));
+            ->assertSee(__('user.home.registration_unavailable_desc'))
+            ->assertDontSee(__('user.home.registration_unavailable'));
 
         // Open
         Livewire::test(HomePage::class)

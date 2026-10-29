@@ -279,6 +279,8 @@ return [
         'registration_not_open_yet' => 'Pendaftaran belum dibuka. Silakan kembali lagi saat periode dimulai.',
         'registration_closed' => 'Pendaftaran ditutup',
         'registration_closed_desc' => 'Pendaftaran untuk periode ini telah berakhir. Silakan hubungi koordinator PKL sekolah untuk informasi lebih lanjut.',
+        'registration_unavailable' => 'Tidak Ada Pendaftaran Terbuka',
+        'registration_unavailable_desc' => 'Saat ini belum ada pendaftaran PKL yang terbuka. Silakan periksa kembali secara berkala atau hubungi pihak sekolah.',
         'login_title' => 'Masuk ke Akun',
         'login_desc' => 'Masuk ke akun Anda untuk mengisi jurnal harian, presensi, bimbingan, atau mengelola data PKL.',
         'login_action' => 'Masuk Sekarang',
