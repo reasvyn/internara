@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 return [
     'status' => [
+        'preparation' => 'Persiapan',
         'pending' => 'Tertunda',
+        'confirmed' => 'Terkonfirmasi',
         'active' => 'Aktif',
+        'completed' => 'Selesai',
         'approved' => 'Disetujui',
         'rejected' => 'Ditolak',
     ],
@@ -109,6 +112,8 @@ return [
     ],
 
     'already_registered' => 'Anda sudah memiliki pendaftaran aktif atau tertunda.',
+    'already_confirmed' => 'Penempatan pendaftaran ini telah dikonfirmasi sebelumnya.',
+    'preference_required' => 'Pilihan penempatan yang tersedia atau rincian perusahaan usulan harus diisi.',
     'application_exists' => 'Anda sudah memiliki pengajuan untuk magang ini.',
     'application_not_pending' => 'Pengajuan tidak lagi berstatus menunggu.',
     'not_pending' => 'Pendaftaran tidak lagi berstatus menunggu.',

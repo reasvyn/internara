@@ -5,18 +5,25 @@ declare(strict_types=1);
 namespace App\Modules\Enrollment\Domain\Registration\Entities;
 
 use App\Modules\Core\Entities\BaseEntity;
+use App\Modules\Enrollment\Domain\Registration\Enums\RegistrationStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 final readonly class RegistrationState extends BaseEntity
 {
+    private ?RegistrationStatus $statusEnum;
+
     public function __construct(
-        private ?string $status,
+        private RegistrationStatus|string|null $status,
         private Carbon|string|null $startDate,
         private Carbon|string|null $endDate,
         private bool $hasPlacement,
         private array $phases = [],
-    ) {}
+    ) {
+        $this->statusEnum = $this->status instanceof RegistrationStatus
+            ? $this->status
+            : ($this->status !== null ? RegistrationStatus::tryFrom($this->status) : null);
+    }
 
     public static function fromModel(Model $model): static
     {
@@ -43,16 +50,53 @@ final readonly class RegistrationState extends BaseEntity
         return $this->with('phases', $phases);
     }
 
+    public function status(): ?RegistrationStatus
+    {
+        return $this->statusEnum;
+    }
+
+    public function rawStatus(): ?string
+    {
+        return $this->statusEnum?->value ?? ($this->status instanceof RegistrationStatus ? $this->status->value : $this->status);
+    }
+
+    public function isPreparation(): bool
+    {
+        return $this->statusEnum === RegistrationStatus::PREPARATION;
+    }
+
     public function isActive(): bool
     {
-        // @todo Replace with enum value when RegistrationStatus enum exists
-        return $this->status === 'active';
+        return $this->statusEnum === RegistrationStatus::ACTIVE || $this->rawStatus() === 'active';
     }
 
     public function isPending(): bool
     {
-        // @todo Replace with enum value when RegistrationStatus enum exists
-        return $this->status === 'pending';
+        return $this->statusEnum === RegistrationStatus::PENDING || $this->rawStatus() === 'pending';
+    }
+
+    public function isConfirmed(): bool
+    {
+        return $this->statusEnum === RegistrationStatus::CONFIRMED;
+    }
+
+    public function isCompleted(): bool
+    {
+        return $this->statusEnum === RegistrationStatus::COMPLETED;
+    }
+
+    public function isRejected(): bool
+    {
+        return $this->statusEnum === RegistrationStatus::REJECTED;
+    }
+
+    public function canTransitionTo(RegistrationStatus $target): bool
+    {
+        if ($this->statusEnum === null) {
+            return false;
+        }
+
+        return $this->statusEnum->canTransitionTo($target);
     }
 
     public function isCurrentlyOngoing(?Carbon $today = null): bool

@@ -9,6 +9,7 @@ use App\Modules\Certification\Domain\Certificate\Models\Certificate;
 use App\Modules\Core\Models\BaseModel;
 use App\Modules\Enrollment\Domain\Placement\Models\Placement;
 use App\Modules\Enrollment\Domain\Registration\Entities\RegistrationState;
+use App\Modules\Enrollment\Domain\Registration\Enums\RegistrationStatus;
 use App\Modules\Journal\Domain\Attendance\Models\Attendance;
 use App\Modules\Journal\Domain\Logbook\Models\Logbook;
 use App\Modules\Journal\Domain\SupervisionLog\Models\SupervisionLog;
@@ -83,16 +84,24 @@ class Registration extends BaseModel
         'proposed_company_details' => 'json',
     ];
 
-    public function setStatus(string $status, ?string $reason = null): static
+    public function setStatus(RegistrationStatus|string $status, ?string $reason = null): static
     {
-        $this->update(['status' => $status]);
+        $statusValue = $status instanceof RegistrationStatus ? $status->value : $status;
+        $attributes = ['status' => $statusValue];
+        if ($reason !== null) {
+            $attributes['rejection_reason'] = $reason;
+        }
+
+        $this->update($attributes);
 
         return $this;
     }
 
-    public function hasStatus(string $status): bool
+    public function hasStatus(RegistrationStatus|string $status): bool
     {
-        return $this->status === $status;
+        $statusValue = $status instanceof RegistrationStatus ? $status->value : $status;
+
+        return $this->status === $statusValue;
     }
 
     public function isPending(): bool

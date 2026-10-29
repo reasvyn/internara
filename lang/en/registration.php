@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 return [
     'status' => [
+        'preparation' => 'Preparation',
         'pending' => 'Pending',
+        'confirmed' => 'Confirmed',
         'active' => 'Active',
+        'completed' => 'Completed',
         'approved' => 'Approved',
         'rejected' => 'Rejected',
     ],
@@ -109,6 +112,8 @@ return [
     ],
 
     'already_registered' => 'You already have an active or pending registration.',
+    'already_confirmed' => 'The registration placement has already been confirmed.',
+    'preference_required' => 'Either an available placement or proposed company details must be provided.',
     'application_exists' => 'You already have an application for this internship.',
     'application_not_pending' => 'The application is no longer pending.',
     'not_pending' => 'The registration is no longer in a pending state.',

@@ -45,7 +45,8 @@ class RegistrationPolicy extends BasePolicy
             return true;
         }
 
-        return $this->isOwner($user, $registration, 'student_id') && $registration->isPending();
+        return $this->isOwner($user, $registration, 'student_id')
+            && ($registration->isPending() || $registration->hasStatus('preparation'));
     }
 
     public function approve(User $user, Registration $registration): bool
