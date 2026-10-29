@@ -7,6 +7,7 @@ namespace App\Modules\Setting\Services;
 use App\Modules\Core\Services\AppInfo;
 use App\Modules\Core\Services\SmartLogger;
 use App\Modules\Setting\Models\Setting;
+use App\Modules\Setting\Support\Brand;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -69,7 +70,14 @@ final class Settings
         try {
             return Cache::rememberForever(
                 config('cache-keys.settings_all'),
-                fn () => Setting::query()->select(['key', 'value'])->pluck('value', 'key'),
+                // Hydrate the models instead of plucking raw values: the value
+                // cast must apply, otherwise encrypted settings come back as
+                // ciphertext and JSON settings as strings.
+                fn () => Setting::query()
+                    ->get(['key', 'type', 'value'])
+                    ->mapWithKeys(fn (Setting $setting): array => [
+                        $setting->key => $setting->value,
+                    ]),
             );
         } catch (QueryException $e) {
             self::logQuery('error', 'Failed to fetch all setting from database', $e);
@@ -228,6 +236,12 @@ final class Settings
         if (in_array($key, config('settings.theme_cache_keys', []), true)) {
             Cache::forget(config('cache-keys.theme_css_variables'));
         }
+
+        // The brand layer memoises resolved values per request, so an explicit
+        // forget() must drop that memo too - a write that bypasses the model
+        // observer (media replacement, direct cache clear) would otherwise keep
+        // serving the previous brand.
+        Brand::clearCache();
     }
 
     protected static function resolveSingle(
@@ -254,15 +268,22 @@ final class Settings
         if ($skipCache) {
             unset(self::$runtime[$key]);
             Cache::forget(config('cache-keys.settings_key').$key);
+
+            // skipCache means "read the database". The per-key entry is now
+            // derived from the shared settings map, so that map has to be
+            // dropped as well or the bypass would serve the stale snapshot.
+            Cache::forget(config('cache-keys.settings_all'));
         }
 
         try {
             $dbValue = Cache::rememberForever(
                 config('cache-keys.settings_key').$key,
                 function () use ($key) {
-                    $setting = Setting::where('key', $key)->first();
-
-                    return $setting?->value ?? self::NOT_FOUND_SENTINEL;
+                    // Resolve from the shared settings map so a cold request
+                    // costs one query for the whole table instead of one query
+                    // per key. The map is hydrated through the model, so casts
+                    // (encrypted, JSON, boolean) are already applied.
+                    return self::all()->get($key) ?? self::NOT_FOUND_SENTINEL;
                 },
             );
         } catch (QueryException $e) {

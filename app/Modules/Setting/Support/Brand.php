@@ -8,40 +8,52 @@ use App\Modules\Core\Services\AppInfo;
 use App\Modules\Core\Services\SmartLogger;
 use App\Modules\Setting\Domain\Branding\Data\BrandData;
 use App\Modules\Setting\Domain\Theme\Support\Theme;
-use App\Modules\Setting\Models\Setting as SettingModel;
+use App\Modules\Setting\Services\Settings;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Throwable;
 
 final class Brand
 {
+    /**
+     * Per-request memo of resolved brand values.
+     *
+     * `brand()` is called 27 times across layouts and components, and each call
+     * used to resolve the whole brand from the database. Memoising keeps the
+     * resolution to one pass per request; writes reset it via clearCache().
+     *
+     * @var array<string, mixed>
+     */
+    private static array $memo = [];
+
     public static function clearCache(): void
     {
+        self::$memo = [];
         Cache::forget(config('cache-keys.brand_colors'));
     }
 
     public static function name(): string
     {
-        return self::resolveValue(['brand_name', 'name'], AppInfo::name());
+        return self::$memo['name'] ??= self::resolveValue(['brand_name', 'name'], AppInfo::name());
     }
 
     public static function title(): string
     {
-        return self::resolveValue(['site_title', 'title'], self::name());
+        return self::$memo['title'] ??= self::resolveValue(['site_title', 'title'], self::name());
     }
 
     public static function logo(): string
     {
         $default = Config::get('app.logo', asset('/brand/logo.png'));
 
-        return self::resolveValue(['brand_logo', 'logo'], $default);
+        return self::$memo['logo'] ??= self::resolveValue(['brand_logo', 'logo'], $default);
     }
 
     public static function favicon(): string
     {
         $default = Config::get('app.favicon', asset('/brand/favicon.ico'));
 
-        return self::resolveValue('favicon', $default);
+        return self::$memo['favicon'] ??= self::resolveValue('favicon', $default);
     }
 
     public static function colors(): array
@@ -100,21 +112,22 @@ final class Brand
 
     public static function get(string $key, mixed $default = null): mixed
     {
-        $data = self::resolve();
         $normalized = str_replace('.', '_', $key);
 
+        // Dispatch per key: building the whole BrandData DTO for a single value
+        // made every `brand('name')` resolve the logo, favicon and palette too.
         return match ($normalized) {
-            'name' => $data->name,
-            'title', 'site_title' => $data->title,
-            'logo' => $data->logo,
-            'favicon' => $data->favicon,
-            'colors' => $data->colors,
-            'version' => $data->version,
-            'author_name' => $data->authorName,
-            'author_email' => $data->authorEmail,
-            'description' => $data->description,
-            'license' => $data->license,
-            'gitUrl' => $data->gitUrl,
+            'name' => self::name(),
+            'title', 'site_title' => self::title(),
+            'logo' => self::logo(),
+            'favicon' => self::favicon(),
+            'colors' => self::colors(),
+            'version' => self::version(),
+            'author_name' => self::authorName(),
+            'author_email' => self::authorEmail(),
+            'description' => self::description(),
+            'license' => self::license(),
+            'gitUrl' => self::gitUrl(),
             'tagline' => __('common.app_tagline'),
             default => $default,
         };
@@ -122,19 +135,17 @@ final class Brand
 
     private static function resolveValue(string|array $key, string $fallback): string
     {
-        $value = self::safe(function () use ($key) {
-            $query = SettingModel::query();
+        // Read through the Settings service so the value comes from the cached
+        // settings map instead of a fresh query per brand key.
+        foreach ((array) $key as $candidate) {
+            $value = self::safe(fn () => Settings::get($candidate), null);
 
-            if (is_array($key)) {
-                $query->whereIn('key', $key);
-            } else {
-                $query->where('key', $key);
+            if (is_string($value) && $value !== '') {
+                return $value;
             }
+        }
 
-            return $query->value('value');
-        }, null);
-
-        return is_string($value) && $value !== '' ? $value : $fallback;
+        return $fallback;
     }
 
     private static function safe(callable $resolver, mixed $fallback = null): mixed

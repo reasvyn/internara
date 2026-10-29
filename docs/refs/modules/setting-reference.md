@@ -145,7 +145,28 @@ for the testing conventions. Tests are requirement-traceable: each test traces t
 
 | File | Service | Purpose |
 |---|---|---|
-| `Services/Settings.php` | `Settings` | Static runtime setting reader with per-key caching (`get`, `set`, `forget`); the write path bypasses Actions by design |
+| `Services/Settings.php` | `Settings` | Static runtime setting reader backed by a shared registry cache (`get`, `forget`, `keys`); the write path bypasses Actions by design |
+
+## Caching
+
+Every setting read is served from one cached snapshot of the `settings` table, so a cold request
+costs a single query instead of one query per key.
+
+| Cache key | Shape | Invalidated by |
+|---|---|---|
+| `cache-keys.settings_all` | `array<key, casted value>` hydrated through `Setting` | `SettingObserver` (`created`/`updated`/`deleted`), `Settings::forget()`, `skipCache` reads |
+| `cache-keys.settings_key` + key | single casted value derived from the registry | same as above |
+| `cache-keys.settings_group` + group | collection of `Setting` models | same as above |
+| `cache-keys.theme_css_variables` | CSS variable map built by `Theme::cssVariables()` | observer when the key is listed in `settings.theme_cache_keys` |
+| `cache-keys.brand_colors` | colour palette from `Theme::all()` | `Brand::clearCache()`, observer |
+
+- The registry map is hydrated through the model (`get(['key', 'type', 'value'])`), so value casts
+  apply: `encrypted` settings are cached decrypted, `json` settings decoded, `boolean`/`integer`
+  coerced. Never cache raw `pluck()`ed values — ciphertext would leak into every read.
+- `Brand` memoises resolved values in a per-request static map; `Brand::clearCache()` resets both
+  the memo and `brand_colors`, and is called by `SettingObserver` and `Settings::forget()`.
+- `setting(..., skipCache: true)` drops `settings_all` before reading, so a database write that
+  bypassed the observer is still observed by the bypassing reader.
 
 ---
 

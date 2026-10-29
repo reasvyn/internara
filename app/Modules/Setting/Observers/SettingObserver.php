@@ -6,6 +6,7 @@ namespace App\Modules\Setting\Observers;
 
 use App\Modules\Setting\Models\Setting;
 use App\Modules\Setting\Services\Settings;
+use App\Modules\Setting\Support\Brand;
 use Illuminate\Support\Facades\Cache;
 
 final class SettingObserver
@@ -30,6 +31,7 @@ final class SettingObserver
         $key = $setting->key;
 
         Settings::clearRuntime();
+        Brand::clearCache();
 
         Cache::forget(config('cache-keys.settings_key').$key);
         Cache::forget(config('cache-keys.settings_all'));
@@ -40,7 +42,6 @@ final class SettingObserver
 
         if (in_array($key, config('settings.theme_cache_keys', []), true)) {
             Cache::forget(config('cache-keys.theme_css_variables'));
-            Cache::forget(config('cache-keys.brand_colors'));
         }
     }
 }

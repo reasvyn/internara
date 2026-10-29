@@ -351,6 +351,49 @@ describe('ZT6VS: core infrastructure runtime behavior', function (): void {
             ->and(setting('setup.is_installed'))->not->toBeNull();
     });
 
+    test('ZT6VS-NFR-CORE-004: a cold request resolves the registry in a single query', function (): void {
+        Cache::flush();
+
+        DB::flushQueryLog();
+        DB::enableQueryLog();
+
+        setting('app.name');
+        setting('app.locale');
+        setting('setup.is_installed');
+        brand('name');
+
+        $settingQueries = collect(DB::getQueryLog())
+            ->filter(fn (array $query): bool => str_contains($query['query'], '"settings"'));
+
+        DB::disableQueryLog();
+
+        expect($settingQueries)->toHaveCount(1);
+    });
+
+    test('ZT6VS-NFR-CORE-004: skipCache reads through to the database instead of the shared registry', function (): void {
+        $action = app(SetSettingAction::class);
+        $action->execute(new SettingData(key: 'zt6vs.skip_flag', value: 'cached', group: 'zt6vs'));
+
+        expect(setting('zt6vs.skip_flag'))->toBe('cached');
+
+        // Simulate a write that bypassed the model observer: the shared
+        // registry is stale, so only a cache-skipping read may see the change.
+        DB::table('settings')->where('key', 'zt6vs.skip_flag')->update(['value' => 'fresh']);
+
+        expect(setting('zt6vs.skip_flag'))->toBe('cached')
+            ->and(setting('zt6vs.skip_flag', skipCache: true))->toBe('fresh');
+    });
+
+    test('ZT6VS-UC-CORE-002: a brand value reflects a setting update within the same request', function (): void {
+        $action = app(SetSettingAction::class);
+
+        $action->execute(new SettingData(key: 'brand_name', value: 'Alpha', group: 'branding'));
+        expect(brand('name'))->toBe('Alpha');
+
+        $action->execute(new SettingData(key: 'brand_name', value: 'Beta', group: 'branding'));
+        expect(brand('name'))->toBe('Beta');
+    });
+
     test('ZT6VS-FR-CORE-043: health surface report service status and the up endpoint answers', function (): void {
         Artisan::call('system:health', ['--json' => true]);
 

@@ -60,11 +60,15 @@ setting model → config → AppInfo → hardcoded default.
 
 ### Cache Strategy
 
-All setting reads are cached forever. Cache invalidation happens via `SettingObserver`, which
-responds to Eloquent model events (`created`, `updated`, `deleted`) and clears affected cache keys
-synchronously. Brand color cache (`brand.colors`) and theme CSS variable cache
-(`theme.css_variables`) are invalidated when relevant setting change, driven by
-`config('settings.theme_cache_keys')`.
+All setting reads are cached forever. Reads are served from a single cached snapshot of the store,
+so a page that resolves a dozen keys still costs one query on a cold cache. Cache invalidation
+happens via `SettingObserver`, which responds to Eloquent model events (`created`, `updated`,
+`deleted`) and clears affected cache keys synchronously. Brand color cache (`brand.colors`) and
+theme CSS variable cache (`theme.css_variables`) are invalidated when relevant setting change,
+driven by `config('settings.theme_cache_keys')`.
+
+Branding accessors additionally memoise their resolved values for the duration of a request; that
+memo is dropped by the same invalidation path, so a write inside a request is visible immediately.
 
 ### Superadmin-Only Mutations
 
