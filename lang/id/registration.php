@@ -13,6 +13,19 @@ return [
         'rejected' => 'Ditolak',
     ],
 
+    'preparation_title' => 'Persiapan Praktik Kerja Lapangan (PKL)',
+    'preparation_subtitle' => 'Lengkapi preferensi penempatan industri dan berkas persyaratan untuk',
+    'placement_choice_title' => 'Pilih Jalur Penempatan',
+    'placement_choice_desc' => 'Pilih kuota mitra industri sekolah yang tersedia atau ajukan tempat PKL mandiri.',
+    'partner_option' => 'Kuota Mitra Sekolah',
+    'proposed_option' => 'Pengajuan Mandiri',
+    'quota_remaining' => 'sisa :slots kuota',
+    'doc_upload_desc' => 'Unggah dokumen izin orang tua dan pakta integritas yang diwajibkan sebelum penetapan penempatan.',
+    'status_overview_title' => 'Ringkasan Status Kesiapan',
+    'status_overview_desc' => 'Tinjau status terkini dan rincian penempatan persiapan PKL Anda.',
+    'no_cohort_title' => 'Belum Ada Periode PKL Aktif',
+    'no_cohort_desc' => 'Saat ini belum ada periode persiapan PKL yang dibuka untuk angkatan/rombel Anda. Silakan hubungi Koordinator PKL/Hubin sekolah.',
+
     'center_title' => 'Pendaftaran Praktik Kerja Lapangan',
     'center' => [
         'title' => 'Pendaftaran Magang',
@@ -114,6 +127,7 @@ return [
     'already_registered' => 'Anda sudah memiliki pendaftaran aktif atau tertunda.',
     'already_confirmed' => 'Penempatan pendaftaran ini telah dikonfirmasi sebelumnya.',
     'preference_required' => 'Pilihan penempatan yang tersedia atau rincian perusahaan usulan harus diisi.',
+    'not_active_to_complete' => 'Hanya pendaftaran berstatus aktif yang dapat diselesaikan.',
     'application_exists' => 'Anda sudah memiliki pengajuan untuk magang ini.',
     'application_not_pending' => 'Pengajuan tidak lagi berstatus menunggu.',
     'not_pending' => 'Pendaftaran tidak lagi berstatus menunggu.',

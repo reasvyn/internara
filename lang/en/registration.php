@@ -13,6 +13,19 @@ return [
         'rejected' => 'Rejected',
     ],
 
+    'preparation_title' => 'PKL Internship Preparation',
+    'preparation_subtitle' => 'Complete your placement preference and required documents for',
+    'placement_choice_title' => 'Select Placement Channel',
+    'placement_choice_desc' => 'Choose between available partner company quotas or propose your own internship company.',
+    'partner_option' => 'School Partner Slot',
+    'proposed_option' => 'Self-Proposed Company',
+    'quota_remaining' => ':slots slots remaining',
+    'doc_upload_desc' => 'Upload required parental consent and integrity pact documents before plotting confirmation.',
+    'status_overview_title' => 'Onboarding Status Overview',
+    'status_overview_desc' => 'Review the current status and assigned details of your internship onboarding.',
+    'no_cohort_title' => 'No Active PKL Cohort Period',
+    'no_cohort_desc' => 'There is currently no active PKL preparation period assigned to your class cohort. Please contact your school internship coordinator.',
+
     'center_title' => 'Internship Registration',
     'center' => [
         'title' => 'Internship Registration',
@@ -114,6 +127,7 @@ return [
     'already_registered' => 'You already have an active or pending registration.',
     'already_confirmed' => 'The registration placement has already been confirmed.',
     'preference_required' => 'Either an available placement or proposed company details must be provided.',
+    'not_active_to_complete' => 'Only active registrations can be marked as completed.',
     'application_exists' => 'You already have an application for this internship.',
     'application_not_pending' => 'The application is no longer pending.',
     'not_pending' => 'The registration is no longer in a pending state.',

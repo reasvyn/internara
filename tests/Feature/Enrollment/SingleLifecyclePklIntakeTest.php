@@ -3,7 +3,10 @@
 declare(strict_types=1);
 
 use App\Modules\Core\Exceptions\RejectedException;
+use App\Modules\Document\Models\Document;
 use App\Modules\Enrollment\Domain\Placement\Models\Placement;
+use App\Modules\Enrollment\Domain\Registration\Actions\ActivateConfirmedRegistrationsAction;
+use App\Modules\Enrollment\Domain\Registration\Actions\CompleteRegistrationAction;
 use App\Modules\Enrollment\Domain\Registration\Actions\ConfirmPlacementPlottingAction;
 use App\Modules\Enrollment\Domain\Registration\Actions\ProvisionCohortRegistrationAction;
 use App\Modules\Enrollment\Domain\Registration\Actions\RegisterInternshipAction;
@@ -13,13 +16,18 @@ use App\Modules\Enrollment\Domain\Registration\Data\PlacementPreferenceData;
 use App\Modules\Enrollment\Domain\Registration\Data\RegistrationData;
 use App\Modules\Enrollment\Domain\Registration\Enums\RegistrationStatus;
 use App\Modules\Enrollment\Domain\Registration\Events\PlacementConfirmed;
+use App\Modules\Enrollment\Domain\Registration\Livewire\PklPreparation;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\Enrollment\Domain\Registration\Models\RegistrationDocument;
 use App\Modules\Enrollment\Domain\Registration\Policies\RegistrationPolicy;
 use App\Modules\Partner\Domain\Company\Models\Company;
 use App\Modules\Program\Domain\Internship\Models\Internship;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Storage;
+use Livewire\Livewire;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -222,5 +230,100 @@ describe('1SPKL: Single Lifecycle PKL Intake', function (): void {
             ->and($policy->update($student, $pendingReg))->toBeTrue()
             ->and($policy->update($student, $confirmedReg))->toBeFalse()
             ->and($policy->update($student, $activeReg))->toBeFalse();
+    });
+
+    test('1SPKL-FR-SPKL-002: PklPreparation livewire component renders linear onboarding view', function (): void {
+        $student = spklStudent();
+        $internship = Internship::factory()->create([
+            'name' => 'PKL Angkatan 2026 Jurusan RPL',
+        ]);
+        $company = Company::factory()->create(['name' => 'PT Mitra Utama']);
+        $placement = Placement::factory()->create([
+            'internship_id' => $internship->id,
+            'company_id' => $company->id,
+            'quota' => 4,
+            'filled_quota' => 0,
+        ]);
+
+        $registration = Registration::create([
+            'student_id' => $student->id,
+            'internship_id' => $internship->id,
+            'status' => RegistrationStatus::PREPARATION->value,
+        ]);
+
+        Livewire::actingAs($student)
+            ->test(PklPreparation::class, ['registration' => $registration])
+            ->assertSee('PKL Angkatan 2026 Jurusan RPL')
+            ->assertSee('PT Mitra Utama')
+            ->set('placementId', $placement->id)
+            ->call('savePlacementPreference')
+            ->assertSet('step', 2);
+
+        expect($registration->fresh()->placement_id)->toBe($placement->id)
+            ->and($registration->fresh()->status)->toBe(RegistrationStatus::PENDING->value);
+    });
+
+    test('1SPKL-FR-SPKL-007: PklPreparation livewire component uploads required compliance documents', function (): void {
+        Storage::fake('local');
+        $student = spklStudent();
+        $doc = Document::factory()->create(['title' => 'Surat Pernyataan Orang Tua']);
+        $internship = Internship::factory()->create([
+            'required_document_ids' => [$doc->id],
+        ]);
+
+        $registration = Registration::create([
+            'student_id' => $student->id,
+            'internship_id' => $internship->id,
+            'status' => RegistrationStatus::PREPARATION->value,
+        ]);
+
+        $file = UploadedFile::fake()->create('surat_izin.pdf', 100, 'application/pdf');
+
+        Livewire::actingAs($student)
+            ->test(PklPreparation::class, ['registration' => $registration])
+            ->set('uploads.'.$doc->id, $file)
+            ->call('uploadDocuments')
+            ->assertSet('step', 3);
+
+        expect(RegistrationDocument::where('registration_id', $registration->id)->count())->toBe(1);
+    });
+
+    test('1SPKL-FR-SPKL-010: ActivateConfirmedRegistrationsAction activates registrations when start_date arrives', function (): void {
+        $internship = Internship::factory()->create();
+        $student = spklStudent();
+
+        $registration = Registration::create([
+            'student_id' => $student->id,
+            'internship_id' => $internship->id,
+            'status' => RegistrationStatus::CONFIRMED->value,
+            'start_date' => now()->subDay()->toDateString(),
+            'end_date' => now()->addDays(60)->toDateString(),
+        ]);
+
+        $action = app(ActivateConfirmedRegistrationsAction::class);
+        $activated = $action->execute(now());
+
+        expect($activated)->toHaveCount(1)
+            ->and($registration->fresh()->status)->toBe(RegistrationStatus::ACTIVE->value);
+    });
+
+    test('1SPKL-FR-SPKL-011: CompleteRegistrationAction locks active registration into terminal completed state', function (): void {
+        $internship = Internship::factory()->create();
+        $student = spklStudent();
+
+        $registration = Registration::create([
+            'student_id' => $student->id,
+            'internship_id' => $internship->id,
+            'status' => RegistrationStatus::ACTIVE->value,
+            'start_date' => now()->subDays(90)->toDateString(),
+            'end_date' => now()->subDay()->toDateString(),
+        ]);
+
+        $action = app(CompleteRegistrationAction::class);
+        $completed = $action->execute($registration, 'Semua nilai industri dan laporan telah diverifikasi.');
+
+        expect($completed->status)->toBe(RegistrationStatus::COMPLETED->value)
+            ->and($completed->fresh()->asRegistrationState()->isCompleted())->toBeTrue()
+            ->and($completed->fresh()->asRegistrationState()->canTransitionTo(RegistrationStatus::ACTIVE))->toBeFalse();
     });
 });
