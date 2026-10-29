@@ -5,7 +5,7 @@ declare(strict_types=1);
 return [
     'groups' => [
         // ==========================================
-        // Dashboard / Navigation (All Roles)
+        // 0. Dashboard / Navigation (All Roles)
         // ==========================================
         'dashboard' => [
             'roles' => ['super_admin', 'admin', 'teacher', 'supervisor', 'student'],
@@ -21,19 +21,32 @@ return [
 
         // ==========================================
         // STUDENT JOURNEY
-        // 1. Pra-Pendaftaran & Pendaftaran (Pre-Internship & Registration)
-        // 2. Pelaksanaan Magang (Active Internship Activities)
-        // 3. Penilaian & Kelulusan (Assessment & Certification)
+        // 1. Pra-Pendaftaran (Pre-Registration: Browse & Guidelines)
+        // 2. Pendaftaran (Registration: Wizard & Documents)
+        // 3. Pelaksanaan Magang (Active Internship Activities)
+        // 4. Penilaian & Kelulusan (Assessment & Certification)
         // ==========================================
-        'student_registration' => [
+        'student_pre_registration' => [
             'roles' => ['student'],
-            'title' => 'common.sidebar.registration',
+            'title' => 'common.sidebar.pre_registration',
             'items' => [
                 [
                     'route' => 'registration.center',
                     'icon' => 'o-briefcase',
                     'label' => 'common.sidebar.browse_programs',
                 ],
+                [
+                    'route' => 'student.handbooks',
+                    'icon' => 'o-bookmark-square',
+                    'label' => 'common.sidebar.handbooks',
+                ],
+            ],
+        ],
+
+        'student_registration' => [
+            'roles' => ['student'],
+            'title' => 'common.sidebar.registration',
+            'items' => [
                 [
                     'route' => 'registration.wizard',
                     'icon' => 'o-document-plus',
@@ -44,17 +57,12 @@ return [
                     'icon' => 'o-document-arrow-up',
                     'label' => 'common.sidebar.my_documents',
                 ],
-                [
-                    'route' => 'student.handbooks',
-                    'icon' => 'o-bookmark-square',
-                    'label' => 'common.sidebar.handbooks',
-                ],
             ],
         ],
 
         'student_portal' => [
             'roles' => ['student'],
-            'title' => 'common.sidebar.student_portal',
+            'title' => 'common.sidebar.active_internship',
             'items' => [
                 [
                     'route' => 'student.attendance',
@@ -91,7 +99,7 @@ return [
 
         'student_assessment' => [
             'roles' => ['student'],
-            'title' => 'common.sidebar.assessment',
+            'title' => 'common.sidebar.assessment_certification',
             'items' => [
                 [
                     'route' => 'assessments',
@@ -108,7 +116,7 @@ return [
 
         // ==========================================
         // TEACHER JOURNEY
-        // 1. Mentoring, Visits & Grading Portal
+        // Mentoring, Visits, Student Logbook & Grading Portal
         // ==========================================
         'teacher_portal' => [
             'roles' => ['teacher'],
@@ -125,6 +133,11 @@ return [
                     'label' => 'common.sidebar.supervision_logs',
                 ],
                 [
+                    'route' => 'sysadmin.logbook',
+                    'icon' => 'o-book-open',
+                    'label' => 'common.sidebar.logbook',
+                ],
+                [
                     'route' => 'teacher.submissions.grading',
                     'icon' => 'o-check-badge',
                     'label' => 'common.sidebar.submissions',
@@ -134,12 +147,17 @@ return [
 
         // ==========================================
         // SUPERVISOR (INDUSTRY) JOURNEY
-        // 1. Mentoring & Grading Portal
+        // Student Daily Logbook Verification, Mentoring & Grading
         // ==========================================
         'supervisor_portal' => [
             'roles' => ['supervisor'],
             'title' => 'common.sidebar.supervisor_portal',
             'items' => [
+                [
+                    'route' => 'sysadmin.logbook',
+                    'icon' => 'o-book-open',
+                    'label' => 'common.sidebar.logbook',
+                ],
                 [
                     'route' => 'supervision.logs',
                     'icon' => 'o-clipboard-document-check',
@@ -155,10 +173,14 @@ return [
 
         // ==========================================
         // ADMIN JOURNEY
-        // 1. Foundation & Master Data
-        // 2. People Management
-        // 3. Internship Programs & Partnerships
-        // 4. Registration & Placements
+        // 1. Landasan & Master Data (Foundation)
+        // 2. Manajemen Pengguna (People)
+        // 3. Program Magang & Mitra DUDI (Internship & Partnerships)
+        // 4. Pendaftaran & Penempatan (Registration & Placements)
+        // 5. Operasional & Monitoring (Operations & Daily Supervision)
+        // 6. Penilaian & Evaluasi (Assessment)
+        // 7. Laporan & Sertifikasi (Reports & Certificates)
+        // 8. Sistem & Konfigurasi (System)
         // ==========================================
         'foundation' => [
             'roles' => ['super_admin', 'admin'],
@@ -264,12 +286,8 @@ return [
             ],
         ],
 
-        // ==========================================
-        // OPERATIONS & MONITORING (Admin, Teacher, Supervisor)
-        // Daily active phase: Announcements, Attendance, Logbooks, Assignments, Visits, Notifications
-        // ==========================================
         'operations' => [
-            'roles' => ['super_admin', 'admin', 'teacher', 'supervisor'],
+            'roles' => ['super_admin', 'admin'],
             'title' => 'common.sidebar.operations',
             'items' => [
                 [
@@ -296,7 +314,6 @@ return [
                     'route' => 'monitoring-visits.index',
                     'icon' => 'o-map-pin',
                     'label' => 'common.sidebar.visits',
-                    'roles' => ['super_admin', 'admin', 'teacher'],
                 ],
                 [
                     'route' => 'notifications',
@@ -306,9 +323,6 @@ return [
             ],
         ],
 
-        // ==========================================
-        // ASSESSMENT & EVALUATION (Admin)
-        // ==========================================
         'assessment' => [
             'roles' => ['super_admin', 'admin'],
             'title' => 'common.sidebar.assessment',
@@ -326,9 +340,6 @@ return [
             ],
         ],
 
-        // ==========================================
-        // REPORTS & CERTIFICATES (Admin)
-        // ==========================================
         'reports' => [
             'roles' => ['super_admin', 'admin'],
             'title' => 'common.sidebar.reports',
@@ -356,9 +367,6 @@ return [
             ],
         ],
 
-        // ==========================================
-        // SYSTEM CONFIGURATION & LIFECYCLE (Admin)
-        // ==========================================
         'system' => [
             'roles' => ['super_admin', 'admin'],
             'title' => 'common.sidebar.system',
