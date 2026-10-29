@@ -6,6 +6,7 @@ use App\Modules\Enrollment\Domain\AccountApplication\Livewire\ApplyPage;
 use App\Modules\Enrollment\Domain\Placement\Livewire\DirectPlacementManager;
 use App\Modules\Enrollment\Domain\Placement\Livewire\PlacementChangeManager;
 use App\Modules\Enrollment\Domain\Placement\Livewire\PlacementIndex;
+use App\Modules\Enrollment\Domain\Registration\Livewire\PklPreparation;
 use App\Modules\Enrollment\Domain\Registration\Livewire\RegistrationCenter;
 use App\Modules\Enrollment\Domain\Registration\Livewire\RegistrationDocumentUpload;
 use App\Modules\Enrollment\Domain\Registration\Livewire\RegistrationVerification;
@@ -16,6 +17,7 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+    Route::livewire('/student/preparation', PklPreparation::class)->name('student.preparation');
     Route::livewire('/registration', RegistrationCenter::class)->name('registration.center');
     Route::livewire('/register', RegistrationWizard::class)->name('registration.wizard');
     Route::livewire('/registration/documents', RegistrationDocumentUpload::class)->name(

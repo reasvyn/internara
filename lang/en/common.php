@@ -147,6 +147,8 @@ return [
         'partnerships' => 'Partnerships',
         'placements' => 'Placements',
         'placement_changes' => 'Placement Changes',
+        'preparation' => 'PKL Preparation',
+        'pkl_preparation' => 'Placement & Documents',
         'pre_registration' => 'Pre-Registration',
         'active_internship' => 'Active Internship',
         'assessment_certification' => 'Assessment & Certification',

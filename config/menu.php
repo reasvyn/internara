@@ -21,41 +21,23 @@ return [
 
         // ==========================================
         // STUDENT JOURNEY
-        // 1. Pra-Pendaftaran (Pre-Registration: Browse & Guidelines)
-        // 2. Pendaftaran (Registration: Wizard & Documents)
-        // 3. Pelaksanaan Magang (Active Internship Activities)
-        // 4. Penilaian & Kelulusan (Assessment & Certification)
+        // 1. Persiapan PKL (Placement onboarding & handbooks)
+        // 2. Pelaksanaan Magang (Active Internship Activities)
+        // 3. Penilaian & Kelulusan (Assessment & Certification)
         // ==========================================
-        'student_pre_registration' => [
+        'student_preparation' => [
             'roles' => ['student'],
-            'title' => 'common.sidebar.pre_registration',
+            'title' => 'common.sidebar.preparation',
             'items' => [
                 [
-                    'route' => 'registration.center',
-                    'icon' => 'o-briefcase',
-                    'label' => 'common.sidebar.browse_programs',
+                    'route' => 'student.preparation',
+                    'icon' => 'o-clipboard-document-check',
+                    'label' => 'common.sidebar.pkl_preparation',
                 ],
                 [
                     'route' => 'student.handbooks',
                     'icon' => 'o-bookmark-square',
                     'label' => 'common.sidebar.handbooks',
-                ],
-            ],
-        ],
-
-        'student_registration' => [
-            'roles' => ['student'],
-            'title' => 'common.sidebar.registration',
-            'items' => [
-                [
-                    'route' => 'registration.wizard',
-                    'icon' => 'o-document-plus',
-                    'label' => 'common.sidebar.register_internship',
-                ],
-                [
-                    'route' => 'registration.documents',
-                    'icon' => 'o-document-arrow-up',
-                    'label' => 'common.sidebar.my_documents',
                 ],
             ],
         ],

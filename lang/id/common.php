@@ -147,6 +147,8 @@ return [
         'partnerships' => 'Kemitraan',
         'placements' => 'Penempatan',
         'placement_changes' => 'Perubahan Penempatan',
+        'preparation' => 'Persiapan PKL',
+        'pkl_preparation' => 'Penempatan & Berkas',
         'pre_registration' => 'Pra-Pendaftaran',
         'active_internship' => 'Pelaksanaan Magang',
         'assessment_certification' => 'Penilaian & Sertifikasi',

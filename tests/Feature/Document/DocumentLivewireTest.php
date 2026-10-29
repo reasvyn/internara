@@ -71,6 +71,74 @@ describe('7H5D6 / ZUFG8: Document Livewire UI Components', function (): void {
             ->assertSee('Buku Saku Siswa Magang');
     });
 
+    test('7H5D6-FR-DOC-005: StudentHandbookList supports search, filtering, reader modal and acknowledgment flow', function (): void {
+        $student = User::factory()->create();
+        $student->assignRole('student');
+        $this->actingAs($student);
+
+        $doc = Document::create([
+            'title' => 'Tata Tertib Praktik Kerja',
+            'slug' => 'tata-tertib-praktik-kerja',
+            'type' => DocumentCategory::HANDBOOK->value,
+            'content' => 'Rincian tata tertib dan disiplin',
+            'metadata' => [
+                'target_audience' => HandbookAudience::STUDENT->value,
+                'description' => 'Pedoman kedisiplinan di tempat magang',
+                'version' => 1,
+            ],
+            'version' => 1,
+            'is_active' => true,
+        ]);
+
+        $component = Livewire::test(StudentHandbookList::class);
+        $component->assertOk()
+            ->assertSee('Tata Tertib Praktik Kerja')
+            ->assertSet('filter', 'all')
+            ->assertSet('showReaderModal', false);
+
+        expect($component->instance()->stats)->toBe([
+            'total' => 1,
+            'read' => 0,
+            'pending' => 1,
+            'percent' => 0,
+        ]);
+
+        // Search test
+        $component->set('search', 'Kedisiplinan')
+            ->assertSee('Tata Tertib Praktik Kerja');
+
+        $component->set('search', 'Nonexistent')
+            ->assertDontSee('Tata Tertib Praktik Kerja');
+
+        $component->call('resetFilters')
+            ->assertSet('search', '')
+            ->assertSee('Tata Tertib Praktik Kerja');
+
+        // Open reader modal
+        $component->call('openReader', $doc->id)
+            ->assertSet('showReaderModal', true)
+            ->assertSet('readingHandbookId', $doc->id);
+
+        // Acknowledge flow
+        $component->call('acknowledge', $doc->id, app(\App\Modules\Document\Domain\Handbook\Actions\AcknowledgeHandbookAction::class))
+            ->assertHasNoErrors();
+
+        $component->call('closeReader')
+            ->assertSet('showReaderModal', false);
+
+        expect($component->instance()->stats['read'])->toBe(1)
+            ->and($component->instance()->stats['pending'])->toBe(0)
+            ->and($component->instance()->stats['percent'])->toBe(100);
+
+        // Filter by completed
+        $component->call('setFilter', 'completed')
+            ->assertSee('Tata Tertib Praktik Kerja');
+
+        // Filter by pending (now empty)
+        $component->call('setFilter', 'pending')
+            ->assertDontSee('Tata Tertib Praktik Kerja');
+    });
+
     test('ZUFG8-FR-DOC-003: TemplateManager renders document templates and categories', function (): void {
         $admin = User::factory()->create();
         $admin->assignRole('admin');
