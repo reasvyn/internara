@@ -71,11 +71,6 @@ return [
                     'icon' => 'o-user-group',
                     'label' => 'common.sidebar.supervision',
                 ],
-                [
-                    'route' => 'student.monitoring-visits',
-                    'icon' => 'o-map-pin',
-                    'label' => 'common.sidebar.visits',
-                ],
             ],
         ],
 
