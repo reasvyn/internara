@@ -1,0 +1,2411 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "version": "1.0.0",
+    "meta": {
+        "title": "Internara Realistic Demo Dataset",
+        "description": "Dataset pengganti Faker untuk DummySeeder / DummyData dengan data realistis berbahasa Indonesia berstandar SMK / Pendidikan Vokasi.",
+        "locale": "id_ID",
+        "target_system": "Internara - Sistem Manajemen Praktik Kerja Lapangan (PKL)"
+    },
+    "academic_years": [
+        {
+            "name": "2026/2027",
+            "start_date": "2026-07-01",
+            "end_date": "2027-06-30",
+            "is_active": true,
+            "description": "Tahun Ajaran Aktif 2026/2027"
+        },
+        {
+            "name": "2025/2026",
+            "start_date": "2025-07-01",
+            "end_date": "2026-06-30",
+            "is_active": false,
+            "description": "Tahun Ajaran Lampau 2025/2026"
+        }
+    ],
+    "departments": [
+        {
+            "code": "RPL",
+            "name": "Rekayasa Perangkat Lunak",
+            "description": "Konsentrasi keahlian pengembangan aplikasi web, mobile, basis data, dan rekayasa perangkat lunak modern.",
+            "head_of_department": "Bambang Sudarmanto, S.Kom., M.T."
+        },
+        {
+            "code": "TKJ",
+            "name": "Teknik Komputer dan Jaringan",
+            "description": "Konsentrasi keahlian perakitan komputer, instalasi jaringan kabel dan nirkabel, administrasi server, dan keamanan jaringan.",
+            "head_of_department": "Drs. Hendro Wibowo, M.Pd."
+        },
+        {
+            "code": "AKL",
+            "name": "Akuntansi dan Keuangan Lembaga",
+            "description": "Konsentrasi keahlian pencatatan akuntansi, pelaporan keuangan, perpajakan, dan aplikasi komputer akuntansi.",
+            "head_of_department": "Sri Wahyuni, S.Pd., M.M."
+        },
+        {
+            "code": "TBG",
+            "name": "Tata Boga",
+            "description": "Konsentrasi keahlian pengolahan makanan Indonesia dan kontinental, pastry dan bakery, higienitas sanitasi, dan layanan restoran.",
+            "head_of_department": "Ahmad Fauzi, S.Pd."
+        }
+    ],
+    "companies": [
+        {
+            "name": "PT Karya Digital Nusantara",
+            "sector": "Technology",
+            "industry_sector": "Technology",
+            "address": "Gedung Cyber 2 Tower Lt. 15, Jl. H.R. Rasuna Said Blok X-5 No. 13, Kuningan Timur, Kec. Setiabudi, Kota Jakarta Selatan, DKI Jakarta 12950",
+            "phone": "021-52961800",
+            "email": "career@karyadigital.id",
+            "website": "https://karyadigital.id",
+            "description": "Perusahaan rintisan teknologi dan pengembang solusi perangkat lunak berbasis cloud, platform mobile enterprise, dan layanan integrasi API perbankan."
+        },
+        {
+            "name": "PT Mitra Manufaktur Indonesia",
+            "sector": "Manufacturing",
+            "industry_sector": "Manufacturing",
+            "address": "Kawasan Industri KIIC Lot C-4 No. 8, Jl. Permata Raya, Sukaluyu, Kec. Telukjambe Timur, Kabupaten Karawang, Jawa Barat 41361",
+            "phone": "0267-8451200",
+            "email": "hrd.recruitment@mitramanufaktur.co.id",
+            "website": "https://mitramanufaktur.co.id",
+            "description": "Produsen komponen presisi otomotif tier-1 dan perakitan peralatan elektronik industri dengan sertifikasi standar internasional ISO 9001 dan IATF 16949."
+        },
+        {
+            "name": "PT Bank Nusantara Sejahtera",
+            "sector": "Finance",
+            "industry_sector": "Finance",
+            "address": "Menara Nusantara Lt. 8-12, Jl. Jenderal Sudirman Kav. 28, Karet Semanggi, Kec. Setiabudi, Kota Jakarta Selatan, DKI Jakarta 12920",
+            "phone": "021-57930100",
+            "email": "human.capital@banknusantara.co.id",
+            "website": "https://banknusantara.co.id",
+            "description": "Institusi perbankan nasional yang menyediakan layanan pembiayaan komersial, perbankan digital retail, dan pembinaan UMKM terpadu di seluruh Indonesia."
+        },
+        {
+            "name": "RS Harapan Sehat",
+            "sector": "Healthcare",
+            "industry_sector": "Healthcare",
+            "address": "Jl. Pemuda No. 45, Rawamangun, Kec. Pulo Gadung, Kota Jakarta Timur, DKI Jakarta 13220",
+            "phone": "021-47862211",
+            "email": "diklat@rsharapansehat.org",
+            "website": "https://rsharapansehat.org",
+            "description": "Rumah sakit tipe B rujukan regional dengan layanan unggulan rawat terpadu, rekam medis digital berbasis SIMRS, dan pusat diklat kesehatan terakreditasi Paripurna."
+        },
+        {
+            "name": "PT Ritel Maju Jaya",
+            "sector": "Retail",
+            "industry_sector": "Retail",
+            "address": "Graha Ritel Lt. 3, Jl. MH. Thamrin No. 9, Cikokol, Kec. Tangerang, Kota Tangerang, Banten 15117",
+            "phone": "021-55789000",
+            "email": "talent@ritelmajujaya.com",
+            "website": "https://ritelmajujaya.com",
+            "description": "Jaringan ritel modern dan rantai pasok distribusi barang konsumsi sehari-hari dengan lebih dari 250 cabang supermarket di wilayah Jabodetabek dan Banten."
+        },
+        {
+            "name": "CV Edukasi Cerdas",
+            "sector": "Education",
+            "industry_sector": "Education",
+            "address": "Jl. Buah Batu No. 182, Cijagra, Kec. Lengkong, Kota Bandung, Jawa Barat 40265",
+            "phone": "022-7301980",
+            "email": "redaksi@edukasicerdas.co.id",
+            "website": "https://edukasicerdas.co.id",
+            "description": "Penerbit buku pendidikan kurikulum merdeka, pembuat modul interaktif digital, dan penyelenggara pelatihan kompetensi guru kejuruan."
+        },
+        {
+            "name": "PT Perkasa Logistik",
+            "sector": "Logistics",
+            "industry_sector": "Logistics",
+            "address": "Kawasan Pergudangan Samudera Blok D-2, Jl. Yos Sudarso No. 67, Koja, Kec. Koja, Kota Jakarta Utara, DKI Jakarta 14220",
+            "phone": "021-43907722",
+            "email": "ops.logistik@perkasalogistik.com",
+            "website": "https://perkasalogistik.com",
+            "description": "Penyedia jasa logistik pihak ketiga (3PL), manajemen pergudangan berpendingin, pengiriman antarmoda kontainer, dan rantai pasok domestik antar pulau."
+        },
+        {
+            "name": "PT Media Kreasi Utama",
+            "sector": "Technology",
+            "industry_sector": "Technology",
+            "address": "Jl. Ring Road Utara No. 108, Maguwoharjo, Kec. Depok, Kabupaten Sleman, Daerah Istimewa Yogyakarta 55282",
+            "phone": "0274-488910",
+            "email": "hello@mediakreasi.id",
+            "website": "https://mediakreasi.id",
+            "description": "Studio kreatif digital, perancangan antarmuka pengguna (UI/UX), animasi grafis bergerak, serta produksi multimedia interaktif untuk klien korporasi."
+        },
+        {
+            "name": "PT Agro Prima Lestari",
+            "sector": "Manufacturing",
+            "industry_sector": "Manufacturing",
+            "address": "Jl. Raya Ciawi-Sukabumi Km. 12 No. 88, Caringin, Kec. Caringin, Kabupaten Bogor, Jawa Barat 16730",
+            "phone": "0251-8245670",
+            "email": "sdm@agroprimalestari.co.id",
+            "website": "https://agroprimalestari.co.id",
+            "description": "Industri pengolahan produk turunan perkebunan ramah lingkungan, pengemasan minyak nabati, dan pengolahan pangan bernilai tambah tinggi berstandar BPOM dan Halal."
+        },
+        {
+            "name": "PT Konstruksi Mandiri Jaya",
+            "sector": "General",
+            "industry_sector": "General",
+            "address": "Jl. Ahmad Yani No. 54, Marga Jaya, Kec. Bekasi Selatan, Kota Bekasi, Jawa Barat 17141",
+            "phone": "021-88963400",
+            "email": "kontraktor@konstruksimandirijaya.com",
+            "website": "https://konstruksimandirijaya.com",
+            "description": "Kontraktor umum pelaksana konstruksi gedung komersial, perbaikan fasilitas industri, instalasi mekanikal-elektrikal, dan manajemen proyek sipil terpadu."
+        }
+    ],
+    "partnerships": [
+        {
+            "agreement_number": "MOU-2026-01",
+            "title": "Perjanjian Kerja Sama Praktik Kerja Lapangan Bidang Rekayasa Perangkat Lunak dan Cloud Computing",
+            "start_date": "2026-07-01",
+            "end_date": "2029-06-30",
+            "status": "active"
+        },
+        {
+            "agreement_number": "MOU-2026-02",
+            "title": "Kemitraan Industri Pemagangan Vokasi Pemesinan dan Manufaktur Presisi Otomotif",
+            "start_date": "2026-07-01",
+            "end_date": "2028-06-30",
+            "status": "active"
+        },
+        {
+            "agreement_number": "MOU-2026-03",
+            "title": "Nota Kesepahaman Praktik Kerja Industri Administrasi Keuangan dan Perbankan Syariah",
+            "start_date": "2026-07-01",
+            "end_date": "2029-06-30",
+            "status": "active"
+        },
+        {
+            "agreement_number": "MOU-2026-04",
+            "title": "Perjanjian Kerja Sama Pelaksanaan Magang Administrasi Layanan Kesehatan dan SIMRS",
+            "start_date": "2026-07-01",
+            "end_date": "2028-06-30",
+            "status": "active"
+        },
+        {
+            "agreement_number": "MOU-2026-05",
+            "title": "Kemitraan Strategis Penyelenggaraan Praktik Kerja Lapangan Distribusi dan Ritel Modern",
+            "start_date": "2026-07-01",
+            "end_date": "2027-12-31",
+            "status": "active"
+        },
+        {
+            "agreement_number": "MOU-2026-06",
+            "title": "Perjanjian Kerja Sama Magang Pengembangan Media Pembelajaran dan Publikasi Digital",
+            "start_date": "2026-07-01",
+            "end_date": "2028-06-30",
+            "status": "active"
+        },
+        {
+            "agreement_number": "MOU-2026-07",
+            "title": "Kerja Sama Pelaksanaan Praktik Kerja Lapangan Pengelolaan Pergudangan dan Logistik",
+            "start_date": "2026-07-01",
+            "end_date": "2029-06-30",
+            "status": "active"
+        },
+        {
+            "agreement_number": "MOU-2026-08",
+            "title": "Nota Kesepahaman Pelatihan Desain Grafis, UI/UX, dan Multimedia Interaktif",
+            "start_date": "2026-07-01",
+            "end_date": "2028-06-30",
+            "status": "active"
+        },
+        {
+            "agreement_number": "MOU-2026-09",
+            "title": "Perjanjian Kerja Sama Magang Vokasi Pengolahan Pangan Industri dan Jaminan Mutu",
+            "start_date": "2026-07-01",
+            "end_date": "2028-06-30",
+            "status": "active"
+        },
+        {
+            "agreement_number": "MOU-2026-10",
+            "title": "Perjanjian Kerja Sama Praktik Kerja Lapangan Pemeliharaan Fasilitas dan Konstruksi",
+            "start_date": "2023-01-01",
+            "end_date": "2025-12-31",
+            "status": "expired"
+        }
+    ],
+    "placements": [
+        {
+            "company_name": "PT Karya Digital Nusantara",
+            "name": "Program PKL Junior Software Engineer & Cloud Solution",
+            "quota": 15,
+            "department": "Rekayasa Perangkat Lunak",
+            "description": "Praktik pengembangan komponen backend Laravel, integrasi API, pembuatan antarmuka web responsif, dan pemeliharaan repositori Git tim."
+        },
+        {
+            "company_name": "PT Mitra Manufaktur Indonesia",
+            "name": "Program PKL IT Industrial Support & Network Infrastructure",
+            "quota": 15,
+            "department": "Teknik Komputer dan Jaringan",
+            "description": "Pemeliharaan jaringan komputer pabrik, troubleshooting perangkat switch/router, setup workstation produksi, dan monitoring server intranet."
+        },
+        {
+            "company_name": "PT Bank Nusantara Sejahtera",
+            "name": "Program PKL Staf Administrasi & Rekonsiliasi Transaksi Keuangan",
+            "quota": 15,
+            "department": "Akuntansi dan Keuangan",
+            "description": "Verifikasi dokumen bukti kas masuk dan kas keluar, pencatatan jurnal akuntansi, rekonsiliasi data mutasi rekening, dan arsip digital."
+        },
+        {
+            "company_name": "RS Harapan Sehat",
+            "name": "Program PKL Tata Kelola SIMRS & Pengolahan Makanan Pasien",
+            "quota": 15,
+            "department": "Tata Boga",
+            "description": "Penerapan standar higienitas sanitasi makanan di instalasi gizi, preparasi bahan masakan diet khusus pasien, dan monitoring suhu penyimpanan."
+        },
+        {
+            "company_name": "PT Ritel Maju Jaya",
+            "name": "Program PKL Inventory Control & Administrasi Kasir",
+            "quota": 15,
+            "department": "Akuntansi dan Keuangan",
+            "description": "Pengecekan fisik barang gudang (stock opname), pencocokan laporan transaksi POS harian, dan pembukuan penerimaan barang masuk."
+        },
+        {
+            "company_name": "CV Edukasi Cerdas",
+            "name": "Program PKL Digital Content Production & Graphic Layout",
+            "quota": 15,
+            "department": "Rekayasa Perangkat Lunak",
+            "description": "Pengembangan modul web latihan soal interaktif, konversi materi buku ke format e-learning, dan pengelolaan konten digital."
+        },
+        {
+            "company_name": "PT Perkasa Logistik",
+            "name": "Program PKL Network Support & Warehouse Management System",
+            "quota": 15,
+            "department": "Teknik Komputer dan Jaringan",
+            "description": "Operasional perangkat scanner barcode IoT, pemeliharaan access point gudang, dan instalasi jalur kabel LAN antar divisi logistik."
+        },
+        {
+            "company_name": "PT Media Kreasi Utama",
+            "name": "Program PKL UI/UX Research & Frontend Web Prototyping",
+            "quota": 15,
+            "department": "Rekayasa Perangkat Lunak",
+            "description": "Pembuatan wireframe dan prototipe aplikasi di Figma, penyesuaian styling Tailwind CSS, dan pengujian kegunaan bersama tim desainer."
+        },
+        {
+            "company_name": "PT Agro Prima Lestari",
+            "name": "Program PKL Quality Assurance & Food Processing Assistant",
+            "quota": 15,
+            "department": "Tata Boga",
+            "description": "Pendampingan uji organoleptik sampel produk olahan, pencatatan formulir pengawasan mutu HACCP, dan pengemasan produk higienis."
+        },
+        {
+            "company_name": "PT Konstruksi Mandiri Jaya",
+            "name": "Program PKL Administrasi Proyek & Pengarsipan Dokumen Teknis",
+            "quota": 15,
+            "department": "Teknik Komputer dan Jaringan",
+            "description": "Pengarsipan berkas berita acara serah terima proyek, digitalisasi blueprint arsitektur, dan pemeliharaan konektivitas internet kantor proyek."
+        }
+    ],
+    "users": {
+        "admin": {
+            "name": "Dra. Hj. Nurul Hidayati, M.Pd.",
+            "email": "admin@example.com",
+            "username": "admin",
+            "phone": "08112345678",
+            "address": "Jl. Margonda Raya No. 102, Beji, Kec. Beji, Kota Depok, Jawa Barat 16424",
+            "gender": "female",
+            "blood_type": "O",
+            "pob": "Depok",
+            "dob": "1978-08-17",
+            "id_number": "197808172002122001",
+            "national_id_number": "3276015708780002",
+            "emergency_contact": {
+                "name": "Ir. H. Syarif Hidayat",
+                "phone": "08129876543",
+                "relation": "Suami",
+                "address": "Jl. Margonda Raya No. 102, Beji, Kota Depok, Jawa Barat 16424"
+            },
+            "internal_notes": "Koordinator Utama Hubungan Industri dan Ketua Pokja PKL Sekolah."
+        },
+        "teachers": [
+            {
+                "name": "Bambang Sudarmanto, S.Kom., M.T.",
+                "email": "teacher1@example.com",
+                "username": "teacher1",
+                "phone": "081281001001",
+                "address": "Jl. Melati Blok C No. 14, Sukmajaya, Kec. Sukmajaya, Kota Depok, Jawa Barat 16412",
+                "gender": "male",
+                "blood_type": "A",
+                "pob": "Semarang",
+                "dob": "1980-03-15",
+                "id_number": "198003152005011003",
+                "national_id_number": "3276021503800001",
+                "department": "Rekayasa Perangkat Lunak",
+                "emergency_contact": {
+                    "name": "Ratna Dewi, S.Pd.",
+                    "phone": "081382001001",
+                    "relation": "Istri",
+                    "address": "Jl. Melati Blok C No. 14, Sukmajaya, Kota Depok"
+                },
+                "internal_notes": "Guru pembimbing kompetensi RPL dengan keahlian web development dan basis data enterprise."
+            },
+            {
+                "name": "Sri Wahyuni, S.Pd., M.M.",
+                "email": "teacher2@example.com",
+                "username": "teacher2",
+                "phone": "081281001002",
+                "address": "Jl. Kemuning Raya No. 8, Cipayung, Kec. Cipayung, Kota Jakarta Timur, DKI Jakarta 13840",
+                "gender": "female",
+                "blood_type": "B",
+                "pob": "Surakarta",
+                "dob": "1978-05-20",
+                "id_number": "197805202003122002",
+                "national_id_number": "3175086005780003",
+                "department": "Akuntansi dan Keuangan",
+                "emergency_contact": {
+                    "name": "Drs. Eko Prasetyo",
+                    "phone": "081382001002",
+                    "relation": "Suami",
+                    "address": "Jl. Kemuning Raya No. 8, Cipayung, Jakarta Timur"
+                },
+                "internal_notes": "Guru pembimbing kompetensi Akuntansi, tersertifikasi konsultan pajak dan akuntansi forensik."
+            },
+            {
+                "name": "Drs. Hendro Wibowo, M.Pd.",
+                "email": "teacher3@example.com",
+                "username": "teacher3",
+                "phone": "081281001003",
+                "address": "Jl. Anggrek Nelimurni II No. 25, Kemanggisan, Kec. Palmerah, Kota Jakarta Barat, DKI Jakarta 11480",
+                "gender": "male",
+                "blood_type": "O",
+                "pob": "Yogyakarta",
+                "dob": "1968-11-04",
+                "id_number": "196811041994031005",
+                "national_id_number": "3173070411680004",
+                "department": "Teknik Komputer dan Jaringan",
+                "emergency_contact": {
+                    "name": "Endang Supartini",
+                    "phone": "081382001003",
+                    "relation": "Istri",
+                    "address": "Jl. Anggrek Nelimurni II No. 25, Kemanggisan, Jakarta Barat"
+                },
+                "internal_notes": "Guru senior TKJ dengan sertifikasi MikroTik MTCNA/MTCRE dan Cisco CCNA."
+            },
+            {
+                "name": "Rina Marlina, S.T., M.Kom.",
+                "email": "teacher4@example.com",
+                "username": "teacher4",
+                "phone": "081281001004",
+                "address": "Komplek Dosen UI Blok B No. 7, Beji Timur, Kec. Beji, Kota Depok, Jawa Barat 16422",
+                "gender": "female",
+                "blood_type": "AB",
+                "pob": "Bandung",
+                "dob": "1985-09-12",
+                "id_number": "198509122009022004",
+                "national_id_number": "3276015209850005",
+                "department": "Rekayasa Perangkat Lunak",
+                "emergency_contact": {
+                    "name": "Fajar Nugraha, S.T.",
+                    "phone": "081382001004",
+                    "relation": "Suami",
+                    "address": "Komplek Dosen UI Blok B No. 7, Beji Timur, Depok"
+                },
+                "internal_notes": "Instruktur programming mobile Android/Flutter dan pembina ekstrakurikuler coding club."
+            },
+            {
+                "name": "Ahmad Fauzi, S.Pd.",
+                "email": "teacher5@example.com",
+                "username": "teacher5",
+                "phone": "081281001005",
+                "address": "Jl. Flamboyan No. 31, Jagakarsa, Kec. Jagakarsa, Kota Jakarta Selatan, DKI Jakarta 12620",
+                "gender": "male",
+                "blood_type": "B",
+                "pob": "Bogor",
+                "dob": "1990-01-18",
+                "id_number": "199001182014031001",
+                "national_id_number": "3174091801900002",
+                "department": "Tata Boga",
+                "emergency_contact": {
+                    "name": "Siti Maryam",
+                    "phone": "081382001005",
+                    "relation": "Istri",
+                    "address": "Jl. Flamboyan No. 31, Jagakarsa, Jakarta Selatan"
+                },
+                "internal_notes": "Spesialis kuliner nusantara dan teknik pengolahan pastry, asesor BNSP bidang perhotelan."
+            },
+            {
+                "name": "Dewi Ratnasari, S.E., Ak., M.Ak.",
+                "email": "teacher6@example.com",
+                "username": "teacher6",
+                "phone": "081281001006",
+                "address": "Jl. Cempaka Putih Tengah XXI No. 4, Cempaka Putih, Kota Jakarta Pusat, DKI Jakarta 10510",
+                "gender": "female",
+                "blood_type": "A",
+                "pob": "Jakarta",
+                "dob": "1983-07-25",
+                "id_number": "198307252008012006",
+                "national_id_number": "3171036507830006",
+                "department": "Akuntansi dan Keuangan",
+                "emergency_contact": {
+                    "name": "Budi Hartono, S.E.",
+                    "phone": "081382001006",
+                    "relation": "Suami",
+                    "address": "Jl. Cempaka Putih Tengah XXI No. 4, Jakarta Pusat"
+                },
+                "internal_notes": "Guru pembimbing PKL divisi perbankan dan akuntansi retail modern."
+            },
+            {
+                "name": "Teguh Prasetyo, S.Kom.",
+                "email": "teacher7@example.com",
+                "username": "teacher7",
+                "phone": "081281001007",
+                "address": "Perumahan Griya Asri Blok D No. 19, Tambun Selatan, Kabupaten Bekasi, Jawa Barat 17510",
+                "gender": "male",
+                "blood_type": "O",
+                "pob": "Magelang",
+                "dob": "1987-04-08",
+                "id_number": "198704082011011002",
+                "national_id_number": "3216060804870007",
+                "department": "Teknik Komputer dan Jaringan",
+                "emergency_contact": {
+                    "name": "Yuliana Sari",
+                    "phone": "081382001007",
+                    "relation": "Istri",
+                    "address": "Perumahan Griya Asri Blok D No. 19, Tambun Selatan"
+                },
+                "internal_notes": "Guru praktikum jaringan komputer dan pengelola laboratorium server sekolah."
+            },
+            {
+                "name": "Endah Sulistyowati, S.Pd.",
+                "email": "teacher8@example.com",
+                "username": "teacher8",
+                "phone": "081281001008",
+                "address": "Jl. Kebon Sirih Barat No. 12, Menteng, Kota Jakarta Pusat, DKI Jakarta 10340",
+                "gender": "female",
+                "blood_type": "O",
+                "pob": "Malang",
+                "dob": "1982-12-14",
+                "id_number": "198212142006042007",
+                "national_id_number": "3171015412820008",
+                "department": "Tata Boga",
+                "emergency_contact": {
+                    "name": "Hadi Santoso",
+                    "phone": "081382001008",
+                    "relation": "Suami",
+                    "address": "Jl. Kebon Sirih Barat No. 12, Menteng, Jakarta Pusat"
+                },
+                "internal_notes": "Instruktur tata hidang restoran dan manajemen operasional bakery."
+            },
+            {
+                "name": "Agus Supriyadi, S.T.",
+                "email": "teacher9@example.com",
+                "username": "teacher9",
+                "phone": "081281001009",
+                "address": "Jl. Raden Saleh No. 58, Karang Tengah, Kota Tangerang, Banten 15157",
+                "gender": "male",
+                "blood_type": "B",
+                "pob": "Cirebon",
+                "dob": "1984-02-28",
+                "id_number": "198402282010011009",
+                "national_id_number": "3671042802840009",
+                "department": "Teknik Komputer dan Jaringan",
+                "emergency_contact": {
+                    "name": "Nurul Aini",
+                    "phone": "081382001009",
+                    "relation": "Istri",
+                    "address": "Jl. Raden Saleh No. 58, Karang Tengah, Tangerang"
+                },
+                "internal_notes": "Pembimbing lapangan kemitraan industri manufaktur dan jaringan fiber optic."
+            },
+            {
+                "name": "Fitriani Rahayu, S.Pd., M.Ed.",
+                "email": "teacher10@example.com",
+                "username": "teacher10",
+                "phone": "081281001010",
+                "address": "Jl. Pahlawan Revolusi No. 40, Pondok Bambu, Duren Sawit, Jakarta Timur 13430",
+                "gender": "female",
+                "blood_type": "A",
+                "pob": "Palembang",
+                "dob": "1986-06-10",
+                "id_number": "198606102009032003",
+                "national_id_number": "3175075006860010",
+                "department": "Rekayasa Perangkat Lunak",
+                "emergency_contact": {
+                    "name": "Doni Iskandar, M.Sc.",
+                    "phone": "081382001010",
+                    "relation": "Suami",
+                    "address": "Jl. Pahlawan Revolusi No. 40, Pondok Bambu, Jakarta Timur"
+                },
+                "internal_notes": "Penyusun kurikulum kolaboratif industri dan pembimbing sertifikasi kompetensi keahlian."
+            }
+        ],
+        "supervisors": [
+            {
+                "name": "Hendra Gunawan, S.T.",
+                "email": "supervisor1@example.com",
+                "username": "supervisor1",
+                "phone": "081191002001",
+                "address": "Apartemen Casablanca Tower A Lt. 12, Tebet, Kota Jakarta Selatan, DKI Jakarta 12870",
+                "gender": "male",
+                "blood_type": "O",
+                "pob": "Jakarta",
+                "dob": "1988-04-12",
+                "id_number": "SUP-2024-KDN01",
+                "company_name": "PT Karya Digital Nusantara",
+                "position": "Lead Software Engineer & Technical Mentor",
+                "emergency_contact": {
+                    "name": "Jessica Amanda",
+                    "phone": "081192002001",
+                    "relation": "Istri",
+                    "address": "Apartemen Casablanca Tower A Lt. 12, Jakarta Selatan"
+                },
+                "internal_notes": "Mentor industri dengan spesialisasi arsitektur cloud AWS dan ekosistem Laravel/Vue."
+            },
+            {
+                "name": "Anita Wijaya, S.Kom.",
+                "email": "supervisor2@example.com",
+                "username": "supervisor2",
+                "phone": "081191002002",
+                "address": "Cluster Grand Wisata Blok AA No. 5, Tambun Selatan, Kabupaten Bekasi, Jawa Barat 17510",
+                "gender": "female",
+                "blood_type": "A",
+                "pob": "Bandung",
+                "dob": "1990-09-24",
+                "id_number": "SUP-2024-MMI02",
+                "company_name": "PT Mitra Manufaktur Indonesia",
+                "position": "IT Infrastructure & Security Section Head",
+                "emergency_contact": {
+                    "name": "Kevin Sanjaya",
+                    "phone": "081192002002",
+                    "relation": "Suami",
+                    "address": "Cluster Grand Wisata Blok AA No. 5, Bekasi"
+                },
+                "internal_notes": "Penanggung jawab operasional server pabrik dan sistem kendali mutu terotomatisasi."
+            },
+            {
+                "name": "Budi Santoso, S.E., M.M.",
+                "email": "supervisor3@example.com",
+                "username": "supervisor3",
+                "phone": "081191002003",
+                "address": "Jl. Bangka Raya No. 42, Mampang Prapatan, Kota Jakarta Selatan, DKI Jakarta 12720",
+                "gender": "male",
+                "blood_type": "B",
+                "pob": "Surabaya",
+                "dob": "1982-11-05",
+                "id_number": "SUP-2024-BNS03",
+                "company_name": "PT Bank Nusantara Sejahtera",
+                "position": "Senior Manager Accounting & Operational Compliance",
+                "emergency_contact": {
+                    "name": "Dra. Maya Indah",
+                    "phone": "081192002003",
+                    "relation": "Istri",
+                    "address": "Jl. Bangka Raya No. 42, Mampang Prapatan, Jakarta Selatan"
+                },
+                "internal_notes": "Pembimbing PKL bagian kliring, verifikasi audit internal, dan tata kelola transaksi perbankan."
+            },
+            {
+                "name": "drg. Maya Kartika, M.K.M.",
+                "email": "supervisor4@example.com",
+                "username": "supervisor4",
+                "phone": "081191002004",
+                "address": "Jl. Cipinang Muara III No. 18, Jatinegara, Kota Jakarta Timur, DKI Jakarta 13420",
+                "gender": "female",
+                "blood_type": "AB",
+                "pob": "Medan",
+                "dob": "1986-01-30",
+                "id_number": "SUP-2024-RSH04",
+                "company_name": "RS Harapan Sehat",
+                "position": "Kepala Bagian Pendidikan, Pelatihan & SDM",
+                "emergency_contact": {
+                    "name": "dr. Rizki Pratama, Sp.PD",
+                    "phone": "081192002004",
+                    "relation": "Suami",
+                    "address": "Jl. Cipinang Muara III No. 18, Jatinegara, Jakarta Timur"
+                },
+                "internal_notes": "Mengawasi kepatuhan SOP higienitas rumah sakit dan etika komunikasi peserta praktik."
+            },
+            {
+                "name": "Reza Aditya Pratama, S.E.",
+                "email": "supervisor5@example.com",
+                "username": "supervisor5",
+                "phone": "081191002005",
+                "address": "Modernland Cluster Golf No. 8, Cipondoh, Kota Tangerang, Banten 15117",
+                "gender": "male",
+                "blood_type": "O",
+                "pob": "Tangerang",
+                "dob": "1989-08-16",
+                "id_number": "SUP-2024-RMJ05",
+                "company_name": "PT Ritel Maju Jaya",
+                "position": "Area Store Operation & Loss Prevention Manager",
+                "emergency_contact": {
+                    "name": "Siska Puspita",
+                    "phone": "081192002005",
+                    "relation": "Istri",
+                    "address": "Modernland Cluster Golf No. 8, Cipondoh, Tangerang"
+                },
+                "internal_notes": "Membimbing siswa dalam manajemen stok barang, kasir POS, dan administrasi display ritel."
+            },
+            {
+                "name": "Wahyu Setiawan, S.Pd.",
+                "email": "supervisor6@example.com",
+                "username": "supervisor6",
+                "phone": "081191002006",
+                "address": "Jl. Dago Asri No. 11, Coblong, Kota Bandung, Jawa Barat 40135",
+                "gender": "male",
+                "blood_type": "A",
+                "pob": "Bandung",
+                "dob": "1991-03-09",
+                "id_number": "SUP-2024-EC06",
+                "company_name": "CV Edukasi Cerdas",
+                "position": "Lead Interactive Learning Developer",
+                "emergency_contact": {
+                    "name": "Lestari Anggraini",
+                    "phone": "081192002006",
+                    "relation": "Istri",
+                    "address": "Jl. Dago Asri No. 11, Coblong, Bandung"
+                },
+                "internal_notes": "Mentor pengembangan materi digital interaktif dan integrasi platform LMS sekolah."
+            },
+            {
+                "name": "Indra Kusuma, S.Log.",
+                "email": "supervisor7@example.com",
+                "username": "supervisor7",
+                "phone": "081191002007",
+                "address": "Jl. Warakas VI No. 88, Tanjung Priok, Kota Jakarta Utara, DKI Jakarta 14370",
+                "gender": "male",
+                "blood_type": "B",
+                "pob": "Semarang",
+                "dob": "1985-12-02",
+                "id_number": "SUP-2024-PL07",
+                "company_name": "PT Perkasa Logistik",
+                "position": "Warehouse Operations & IT Systems Supervisor",
+                "emergency_contact": {
+                    "name": "Rini Hastuti",
+                    "phone": "081192002007",
+                    "relation": "Istri",
+                    "address": "Jl. Warakas VI No. 88, Tanjung Priok, Jakarta Utara"
+                },
+                "internal_notes": "Pembimbing operasional WMS barcode, manajemen armada, dan jaringan komunikasi gudang."
+            },
+            {
+                "name": "Dian Permatasari, S.Ds.",
+                "email": "supervisor8@example.com",
+                "username": "supervisor8",
+                "phone": "081191002008",
+                "address": "Jl. Palagan Tentara Pelajar Km. 9 No. 15, Ngaglik, Kabupaten Sleman, D.I. Yogyakarta 55581",
+                "gender": "female",
+                "blood_type": "O",
+                "pob": "Yogyakarta",
+                "dob": "1992-06-21",
+                "id_number": "SUP-2024-MKU08",
+                "company_name": "PT Media Kreasi Utama",
+                "position": "Lead Product Designer & Design System Architect",
+                "emergency_contact": {
+                    "name": "Arya Wicaksono, M.Sn.",
+                    "phone": "081192002008",
+                    "relation": "Suami",
+                    "address": "Jl. Palagan Tentara Pelajar Km. 9 No. 15, Sleman, DIY"
+                },
+                "internal_notes": "Mentor perancangan UI/UX, user testing, dan penerapan design system ke frontend development."
+            },
+            {
+                "name": "Surya Nugroho, S.T.",
+                "email": "supervisor9@example.com",
+                "username": "supervisor9",
+                "phone": "081191002009",
+                "address": "Jl. Tajur Raya No. 104, Muarasari, Kec. Bogor Selatan, Kota Bogor, Jawa Barat 16137",
+                "gender": "male",
+                "blood_type": "AB",
+                "pob": "Bogor",
+                "dob": "1987-10-18",
+                "id_number": "SUP-2024-APL09",
+                "company_name": "PT Agro Prima Lestari",
+                "position": "Quality Assurance & Production Control Lead",
+                "emergency_contact": {
+                    "name": "Mega Utami",
+                    "phone": "081192002009",
+                    "relation": "Istri",
+                    "address": "Jl. Tajur Raya No. 104, Muarasari, Bogor"
+                },
+                "internal_notes": "Membimbing siswa dalam pengujian mutu pangan laboratorium, sanitasi pabrik, dan sertifikasi Halal."
+            },
+            {
+                "name": "Ir. Joko Triyono",
+                "email": "supervisor10@example.com",
+                "username": "supervisor10",
+                "phone": "081191002010",
+                "address": "Perumahan Harapan Indah Blok HA No. 22, Tarumajaya, Kabupaten Bekasi, Jawa Barat 17214",
+                "gender": "male",
+                "blood_type": "A",
+                "pob": "Solo",
+                "dob": "1979-02-14",
+                "id_number": "SUP-2024-KMJ10",
+                "company_name": "PT Konstruksi Mandiri Jaya",
+                "position": "Project Coordinator & Safety Officer",
+                "emergency_contact": {
+                    "name": "Wulan Dari",
+                    "phone": "081192002010",
+                    "relation": "Istri",
+                    "address": "Perumahan Harapan Indah Blok HA No. 22, Bekasi"
+                },
+                "internal_notes": "Pengawas K3 proyek, administrasi dokumen teknik sipil, dan keselamatan kerja di lapangan."
+            }
+        ],
+        "students": [
+            {
+                "id_suffix": 1,
+                "name": "Muhammad Rizky Pratama",
+                "email": "student1@example.com",
+                "username": "student1",
+                "phone": "082110001001",
+                "address": "Jl. Pisangan Baru Timur No. 12, Matraman, Jakarta Timur 13110",
+                "gender": "male",
+                "blood_type": "O",
+                "pob": "Jakarta",
+                "dob": "2008-04-10",
+                "id_number": "0081234001",
+                "national_id_number": "3175011004080001",
+                "emergency_contact": {
+                    "name": "H. Bambang Pratama",
+                    "phone": "081280001001",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Pisangan Baru Timur No. 12, Jakarta Timur"
+                }
+            },
+            {
+                "id_suffix": 2,
+                "name": "Siti Nurhaliza",
+                "email": "student2@example.com",
+                "username": "student2",
+                "phone": "082110001002",
+                "address": "Jl. Kebon Manggis I No. 45, Matraman, Jakarta Timur 13150",
+                "gender": "female",
+                "blood_type": "A",
+                "pob": "Bandung",
+                "dob": "2008-06-18",
+                "id_number": "0081234002",
+                "national_id_number": "3175015806080002",
+                "emergency_contact": {
+                    "name": "Ibu Maryani",
+                    "phone": "081280001002",
+                    "relation": "Ibu Kandung",
+                    "address": "Jl. Kebon Manggis I No. 45, Jakarta Timur"
+                }
+            },
+            {
+                "id_suffix": 3,
+                "name": "Ahmad Fadhil Ramadhan",
+                "email": "student3@example.com",
+                "username": "student3",
+                "phone": "082110001003",
+                "address": "Jl. Balai Pustaka Baru No. 8, Rawamangun, Pulo Gadung, Jakarta Timur 13220",
+                "gender": "male",
+                "blood_type": "B",
+                "pob": "Bogor",
+                "dob": "2008-09-22",
+                "id_number": "0081234003",
+                "national_id_number": "3175022209080003",
+                "emergency_contact": {
+                    "name": "Drs. M. Syukri",
+                    "phone": "081280001003",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Balai Pustaka Baru No. 8, Jakarta Timur"
+                }
+            },
+            {
+                "id_suffix": 4,
+                "name": "Anisa Rahmawati",
+                "email": "student4@example.com",
+                "username": "student4",
+                "phone": "082110001004",
+                "address": "Jl. Kayu Manis VIII No. 19, Matraman, Jakarta Timur 13130",
+                "gender": "female",
+                "blood_type": "AB",
+                "pob": "Jakarta",
+                "dob": "2008-03-05",
+                "id_number": "0081234004",
+                "national_id_number": "3175014503080004",
+                "emergency_contact": {
+                    "name": "Hj. Rahmawati",
+                    "phone": "081280001004",
+                    "relation": "Ibu Kandung",
+                    "address": "Jl. Kayu Manis VIII No. 19, Jakarta Timur"
+                }
+            },
+            {
+                "id_suffix": 5,
+                "name": "Dimas Arya Saputra",
+                "email": "student5@example.com",
+                "username": "student5",
+                "phone": "082110001005",
+                "address": "Jl. Utan Kayu Raya No. 70, Matraman, Jakarta Timur 13120",
+                "gender": "male",
+                "blood_type": "O",
+                "pob": "Surabaya",
+                "dob": "2008-01-14",
+                "id_number": "0081234005",
+                "national_id_number": "3175011401080005",
+                "emergency_contact": {
+                    "name": "Bpk. Hendri Saputra",
+                    "phone": "081280001005",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Utan Kayu Raya No. 70, Jakarta Timur"
+                }
+            },
+            {
+                "id_suffix": 6,
+                "name": "Putri Ayu Lestari",
+                "email": "student6@example.com",
+                "username": "student6",
+                "phone": "082110001006",
+                "address": "Jl. Cempaka Putih Barat XIX No. 22, Cempaka Putih, Jakarta Pusat 10520",
+                "gender": "female",
+                "blood_type": "A",
+                "pob": "Semarang",
+                "dob": "2008-07-30",
+                "id_number": "0081234006",
+                "national_id_number": "3171037007080006",
+                "emergency_contact": {
+                    "name": "Ibu Sri Lestari",
+                    "phone": "081280001006",
+                    "relation": "Ibu Kandung",
+                    "address": "Jl. Cempaka Putih Barat XIX No. 22, Jakarta Pusat"
+                }
+            },
+            {
+                "id_suffix": 7,
+                "name": "Bagas Kurniawan",
+                "email": "student7@example.com",
+                "username": "student7",
+                "phone": "082110001007",
+                "address": "Jl. Percetakan Negara II No. 11, Johar Baru, Jakarta Pusat 10560",
+                "gender": "male",
+                "blood_type": "B",
+                "pob": "Solo",
+                "dob": "2007-11-28",
+                "id_number": "0071234007",
+                "national_id_number": "3171082811070007",
+                "emergency_contact": {
+                    "name": "Bpk. Wawan Kurniawan",
+                    "phone": "081280001007",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Percetakan Negara II No. 11, Jakarta Pusat"
+                }
+            },
+            {
+                "id_suffix": 8,
+                "name": "Nabila Zahra Khairunnisa",
+                "email": "student8@example.com",
+                "username": "student8",
+                "phone": "082110001008",
+                "address": "Jl. Salemba Tengah No. 34, Paseban, Senen, Jakarta Pusat 10440",
+                "gender": "female",
+                "blood_type": "O",
+                "pob": "Yogyakarta",
+                "dob": "2008-05-12",
+                "id_number": "0081234008",
+                "national_id_number": "3171045205080008",
+                "emergency_contact": {
+                    "name": "dr. H. Zulkifli",
+                    "phone": "081280001008",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Salemba Tengah No. 34, Jakarta Pusat"
+                }
+            },
+            {
+                "id_suffix": 9,
+                "name": "Fajar Hidayatullah",
+                "email": "student9@example.com",
+                "username": "student9",
+                "phone": "082110001009",
+                "address": "Jl. Kramat Jaya No. 56, Johar Baru, Jakarta Pusat 10560",
+                "gender": "male",
+                "blood_type": "A",
+                "pob": "Jakarta",
+                "dob": "2008-08-04",
+                "id_number": "0081234009",
+                "national_id_number": "3171080408080009",
+                "emergency_contact": {
+                    "name": "Bpk. Hidayat",
+                    "phone": "081280001009",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Kramat Jaya No. 56, Jakarta Pusat"
+                }
+            },
+            {
+                "id_suffix": 10,
+                "name": "Dinda Permata Sari",
+                "email": "student10@example.com",
+                "username": "student10",
+                "phone": "082110001010",
+                "address": "Jl. Danau Sunter Utara No. 27, Sunter Agung, Tanjung Priok, Jakarta Utara 14350",
+                "gender": "female",
+                "blood_type": "B",
+                "pob": "Cirebon",
+                "dob": "2008-10-15",
+                "id_number": "0081234010",
+                "national_id_number": "3172025510080010",
+                "emergency_contact": {
+                    "name": "Ibu Kartini Permata",
+                    "phone": "081280001010",
+                    "relation": "Ibu Kandung",
+                    "address": "Jl. Danau Sunter Utara No. 27, Jakarta Utara"
+                }
+            },
+            {
+                "id_suffix": 11,
+                "name": "Aditya Pratama Putra",
+                "email": "student11@example.com",
+                "username": "student11",
+                "phone": "082110001011",
+                "address": "Jl. Boulevard Barat Raya Blok LA No. 18, Kelapa Gading, Jakarta Utara 14240",
+                "gender": "male",
+                "blood_type": "O",
+                "pob": "Jakarta",
+                "dob": "2008-02-20",
+                "id_number": "0081234011",
+                "national_id_number": "3172062002080011",
+                "emergency_contact": {
+                    "name": "Bpk. Budi Santoso Putra",
+                    "phone": "081280001011",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Boulevard Barat Raya Blok LA No. 18, Jakarta Utara"
+                }
+            },
+            {
+                "id_suffix": 12,
+                "name": "Tiara Anggraini",
+                "email": "student12@example.com",
+                "username": "student12",
+                "phone": "082110001012",
+                "address": "Jl. Pluit Kencana No. 39, Pluit, Penjaringan, Jakarta Utara 14450",
+                "gender": "female",
+                "blood_type": "A",
+                "pob": "Malang",
+                "dob": "2008-12-01",
+                "id_number": "0081234012",
+                "national_id_number": "3172014112080012",
+                "emergency_contact": {
+                    "name": "Ibu Ratnawati",
+                    "phone": "081280001012",
+                    "relation": "Ibu Kandung",
+                    "address": "Jl. Pluit Kencana No. 39, Jakarta Utara"
+                }
+            },
+            {
+                "id_suffix": 13,
+                "name": "Galih Rakasiwi",
+                "email": "student13@example.com",
+                "username": "student13",
+                "phone": "082110001013",
+                "address": "Jl. Tebet Barat Dalam Raya No. 50, Tebet, Jakarta Selatan 12810",
+                "gender": "male",
+                "blood_type": "AB",
+                "pob": "Bandung",
+                "dob": "2007-09-17",
+                "id_number": "0071234013",
+                "national_id_number": "3174011709070013",
+                "emergency_contact": {
+                    "name": "Bpk. Slamet Rakasiwi",
+                    "phone": "081280001013",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Tebet Barat Dalam Raya No. 50, Jakarta Selatan"
+                }
+            },
+            {
+                "id_suffix": 14,
+                "name": "Rani Indah Kusuma",
+                "email": "student14@example.com",
+                "username": "student14",
+                "phone": "082110001014",
+                "address": "Jl. Saharjo No. 82, Manggarai Selatan, Tebet, Jakarta Selatan 12860",
+                "gender": "female",
+                "blood_type": "B",
+                "pob": "Yogyakarta",
+                "dob": "2008-04-25",
+                "id_number": "0081234014",
+                "national_id_number": "3174016504080014",
+                "emergency_contact": {
+                    "name": "Ibu Sri Kusuma",
+                    "phone": "081280001014",
+                    "relation": "Ibu Kandung",
+                    "address": "Jl. Saharjo No. 82, Jakarta Selatan"
+                }
+            },
+            {
+                "id_suffix": 15,
+                "name": "Ilham Maulana",
+                "email": "student15@example.com",
+                "username": "student15",
+                "phone": "082110001015",
+                "address": "Jl. Warung Buncit Raya No. 14, Pancoran, Jakarta Selatan 12740",
+                "gender": "male",
+                "blood_type": "O",
+                "pob": "Jakarta",
+                "dob": "2008-07-08",
+                "id_number": "0081234015",
+                "national_id_number": "3174080807080015",
+                "emergency_contact": {
+                    "name": "Bpk. Mulyadi Maulana",
+                    "phone": "081280001015",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Warung Buncit Raya No. 14, Jakarta Selatan"
+                }
+            },
+            {
+                "id_suffix": 16,
+                "name": "Melati Nur Cahyani",
+                "email": "student16@example.com",
+                "username": "student16",
+                "phone": "082110001016",
+                "address": "Jl. Kalibata Tengah No. 29, Pancoran, Jakarta Selatan 12740",
+                "gender": "female",
+                "blood_type": "A",
+                "pob": "Surakarta",
+                "dob": "2008-11-19",
+                "id_number": "0081234016",
+                "national_id_number": "3174085911080016",
+                "emergency_contact": {
+                    "name": "Ibu Cahyani",
+                    "phone": "081280001016",
+                    "relation": "Ibu Kandung",
+                    "address": "Jl. Kalibata Tengah No. 29, Jakarta Selatan"
+                }
+            },
+            {
+                "id_suffix": 17,
+                "name": "Rian Ardiansyah",
+                "email": "student17@example.com",
+                "username": "student17",
+                "phone": "082110001017",
+                "address": "Jl. Fatmawati Raya No. 63, Cilandak Barat, Jakarta Selatan 12430",
+                "gender": "male",
+                "blood_type": "B",
+                "pob": "Bogor",
+                "dob": "2008-03-29",
+                "id_number": "0081234017",
+                "national_id_number": "3174062903080017",
+                "emergency_contact": {
+                    "name": "Bpk. Dedi Ardiansyah",
+                    "phone": "081280001017",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Fatmawati Raya No. 63, Jakarta Selatan"
+                }
+            },
+            {
+                "id_suffix": 18,
+                "name": "Salsabila Firdaus",
+                "email": "student18@example.com",
+                "username": "student18",
+                "phone": "082110001018",
+                "address": "Jl. Margasatwa No. 41, Pondok Labu, Cilandak, Jakarta Selatan 12450",
+                "gender": "female",
+                "blood_type": "O",
+                "pob": "Bandung",
+                "dob": "2008-08-14",
+                "id_number": "0081234018",
+                "national_id_number": "3174065408080018",
+                "emergency_contact": {
+                    "name": "Ibu Firdaus",
+                    "phone": "081280001018",
+                    "relation": "Ibu Kandung",
+                    "address": "Jl. Margasatwa No. 41, Jakarta Selatan"
+                }
+            },
+            {
+                "id_suffix": 19,
+                "name": "Wahyu Hidayat",
+                "email": "student19@example.com",
+                "username": "student19",
+                "phone": "082110001019",
+                "address": "Jl. Raya Ragunan No. 17, Pasar Minggu, Jakarta Selatan 12520",
+                "gender": "male",
+                "blood_type": "AB",
+                "pob": "Jakarta",
+                "dob": "2007-12-05",
+                "id_number": "0071234019",
+                "national_id_number": "3174040512070019",
+                "emergency_contact": {
+                    "name": "Bpk. Hidayatullah",
+                    "phone": "081280001019",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Raya Ragunan No. 17, Jakarta Selatan"
+                }
+            },
+            {
+                "id_suffix": 20,
+                "name": "Zahra Aulia Putri",
+                "email": "student20@example.com",
+                "username": "student20",
+                "phone": "082110001020",
+                "address": "Jl. Poltangan Raya No. 28, Tanjung Barat, Jagakarsa, Jakarta Selatan 12530",
+                "gender": "female",
+                "blood_type": "A",
+                "pob": "Depok",
+                "dob": "2008-05-31",
+                "id_number": "0081234020",
+                "national_id_number": "3174097105080020",
+                "emergency_contact": {
+                    "name": "Ibu Aulia",
+                    "phone": "081280001020",
+                    "relation": "Ibu Kandung",
+                    "address": "Jl. Poltangan Raya No. 28, Jakarta Selatan"
+                }
+            },
+            {
+                "id_suffix": 21,
+                "name": "Alifian Nur Wicaksono",
+                "email": "student21@example.com",
+                "username": "student21",
+                "phone": "082110001021",
+                "address": "Jl. Raya Lenteng Agung No. 55, Srengseng Sawah, Jagakarsa, Jakarta Selatan 12630",
+                "gender": "male",
+                "blood_type": "O",
+                "pob": "Semarang",
+                "dob": "2008-01-28",
+                "id_number": "0081234021",
+                "national_id_number": "3174092801080021",
+                "emergency_contact": {
+                    "name": "Bpk. Bambang Wicaksono",
+                    "phone": "081280001021",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Raya Lenteng Agung No. 55, Jakarta Selatan"
+                }
+            },
+            {
+                "id_suffix": 22,
+                "name": "Cantika Dewi Maharani",
+                "email": "student22@example.com",
+                "username": "student22",
+                "phone": "082110001022",
+                "address": "Jl. Cinere Raya No. 89, Cinere, Kota Depok, Jawa Barat 16514",
+                "gender": "female",
+                "blood_type": "B",
+                "pob": "Jakarta",
+                "dob": "2008-10-09",
+                "id_number": "0081234022",
+                "national_id_number": "3276034910080022",
+                "emergency_contact": {
+                    "name": "Ibu Maharani",
+                    "phone": "081280001022",
+                    "relation": "Ibu Kandung",
+                    "address": "Jl. Cinere Raya No. 89, Depok"
+                }
+            },
+            {
+                "id_suffix": 23,
+                "name": "Bayu Aji Pangestu",
+                "email": "student23@example.com",
+                "username": "student23",
+                "phone": "082110001023",
+                "address": "Jl. Akses UI No. 33, Tugu, Cimanggis, Kota Depok, Jawa Barat 16451",
+                "gender": "male",
+                "blood_type": "A",
+                "pob": "Yogyakarta",
+                "dob": "2008-06-03",
+                "id_number": "0081234023",
+                "national_id_number": "3276020306080023",
+                "emergency_contact": {
+                    "name": "Bpk. Pangestu",
+                    "phone": "081280001023",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Akses UI No. 33, Cimanggis, Depok"
+                }
+            },
+            {
+                "id_suffix": 24,
+                "name": "Fitri Handayani",
+                "email": "student24@example.com",
+                "username": "student24",
+                "phone": "082110001024",
+                "address": "Jl. Raya Sawangan No. 74, Pancoran Mas, Kota Depok, Jawa Barat 16436",
+                "gender": "female",
+                "blood_type": "AB",
+                "pob": "Cirebon",
+                "dob": "2007-10-24",
+                "id_number": "0071234024",
+                "national_id_number": "3276016410070024",
+                "emergency_contact": {
+                    "name": "Ibu Handayani",
+                    "phone": "081280001024",
+                    "relation": "Ibu Kandung",
+                    "address": "Jl. Raya Sawangan No. 74, Depok"
+                }
+            },
+            {
+                "id_suffix": 25,
+                "name": "Hafidz Nur Syahputra",
+                "email": "student25@example.com",
+                "username": "student25",
+                "phone": "082110001025",
+                "address": "Jl. Tole Iskandar No. 12, Sukmajaya, Kota Depok, Jawa Barat 16412",
+                "gender": "male",
+                "blood_type": "O",
+                "pob": "Jakarta",
+                "dob": "2008-04-16",
+                "id_number": "0081234025",
+                "national_id_number": "3276021604080025",
+                "emergency_contact": {
+                    "name": "Bpk. Syahputra",
+                    "phone": "081280001025",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Tole Iskandar No. 12, Sukmajaya, Depok"
+                }
+            },
+            {
+                "id_suffix": 26,
+                "name": "Indah Permatasari",
+                "email": "student26@example.com",
+                "username": "student26",
+                "phone": "082110001026",
+                "address": "Jl. Raya Bogor Km. 30 No. 42, Mekarsari, Cimanggis, Depok 16452",
+                "gender": "female",
+                "blood_type": "B",
+                "pob": "Bogor",
+                "dob": "2008-09-07",
+                "id_number": "0081234026",
+                "national_id_number": "3276024709080026",
+                "emergency_contact": {
+                    "name": "Ibu Sulastri",
+                    "phone": "081280001026",
+                    "relation": "Ibu Kandung",
+                    "address": "Jl. Raya Bogor Km. 30 No. 42, Depok"
+                }
+            },
+            {
+                "id_suffix": 27,
+                "name": "Jofan Danendra",
+                "email": "student27@example.com",
+                "username": "student27",
+                "phone": "082110001027",
+                "address": "Jl. Juanda No. 88, Baktijaya, Sukmajaya, Kota Depok, Jawa Barat 16418",
+                "gender": "male",
+                "blood_type": "A",
+                "pob": "Bandung",
+                "dob": "2008-02-11",
+                "id_number": "0081234027",
+                "national_id_number": "3276021102080027",
+                "emergency_contact": {
+                    "name": "Bpk. Danendra",
+                    "phone": "081280001027",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Juanda No. 88, Sukmajaya, Depok"
+                }
+            },
+            {
+                "id_suffix": 28,
+                "name": "Kezia Aurelia Simanjuntak",
+                "email": "student28@example.com",
+                "username": "student28",
+                "phone": "082110001028",
+                "address": "Jl. Kemang Pratama Raya Blok AL No. 12, Rawalumbu, Bekasi 17116",
+                "gender": "female",
+                "blood_type": "O",
+                "pob": "Medan",
+                "dob": "2008-07-15",
+                "id_number": "0081234028",
+                "national_id_number": "3275035507080028",
+                "emergency_contact": {
+                    "name": "St. T. Simanjuntak",
+                    "phone": "081280001028",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Kemang Pratama Raya Blok AL No. 12, Bekasi"
+                }
+            },
+            {
+                "id_suffix": 29,
+                "name": "Lukman Hakim",
+                "email": "student29@example.com",
+                "username": "student29",
+                "phone": "082110001029",
+                "address": "Jl. Patriot No. 37, Jakasampurna, Bekasi Barat, Kota Bekasi 17145",
+                "gender": "male",
+                "blood_type": "B",
+                "pob": "Surabaya",
+                "dob": "2007-12-30",
+                "id_number": "0071234029",
+                "national_id_number": "3275013012070029",
+                "emergency_contact": {
+                    "name": "Bpk. Abdul Hakim",
+                    "phone": "081280001029",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Patriot No. 37, Jakasampurna, Bekasi"
+                }
+            },
+            {
+                "id_suffix": 30,
+                "name": "Nadia Safitri",
+                "email": "student30@example.com",
+                "username": "student30",
+                "phone": "082110001030",
+                "address": "Jl. Bintara Jaya No. 16, Bintara, Bekasi Barat, Kota Bekasi 17134",
+                "gender": "female",
+                "blood_type": "A",
+                "pob": "Jakarta",
+                "dob": "2008-03-19",
+                "id_number": "0081234030",
+                "national_id_number": "3275015903080030",
+                "emergency_contact": {
+                    "name": "Ibu Safitri",
+                    "phone": "081280001030",
+                    "relation": "Ibu Kandung",
+                    "address": "Jl. Bintara Jaya No. 16, Bintara, Bekasi"
+                }
+            },
+            {
+                "id_suffix": 31,
+                "name": "Oki Setiawan",
+                "email": "student31@example.com",
+                "username": "student31",
+                "phone": "082110001031",
+                "address": "Jl. Cut Mutia No. 49, Margahayu, Bekasi Timur, Kota Bekasi 17113",
+                "gender": "male",
+                "blood_type": "AB",
+                "pob": "Solo",
+                "dob": "2008-08-27",
+                "id_number": "0081234031",
+                "national_id_number": "3275022708080031",
+                "emergency_contact": {
+                    "name": "Bpk. Setiawan",
+                    "phone": "081280001031",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Cut Mutia No. 49, Bekasi Timur"
+                }
+            },
+            {
+                "id_suffix": 32,
+                "name": "Priscillia Amanda",
+                "email": "student32@example.com",
+                "username": "student32",
+                "phone": "082110001032",
+                "address": "Jl. Sudirman No. 102, Kranji, Bekasi Barat, Kota Bekasi 17135",
+                "gender": "female",
+                "blood_type": "O",
+                "pob": "Semarang",
+                "dob": "2008-05-04",
+                "id_number": "0081234032",
+                "national_id_number": "3275014405080032",
+                "emergency_contact": {
+                    "name": "Ibu Amanda",
+                    "phone": "081280001032",
+                    "relation": "Ibu Kandung",
+                    "address": "Jl. Sudirman No. 102, Kranji, Bekasi"
+                }
+            },
+            {
+                "id_suffix": 33,
+                "name": "Rangga Yudhistira",
+                "email": "student33@example.com",
+                "username": "student33",
+                "phone": "082110001033",
+                "address": "Jl. Agus Salim No. 64, Bekasi Jaya, Bekasi Timur, Kota Bekasi 17112",
+                "gender": "male",
+                "blood_type": "B",
+                "pob": "Jakarta",
+                "dob": "2008-01-08",
+                "id_number": "0081234033",
+                "national_id_number": "3275020801080033",
+                "emergency_contact": {
+                    "name": "Bpk. Yudhistira",
+                    "phone": "081280001033",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Agus Salim No. 64, Bekasi Jaya, Bekasi"
+                }
+            },
+            {
+                "id_suffix": 34,
+                "name": "Siti Fatimah Azzahra",
+                "email": "student34@example.com",
+                "username": "student34",
+                "phone": "082110001034",
+                "address": "Jl. Raya Jatiwaringin No. 11, Pondok Gede, Kota Bekasi 17411",
+                "gender": "female",
+                "blood_type": "A",
+                "pob": "Yogyakarta",
+                "dob": "2008-11-23",
+                "id_number": "0081234034",
+                "national_id_number": "3275086311080034",
+                "emergency_contact": {
+                    "name": "Hj. Azzahra",
+                    "phone": "081280001034",
+                    "relation": "Ibu Kandung",
+                    "address": "Jl. Raya Jatiwaringin No. 11, Pondok Gede, Bekasi"
+                }
+            },
+            {
+                "id_suffix": 35,
+                "name": "Taufik Ismail",
+                "email": "student35@example.com",
+                "username": "student35",
+                "phone": "082110001035",
+                "address": "Jl. Raya Hankam No. 72, Jatimurni, Pondok Melati, Kota Bekasi 17431",
+                "gender": "male",
+                "blood_type": "O",
+                "pob": "Padang",
+                "dob": "2007-10-12",
+                "id_number": "0071234035",
+                "national_id_number": "3275091210070035",
+                "emergency_contact": {
+                    "name": "Bpk. Ismail",
+                    "phone": "081280001035",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Raya Hankam No. 72, Pondok Melati, Bekasi"
+                }
+            },
+            {
+                "id_suffix": 36,
+                "name": "Vania Clarissa",
+                "email": "student36@example.com",
+                "username": "student36",
+                "phone": "082110001036",
+                "address": "Jl. Boulevard Gading Serpong Blok AA No. 21, Kelapa Dua, Tangerang 15810",
+                "gender": "female",
+                "blood_type": "B",
+                "pob": "Surabaya",
+                "dob": "2008-06-27",
+                "id_number": "0081234036",
+                "national_id_number": "3603286706080036",
+                "emergency_contact": {
+                    "name": "Ibu Clarissa",
+                    "phone": "081280001036",
+                    "relation": "Ibu Kandung",
+                    "address": "Jl. Boulevard Gading Serpong Blok AA No. 21, Tangerang"
+                }
+            },
+            {
+                "id_suffix": 37,
+                "name": "Wildan Mukhallad",
+                "email": "student37@example.com",
+                "username": "student37",
+                "phone": "082110001037",
+                "address": "Jl. Pahlawan Seribu No. 90, BSD City, Serpong, Tangerang Selatan 15322",
+                "gender": "male",
+                "blood_type": "A",
+                "pob": "Bandung",
+                "dob": "2008-02-14",
+                "id_number": "0081234037",
+                "national_id_number": "3674031402080037",
+                "emergency_contact": {
+                    "name": "Bpk. Mukhallad",
+                    "phone": "081280001037",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Pahlawan Seribu No. 90, Serpong, Tangsel"
+                }
+            },
+            {
+                "id_suffix": 38,
+                "name": "Yasmine Khairunisa",
+                "email": "student38@example.com",
+                "username": "student38",
+                "phone": "082110001038",
+                "address": "Jl. WR. Supratman No. 43, Rengas, Ciputat Timur, Tangerang Selatan 15412",
+                "gender": "female",
+                "blood_type": "AB",
+                "pob": "Jakarta",
+                "dob": "2008-07-21",
+                "id_number": "0081234038",
+                "national_id_number": "3674066107080038",
+                "emergency_contact": {
+                    "name": "Ibu Khairunisa",
+                    "phone": "081280001038",
+                    "relation": "Ibu Kandung",
+                    "address": "Jl. WR. Supratman No. 43, Ciputat Timur, Tangsel"
+                }
+            },
+            {
+                "id_suffix": 39,
+                "name": "Zaky Abdurrahman",
+                "email": "student39@example.com",
+                "username": "student39",
+                "phone": "082110001039",
+                "address": "Jl. Cirendeu Raya No. 18, Pisangan, Ciputat Timur, Tangerang Selatan 15419",
+                "gender": "male",
+                "blood_type": "O",
+                "pob": "Bogor",
+                "dob": "2008-04-03",
+                "id_number": "0081234039",
+                "national_id_number": "3674060304080039",
+                "emergency_contact": {
+                    "name": "Bpk. Abdurrahman",
+                    "phone": "081280001039",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Cirendeu Raya No. 18, Pisangan, Tangsel"
+                }
+            },
+            {
+                "id_suffix": 40,
+                "name": "Alya Maharani",
+                "email": "student40@example.com",
+                "username": "student40",
+                "phone": "082110001040",
+                "address": "Jl. Surya Kencana No. 51, Pamulang Barat, Pamulang, Tangerang Selatan 15417",
+                "gender": "female",
+                "blood_type": "B",
+                "pob": "Malang",
+                "dob": "2008-09-11",
+                "id_number": "0081234040",
+                "national_id_number": "3674055109080040",
+                "emergency_contact": {
+                    "name": "Ibu Maharani",
+                    "phone": "081280001040",
+                    "relation": "Ibu Kandung",
+                    "address": "Jl. Surya Kencana No. 51, Pamulang, Tangsel"
+                }
+            },
+            {
+                "id_suffix": 41,
+                "name": "Bima Sakti Nugraha",
+                "email": "student41@example.com",
+                "username": "student41",
+                "phone": "082110001041",
+                "address": "Jl. Siliwangi No. 60, Pamulang Timur, Pamulang, Tangerang Selatan 15417",
+                "gender": "male",
+                "blood_type": "A",
+                "pob": "Solo",
+                "dob": "2007-11-15",
+                "id_number": "0071234041",
+                "national_id_number": "3674051511070041",
+                "emergency_contact": {
+                    "name": "Bpk. Nugraha",
+                    "phone": "081280001041",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Siliwangi No. 60, Pamulang Timur, Tangsel"
+                }
+            },
+            {
+                "id_suffix": 42,
+                "name": "Chintya Bella",
+                "email": "student42@example.com",
+                "username": "student42",
+                "phone": "082110001042",
+                "address": "Jl. Pajajaran No. 27, Gandasari, Jatiuwung, Kota Tangerang 15137",
+                "gender": "female",
+                "blood_type": "O",
+                "pob": "Cirebon",
+                "dob": "2008-05-17",
+                "id_number": "0081234042",
+                "national_id_number": "3671075705080042",
+                "emergency_contact": {
+                    "name": "Ibu Bella",
+                    "phone": "081280001042",
+                    "relation": "Ibu Kandung",
+                    "address": "Jl. Pajajaran No. 27, Gandasari, Tangerang"
+                }
+            },
+            {
+                "id_suffix": 43,
+                "name": "Deni Firmansyah",
+                "email": "student43@example.com",
+                "username": "student43",
+                "phone": "082110001043",
+                "address": "Jl. Daan Mogot Km. 21 No. 34, Batuceper, Kota Tangerang 15122",
+                "gender": "male",
+                "blood_type": "B",
+                "pob": "Jakarta",
+                "dob": "2008-08-01",
+                "id_number": "0081234043",
+                "national_id_number": "3671030108080043",
+                "emergency_contact": {
+                    "name": "Bpk. Firmansyah",
+                    "phone": "081280001043",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Daan Mogot Km. 21 No. 34, Batuceper, Tangerang"
+                }
+            },
+            {
+                "id_suffix": 44,
+                "name": "Eka Nur Safitri",
+                "email": "student44@example.com",
+                "username": "student44",
+                "phone": "082110001044",
+                "address": "Jl. Hasyim Ashari No. 98, Nerogtog, Pinang, Kota Tangerang 15145",
+                "gender": "female",
+                "blood_type": "AB",
+                "pob": "Bandung",
+                "dob": "2008-12-10",
+                "id_number": "0081234044",
+                "national_id_number": "3671065012080044",
+                "emergency_contact": {
+                    "name": "Ibu Safitri",
+                    "phone": "081280001044",
+                    "relation": "Ibu Kandung",
+                    "address": "Jl. Hasyim Ashari No. 98, Nerogtog, Tangerang"
+                }
+            },
+            {
+                "id_suffix": 45,
+                "name": "Farhan Maulana",
+                "email": "student45@example.com",
+                "username": "student45",
+                "phone": "082110001045",
+                "address": "Jl. Imam Bonjol No. 40, Karawaci, Kota Tangerang 15115",
+                "gender": "male",
+                "blood_type": "A",
+                "pob": "Yogyakarta",
+                "dob": "2008-03-12",
+                "id_number": "0081234045",
+                "national_id_number": "3671021203080045",
+                "emergency_contact": {
+                    "name": "Bpk. Maulana",
+                    "phone": "081280001045",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Imam Bonjol No. 40, Karawaci, Tangerang"
+                }
+            },
+            {
+                "id_suffix": 46,
+                "name": "Gita Gutawa Putri",
+                "email": "student46@example.com",
+                "username": "student46",
+                "phone": "082110001046",
+                "address": "Jl. Veteran No. 15, Babakan, Tangerang, Kota Tangerang 15118",
+                "gender": "female",
+                "blood_type": "O",
+                "pob": "Semarang",
+                "dob": "2008-07-04",
+                "id_number": "0081234046",
+                "national_id_number": "3671014407080046",
+                "emergency_contact": {
+                    "name": "Ibu Gutawa",
+                    "phone": "081280001046",
+                    "relation": "Ibu Kandung",
+                    "address": "Jl. Veteran No. 15, Babakan, Tangerang"
+                }
+            },
+            {
+                "id_suffix": 47,
+                "name": "Haris Setiadi",
+                "email": "student47@example.com",
+                "username": "student47",
+                "phone": "082110001047",
+                "address": "Jl. KH. Soleh Ali No. 62, Sukasari, Tangerang, Kota Tangerang 15118",
+                "gender": "male",
+                "blood_type": "B",
+                "pob": "Bogor",
+                "dob": "2008-01-23",
+                "id_number": "0081234047",
+                "national_id_number": "3671012301080047",
+                "emergency_contact": {
+                    "name": "Bpk. Setiadi",
+                    "phone": "081280001047",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. KH. Soleh Ali No. 62, Sukasari, Tangerang"
+                }
+            },
+            {
+                "id_suffix": 48,
+                "name": "Intan Permata Hati",
+                "email": "student48@example.com",
+                "username": "student48",
+                "phone": "082110001048",
+                "address": "Jl. Perintis Kemerdekaan No. 81, Babakan, Tangerang 15118",
+                "gender": "female",
+                "blood_type": "A",
+                "pob": "Jakarta",
+                "dob": "2007-09-09",
+                "id_number": "0071234048",
+                "national_id_number": "3671014909070048",
+                "emergency_contact": {
+                    "name": "Ibu Permata",
+                    "phone": "081280001048",
+                    "relation": "Ibu Kandung",
+                    "address": "Jl. Perintis Kemerdekaan No. 81, Tangerang"
+                }
+            },
+            {
+                "id_suffix": 49,
+                "name": "Kiki Ramdani",
+                "email": "student49@example.com",
+                "username": "student49",
+                "phone": "082110001049",
+                "address": "Jl. Cisadane Raya No. 24, Nusa Jaya, Karawaci, Tangerang 15116",
+                "gender": "male",
+                "blood_type": "AB",
+                "pob": "Surabaya",
+                "dob": "2008-04-18",
+                "id_number": "0081234049",
+                "national_id_number": "3671021804080049",
+                "emergency_contact": {
+                    "name": "Bpk. Ramdani",
+                    "phone": "081280001049",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Cisadane Raya No. 24, Nusa Jaya, Tangerang"
+                }
+            },
+            {
+                "id_suffix": 50,
+                "name": "Laila Nur Azizah",
+                "email": "student50@example.com",
+                "username": "student50",
+                "phone": "082110001050",
+                "address": "Jl. Teuku Umar No. 53, Karawaci, Kota Tangerang 15115",
+                "gender": "female",
+                "blood_type": "O",
+                "pob": "Bandung",
+                "dob": "2008-10-02",
+                "id_number": "0081234050",
+                "national_id_number": "3671024210080050",
+                "emergency_contact": {
+                    "name": "Ibu Azizah",
+                    "phone": "081280001050",
+                    "relation": "Ibu Kandung",
+                    "address": "Jl. Teuku Umar No. 53, Karawaci, Tangerang"
+                }
+            },
+            {
+                "id_suffix": 51,
+                "name": "Mahendra Dwi Cahyo",
+                "email": "student51@example.com",
+                "username": "student51",
+                "phone": "082110001051",
+                "address": "Jl. Kali Pasir No. 19, Sukasari, Tangerang, Kota Tangerang 15118",
+                "gender": "male",
+                "blood_type": "B",
+                "pob": "Solo",
+                "dob": "2008-06-14",
+                "id_number": "0081234051",
+                "national_id_number": "3671011406080051",
+                "emergency_contact": {
+                    "name": "Bpk. Dwi Cahyo",
+                    "phone": "081280001051",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Kali Pasir No. 19, Sukasari, Tangerang"
+                }
+            },
+            {
+                "id_suffix": 52,
+                "name": "Nadira Putri Andini",
+                "email": "student52@example.com",
+                "username": "student52",
+                "phone": "082110001052",
+                "address": "Jl. Dr. Sitanala No. 77, Mekarsari, Neglasari, Kota Tangerang 15121",
+                "gender": "female",
+                "blood_type": "A",
+                "pob": "Jakarta",
+                "dob": "2008-08-30",
+                "id_number": "0081234052",
+                "national_id_number": "3671057008080052",
+                "emergency_contact": {
+                    "name": "Ibu Andini",
+                    "phone": "081280001052",
+                    "relation": "Ibu Kandung",
+                    "address": "Jl. Dr. Sitanala No. 77, Neglasari, Tangerang"
+                }
+            },
+            {
+                "id_suffix": 53,
+                "name": "Pandu Wijaya Kusuma",
+                "email": "student53@example.com",
+                "username": "student53",
+                "phone": "082110001053",
+                "address": "Jl. Marsekal Suryadarma No. 45, Selapajang Jaya, Neglasari, Tangerang 15127",
+                "gender": "male",
+                "blood_type": "O",
+                "pob": "Yogyakarta",
+                "dob": "2007-12-19",
+                "id_number": "0071234053",
+                "national_id_number": "3671051912070053",
+                "emergency_contact": {
+                    "name": "Bpk. Kusuma Wijaya",
+                    "phone": "081280001053",
+                    "relation": "Ayah Kandung",
+                    "address": "Jl. Marsekal Suryadarma No. 45, Neglasari, Tangerang"
+                }
+            },
+            {
+                "id_suffix": 54,
+                "name": "Qonita Zahira",
+                "email": "student54@example.com",
+                "username": "student54",
+                "phone": "082110001054",
+                "address": "Jl. KS Tubun No. 32, Koang Jaya, Karawaci, Kota Tangerang 15112",
+                "gender": "female",
+                "blood_type": "B",
+                "pob": "Malang",
+                "dob": "2008-03-25",
+                "id_number": "0081234054",
+                "national_id_number": "3671026503080054",
+                "emergency_contact": {
+                    "name": "Ibu Zahira",
+                    "phone": "081280001054",
+                    "relation": "Ibu Kandung",
+                    "address": "Jl. KS Tubun No. 32, Koang Jaya, Tangerang"
+                }
+            }
+        ]
+    },
+    "documents": [
+        {
+            "slug": "kebijakan-pkl",
+            "title": "Kebijakan Praktik Kerja Lapangan",
+            "type": "policy",
+            "description": "Pedoman pokok tata tertib, hak, kewajiban, ketentuan jam kerja, pakaian dinas, dan keselamatan kerja peserta PKL di DU/DI."
+        },
+        {
+            "slug": "panduan-pkl",
+            "title": "Panduan Pelaksanaan PKL",
+            "type": "guideline",
+            "description": "Petunjuk teknis pengisian logbook digital, presensi berbasis lokasi, penyusunan laporan akhir, dan format penilaian pembimbing industri."
+        },
+        {
+            "slug": "etika-pkl",
+            "title": "Kode Etik Peserta PKL",
+            "type": "policy",
+            "description": "Standar perilaku profesional, kerahasiaan informasi perusahaan mitra (NDA), etika komunikasi di tempat kerja, dan integritas kerja."
+        }
+    ],
+    "assignments": {
+        "active": [
+            {
+                "title": "Laporan Harian PKL",
+                "description": "Dokumentasikan rekapitulasi pekerjaan harian, kendala teknis yang dihadapi, dan solusi yang diimplementasikan selama 1 bulan pertama masa praktik.",
+                "rubric_name": "Rubrik Penilaian Supervisor"
+            },
+            {
+                "title": "Proyek Akhir Unit",
+                "description": "Rancang dan selesaikan satu studi kasus proyek nyata sesuai divisi penempatan kerja industri, mencakup dokumentasi spesifikasi dan hasil pengujian.",
+                "rubric_name": "Rubrik Penilaian Guru"
+            },
+            {
+                "title": "Esai Refleksi",
+                "description": "Tuliskan esai reflektif sebanyak 800-1200 kata mengenai adaptasi budaya industri, pembelajaran soft skills, dan evaluasi diri selama pemagangan.",
+                "rubric_name": "Rubrik Penilaian Guru"
+            },
+            {
+                "title": "Praktik Lapangan",
+                "description": "Demonstrasikan penguasaan alat kerja dan SOP penanganan pekerjaan di bawah pengawasan langsung mentor pembimbing DU/DI.",
+                "rubric_name": "Rubrik Penilaian Supervisor"
+            }
+        ],
+        "completed": [
+            {
+                "title": "Laporan Magang",
+                "description": "Laporan komprehensif pelaksanaan Praktik Kerja Lapangan yang telah diverifikasi oleh pembimbing industri dan disahkan oleh kepala sekolah.",
+                "rubric_name": "Rubrik Penilaian PKL"
+            },
+            {
+                "title": "Presentasi Produk",
+                "description": "Paparan hasil karya portofolio atau implementasi sistem di depan dewan penguji sekolah dan perwakilan mitra industri.",
+                "rubric_name": "Rubrik Penilaian PKL"
+            },
+            {
+                "title": "Jurnal Kegiatan",
+                "description": "Rekapitulasi logbook kegiatan harian dan lembar verifikasi kehadiran selama satu semester penuh pemagangan.",
+                "rubric_name": "Rubrik Penilaian PKL"
+            }
+        ]
+    },
+    "rubrics": [
+        {
+            "name": "Rubrik Penilaian Supervisor",
+            "description": "Kriteria penilaian kinerja praktikan oleh pembimbing DU/DI mencakup kedisiplinan, kompetensi teknis industri, komunikasi, dan inisiatif kerja.",
+            "criteria": [
+                {
+                    "name": "Kedisiplinan & Kehadiran",
+                    "weight": 25,
+                    "description": "Ketepatan waktu hadir, kepatuhan jam kerja, dan ketaatan terhadap SOP perusahaan."
+                },
+                {
+                    "name": "Kualitas Keterampilan Teknis",
+                    "weight": 35,
+                    "description": "Ketepatan dan kecepatan dalam menyelesaikan tugas teknis yang diberikan mentor."
+                },
+                {
+                    "name": "Komunikasi & Kerjasama Tim",
+                    "weight": 20,
+                    "description": "Kemampuan beradaptasi dengan rekan kerja dan menyampaikan progres secara transparan."
+                },
+                {
+                    "name": "Inisiatif & Problem Solving",
+                    "weight": 20,
+                    "description": "Kemauan belajar mandiri dan kecekatan dalam mencari solusi atas kendala pekerjaan."
+                }
+            ]
+        },
+        {
+            "name": "Rubrik Penilaian Guru",
+            "description": "Kriteria penilaian monitoring dan evaluasi akademik oleh guru pembimbing sekolah.",
+            "criteria": [
+                {
+                    "name": "Sistematika Laporan Ilmiah",
+                    "weight": 30,
+                    "description": "Kerapian tata tulis, kelengkapan berkas lampiran, dan keaslian isi laporan."
+                },
+                {
+                    "name": "Relevansi Pengetahuan dengan Kurikulum",
+                    "weight": 35,
+                    "description": "Kesesuaian penerapan teori kejuruan sekolah dengan praktik riil di industri."
+                },
+                {
+                    "name": "Keteraturan Pengisian Logbook",
+                    "weight": 20,
+                    "description": "Konsistensi pengisian jurnal harian dan validitas paraf mentor."
+                },
+                {
+                    "name": "Sikap & Integritas Siswa",
+                    "weight": 15,
+                    "description": "Ketaatan siswa terhadap norma sekolah dan etika saat berada di lokasi PKL."
+                }
+            ]
+        },
+        {
+            "name": "Rubrik Penilaian PKL",
+            "description": "Rubrik gabungan kelulusan sidang pertanggungjawaban Praktik Kerja Lapangan.",
+            "criteria": [
+                {
+                    "name": "Nilai Evaluasi Industri",
+                    "weight": 40,
+                    "description": "Akumulasi nilai kinerja dari instansi tempat praktik kerja."
+                },
+                {
+                    "name": "Ujian Lisan & Presentasi",
+                    "weight": 30,
+                    "description": "Penguasaan materi saat presentasi di hadapan dewan penguji kejuruan."
+                },
+                {
+                    "name": "Naskah Laporan Akhir",
+                    "weight": 30,
+                    "description": "Kualitas produk akhir dan dokumentasi komprehensif PKL."
+                }
+            ]
+        }
+    ],
+    "evaluation_forms": [
+        {
+            "name": "Evaluasi Mentor Industri",
+            "target_type": "mentor",
+            "description": "Instrumen penilaian kepuasan siswa terhadap bimbingan yang diberikan oleh mentor industri.",
+            "sections": [
+                {
+                    "title": "Kualitas Bimbingan",
+                    "questions": [
+                        "Kejelasan arahan teknis dan penjelasan materi tugas yang diberikan mentor",
+                        "Ketersediaan waktu mentor dalam mendiskusikan kendala pekerjaan",
+                        "Kualitas umpan balik (feedback) dan koreksi konstruktif yang diberikan mentor"
+                    ]
+                },
+                {
+                    "title": "Lingkungan Kerja & Profesionalisme",
+                    "questions": [
+                        "Kenyamanan suasana kerja dan sikap ramah staf di lingkungan kantor/pabrik",
+                        "Kelengkapan sarana, meja kerja, dan peralatan pendukung praktik yang disediakan",
+                        "Pemberian kesempatan praktikan untuk terlibat langsung dalam alur kerja nyata"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Evaluasi Program PKL",
+            "target_type": "program",
+            "description": "Instrumen penilaian terhadap tata kelola dan efektivitas penyelenggaraan program PKL sekolah.",
+            "sections": [
+                {
+                    "title": "Kesiapan Kurikulum & Pembekalan",
+                    "questions": [
+                        "Kesesuaian materi pembekalan sekolah dengan kebutuhan kerja di dunia industri",
+                        "Kejelasan informasi jadwal, berkas administrasi, dan sistem pelaporan digital"
+                    ]
+                },
+                {
+                    "title": "Pendampingan Guru Pembimbing",
+                    "questions": [
+                        "Keteraturan kunjungan monitoring dan komunikasi guru pembimbing ke lokasi magang",
+                        "Responsivitas pihak sekolah dalam membantu menyelesaikan kendala praktikan"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Evaluasi Perusahaan",
+            "target_type": "company",
+            "description": "Instrumen penilaian kelayakan dan kemanfaatan kemitraan perusahaan tempat magang.",
+            "sections": [
+                {
+                    "title": "Keselamatan & Budaya Kerja",
+                    "questions": [
+                        "Penerapan standar Keselamatan dan Kesehatan Kerja (K3) di lingkungan perusahaan",
+                        "Kesesuaian jam kerja siswa dengan regulasi perlindungan anak dan pemagangan"
+                    ]
+                },
+                {
+                    "title": "Nilai Tambah & Rekomendasi",
+                    "questions": [
+                        "Kesesuaian tugas yang diberikan dengan kompetensi keahlian kejuruan siswa",
+                        "Tingkat rekomendasi perusahaan ini sebagai mitra PKL untuk angkatan berikutnya"
+                    ]
+                }
+            ]
+        }
+    ],
+    "logbooks": {
+        "Rekayasa Perangkat Lunak": [
+            {
+                "title": "Pembuatan Skema Basis Data & Migration Laravel",
+                "content": "Mempelajari rancangan Entity Relationship Diagram (ERD) dari Tech Lead. Membuat skema database menggunakan fitur migration Laravel untuk tabel inventaris barang, lengkap dengan indeks dan foreign key constraint.",
+                "competency": "Database Modeling & Laravel Migrations"
+            },
+            {
+                "title": "Implementasi Endpoint REST API Modul Autentikasi",
+                "content": "Mengembangkan REST API untuk registrasi dan login pengguna berbasis token Laravel Sanctum. Menambahkan validasi request kustom dan unit test pengujian kredensial yang salah.",
+                "competency": "Backend API Development & Authentication"
+            },
+            {
+                "title": "Slicing Desain Figma Menjadi Komponen Blade UI",
+                "content": "Mengonversi rancangan antarmuka halaman dashboard dari tim UI/UX di Figma ke komponen Blade Laravel dan utility-first styling Tailwind CSS, memastikan responsivitas pada layar ponsel dan desktop.",
+                "competency": "Frontend Web Development & Tailwind CSS"
+            },
+            {
+                "title": "Bug Fixing pada Fitur Ekspor Laporan Excel",
+                "content": "Menganalisis laporan issue dari tim QA mengenai memory limit saat mengekspor data lebih dari 10.000 baris. Mengoptimalkan query dengan chunking dan memanfaatkan Laravel Excel queue export.",
+                "competency": "Performance Optimization & Debugging"
+            },
+            {
+                "title": "Integrasi Webhook Notifikasi Pembayaran",
+                "content": "Membantu senior software engineer membuat controller penanganan webhook notifikasi dari payment gateway sandbox. Menguji verifikasi signature payload dan update status transaksi otomatis.",
+                "competency": "API Integration & Webhook Handling"
+            },
+            {
+                "title": "Refactoring Controller Menggunakan Pattern Action Triad",
+                "content": "Merestrukturisasi controller gemuk menjadi Action kelas tunggal (CreateOrderAction, CalculateTaxAction) guna meningkatkan keterbacaan kode dan memudahkan pembuatan automated tests.",
+                "competency": "Clean Architecture & Design Patterns"
+            },
+            {
+                "title": "Penyusunan Dokumentasi Teknis API dengan Postman",
+                "content": "Mendokumentasikan seluruh endpoint modul transaksi ke Postman Workspace, melengkapi parameter query, contoh payload JSON request dan response sukses maupun error 422.",
+                "competency": "API Documentation & Postman"
+            },
+            {
+                "title": "Code Review dan Kolaborasi Git Flow",
+                "content": "Membuat Pull Request pada branch feature, memaparkan perubahan kode saat sesi code review harian bersama mentor, dan menyelesaikan masukan perbaikan penamaan variabel.",
+                "competency": "Version Control & Team Collaboration"
+            }
+        ],
+        "Teknik Komputer dan Jaringan": [
+            {
+                "title": "Instalasi dan Konfigurasi Router MikroTik",
+                "content": "Melakukan hard reset routerboard MikroTik RB450Gx4. Mengonfigurasi IP Address, Default Gateway, DHCP Server, serta DNS resolver untuk jaringan lokal kantor cabang baru.",
+                "competency": "Routing & IP Addressing"
+            },
+            {
+                "title": "Segmentasi Jaringan VLAN pada Managed Switch Cisco",
+                "content": "Mengonfigurasi VLAN 10 (Divisi Keuangan), VLAN 20 (Divisi Operasional), dan VLAN 30 (Guest WiFi) pada switch Cisco Catalyst 2960. Menguji port trunking menuju router utama.",
+                "competency": "VLAN & Switch Management"
+            },
+            {
+                "title": "Terminasi Kabel UTP Cat6 dan Penataan Patch Panel",
+                "content": "Melakukan penarikan kabel UTP Cat6 sepanjang 40 meter dari ruang server ke lantai 2, crimping konektor RJ45 standar T568B, dan penataan kabel ke patch panel menggunakan cable management bar.",
+                "competency": "Cabling & Physical Infrastructure"
+            },
+            {
+                "title": "Troubleshooting Konektivitas Jaringan & Pengecekan Flukemeter",
+                "content": "Memeriksa laporan komputer staf akuntansi yang tidak dapat mengakses printer network. Melakukan uji kontinuitas kabel dengan LAN tester, menemukan pin 3 putus dan melakukan re-crimping konektor.",
+                "competency": "Network Troubleshooting & Diagnostics"
+            },
+            {
+                "title": "Setup Firewall Mangle dan Bandwidth Limiting (Queue Tree)",
+                "content": "Mengonfigurasi aturan firewall MikroTik untuk memblokir akses port tidak aman dan menerapkan pembatasan kecepatan bandwidth internet (Queue Tree) agar prioritas trafik video conference tidak terganggu.",
+                "competency": "Firewall & Bandwidth Management"
+            },
+            {
+                "title": "Instalasi Hypervisor Proxmox VE dan Backup Server",
+                "content": "Membantu staf IT sysadmin melakukan instalasi bare-metal Proxmox VE pada server HPE ProLiant. Mengonfigurasi storage pool ZFS mirror dan membuat backup snapshot otomatis VM database lokal.",
+                "competency": "Virtualization & Server Administration"
+            },
+            {
+                "title": "Deployment Access Point UniFi dan Captive Portal",
+                "content": "Memasang 3 unit UniFi AP-AC-Pro di area meeting room, mengadopsi perangkat ke UniFi Network Controller, dan mengonfigurasi SSID Guest dengan otentikasi voucher captive portal.",
+                "competency": "Wireless Networking & Controller Management"
+            },
+            {
+                "title": "Audit Suhu Ruang Server dan Pengecekan Baterai UPS",
+                "content": "Mencatat log suhu AC ruang server (target 19°C), melakukan inspeksi fisik baterai UPS 3 kVA, serta menguji simulasi pemadaman listrik darurat guna memastikan zero-downtime server produksi.",
+                "competency": "Data Center Maintenance & Facilities"
+            }
+        ],
+        "Akuntansi dan Keuangan": [
+            {
+                "title": "Verifikasi Bukti Transaksi Kas Masuk dan Kas Keluar",
+                "content": "Memeriksa kelengkapan tanda tangan otorisasi, stempel lunas, nota fisik, dan lampiran purchase order pada berkas voucher pengeluaran kas kecil (petty cash) periode minggu pertama.",
+                "competency": "Dokumentasi & Verifikasi Bukti Transaksi"
+            },
+            {
+                "title": "Input Transaksi Pembelian dan Penjualan ke Software Accurate",
+                "content": "Menginput 45 faktur pembelian kredit bahan baku dari vendor dan 60 faktur penjualan ritel harian ke dalam modul Buku Besar software akuntansi Accurate 5.",
+                "competency": "Aplikasi Komputer Akuntansi"
+            },
+            {
+                "title": "Rekonsiliasi Rekening Koran Bank dengan Buku Kas Perusahaan",
+                "content": "Mencocokkan mutasi debit dan kredit rekening koran Bank BCA dengan jurnal penerimaan kas di sistem. Menemukan selisih biaya administrasi bank dan mencatat jurnal penyesuaian.",
+                "competency": "Rekonsiliasi Bank & Jurnal Penyesuaian"
+            },
+            {
+                "title": "Penataan Arsip Dokumen Perpajakan dan Faktur Pajak Standar",
+                "content": "Menyusun binder arsip bukti potong PPh Pasal 21 dan faktur pajak keluaran (e-Faktur) secara kronologis berdasarkan bulan pajak guna mempermudah proses audit internal.",
+                "competency": "Administrasi Perpajakan & Filing System"
+            },
+            {
+                "title": "Stock Opname Fisik Persediaan Barang Dagang di Gudang",
+                "content": "Bersama tim auditor internal menghitung stok fisik barang di gudang retail, membandingkan kartu stok manual dengan saldo sistem, dan membuat berita acara selisih persediaan.",
+                "competency": "Manajemen Persediaan & Stock Opname"
+            },
+            {
+                "title": "Penyusunan Laporan Mutasi Kas Kecil Sistem Imprest",
+                "content": "Merekapitulasi seluruh bukti kwitansi pengeluaran operasional kantor dan membuat formulir pengajuan pengisian kembali dana kas kecil (replenishment) sesuai saldo plafon tetap.",
+                "competency": "Pengelolaan Petty Cash Sistem Imprest"
+            },
+            {
+                "title": "Perhitungan Depresiasi Aset Tetap Metode Garis Lurus",
+                "content": "Membantu staf senior menghitung beban penyusutan kendaraan operasional dan peralatan kantor bulan berjalan menggunakan formula Excel dan mencatatnya ke neraca saldo.",
+                "competency": "Akuntansi Aset Tetap & Depresiasi"
+            },
+            {
+                "title": "Pengecekan Faktur Pajak Masukan pada Aplikasi e-Faktur DJP",
+                "content": "Melakukan scan QR code faktur pajak elektronik dari vendor menggunakan aplikasi scanner e-Faktur dan memverifikasi status approval valid di server Direktorat Jenderal Pajak.",
+                "competency": "Aplikasi e-Faktur & Kepatuhan Pajak"
+            }
+        ],
+        "Tata Boga": [
+            {
+                "title": "Mise en Place Bahan Baku Dapur Pastry dan Bakery",
+                "content": "Menimbang bahan baku terigu protein tinggi, ragi, mentega, dan gula sesuai takaran resep standar. Mempersiapkan loyang, cetakan, dan peralatan kerja dengan prinsip sanitasi dapur.",
+                "competency": "Persiapan Dapur (Mise en Place) & Bakery"
+            },
+            {
+                "title": "Penerapan Standar FIFO dan Pemantauan Suhu Chiller",
+                "content": "Mengecek tanggal kedaluwarsa bahan baku hewani dan sayuran di walk-in chiller, memastikan rotasi First-In First-Out (FIFO) berjalan, serta mencatat log suhu harian chiller pada 3°C.",
+                "competency": "Food Safety & Inventory Rotation"
+            },
+            {
+                "title": "Pengolahan Hidangan Kontinental (Main Course) untuk Buffet",
+                "content": "Mempraktikkan teknik searing daging ayam rosemary, pembuatan saus pendamping mushroom cream, dan blanching sayuran segar pendamping untuk jamuan makan siang 120 pax.",
+                "competency": "Continental Cooking & Banquet Preparation"
+            },
+            {
+                "title": "Penerapan Prinsip HACCP dan Pembersihan Area Kerja",
+                "content": "Menggunakan talenan berbeda warna sesuai jenis bahan (merah untuk daging mentah, hijau untuk sayur, biru untuk seafood) guna mencegah kontaminasi silang.",
+                "competency": "Sanitasi, Higiene & Standar HACCP"
+            },
+            {
+                "title": "Plating dan Garnish Hidangan Penutup (Dessert)",
+                "content": "Menata potongan kue opera cake dengan saus raspberry coulis, daun mint segar, dan taburan gula halus, memastikan porsi seragam dan estetika penyajian menarik.",
+                "competency": "Plating, Food Styling & Pastry"
+            },
+            {
+                "title": "Penghitungan Food Costing dan Pengurangan Food Waste",
+                "content": "Membantu sous chef menghitung persentase susut bahan baku setelah proses trimming sayuran dan memanfaatkan sisa tulang untuk pembuatan kaldu dasar kaldu sapi (brown stock).",
+                "competency": "Cost Control & Kitchen Efficiency"
+            }
+        ],
+        "general": [
+            {
+                "title": "Pengarsipan Surat Masuk dan Pembuatan Lembar Disposisi",
+                "content": "Mencatat nomor agenda surat dinas masuk dari instansi mitra, memindai dokumen ke format PDF, dan melampirkan lembar disposisi untuk ditindaklanjuti kepala divisi.",
+                "competency": "Administrasi Perkantoran & Kearsipan"
+            },
+            {
+                "title": "Notulensi Rapat Koordinasi Mingguan Proyek",
+                "content": "Menghadiri rapat progres kerja mingguan antar bagian, mencatat poin pembahasan hambatan teknis, pembagian tugas baru, dan batas waktu penyelesaian tindak lanjut rapat.",
+                "competency": "Business Communication & Minute Taking"
+            },
+            {
+                "title": "Pelayanan Tamu Kantor dan Konfirmasi Janji Temu",
+                "content": "Menerima kunjungan perwakilan vendor, memeriksa kartu identitas tamu di meja resepsionis, serta mengonfirmasi ketersediaan ruang rapat melalui sistem kalender kantor.",
+                "competency": "Front Office & Customer Service"
+            }
+        ]
+    },
+    "attendance_absences": {
+        "sick_reasons": [
+            "Sakit demam tinggi dan radang tenggorokan, istirahat rawat jalan sesuai surat keterangan dokter Puskesmas No. 445/PKM/2026.",
+            "Mengalami gejala tifus ringan dan disarankan istirahat dokter selama 2 hari di rumah (Surat Keterangan Sakit RSUD terlampir).",
+            "Sakit flu berat disertai pusing dan batuk, telah memeriksakan diri ke Klinik Pratama Sehat Sejahtera.",
+            "Mengalami gangguan pencernaan akut (gastritis), istirahat 1 hari sesuai anjuran dokter jaga klinik perusahaan.",
+            "Cedera ringan terkilir pada pergelangan kaki saat berolahraga, dalam pemulihan fisik rawat jalan.",
+            "Kondisi fisik drop pasca demam berdarah tahap pemulihan trombosit, istirahat dokter selama 3 hari."
+        ],
+        "permission_reasons": [
+            "Izin tidak masuk karena menghadiri pemakaman kakek kandung di luar kota (Sukabumi).",
+            "Izin mengurus perekaman biometrik e-KTP dan administrasi kependudukan di kantor kecamatan setempat.",
+            "Izin dispensasi mewakili sekolah dalam Lomba Kompetensi Siswa (LKS) tingkat provinsi bidang IT Software Solutions.",
+            "Izin menghadiri acara wisuda kelulusan kakak kandung di Universitas Indonesia.",
+            "Izin mengikuti seleksi beasiswa vokasi lanjutan gelombang khusus di gedung dinas pendidikan.",
+            "Izin karena akses jalan menuju lokasi magang terputus akibat genangan banjir tinggi, dialihkan penugasan WFH."
+        ],
+        "other_reasons": [
+            "Kendala teknis mendadak pada kendaraan bermotor saat perjalanan menuju lokasi kerja, telah mengabari mentor via WhatsApp.",
+            "Keperluan mendesak pendampingan orang tua yang sedang menjalani kontrol rutin rawat jalan di rumah sakit."
+        ]
+    },
+    "supervision_logs": [
+        {
+            "topic": "Orientasi Awal dan Pemahaman Standar Operasional Prosedur (SOP)",
+            "notes": "Siswa diberikan pengenalan lingkungan kantor, pengenalan anggota tim divisi, serta pengarahan mengenai keamanan data dan jam operasional. Siswa menunjukkan antusiasme yang baik dan cepat beradaptasi.",
+            "action_plan": "Mulai menugaskan siswa pada modul latihan mandiri dan pendampingan oleh senior developer."
+        },
+        {
+            "topic": "Evaluasi Kemajuan Tugas Minggu Pertama & Kerapian Kode",
+            "notes": "Pemeriksaan hasil kerja modul awal. Siswa mampu menyelesaikan tugas sesuai target waktu, namun perlu lebih memperhatikan konvensi penamaan variabel dan penulisan komentar kode.",
+            "action_plan": "Memberikan referensi style guide internal perusahaan dan tips refactoring kode."
+        },
+        {
+            "topic": "Penilaian Keterampilan Praktik Kerja dan Kedisiplinan",
+            "notes": "Siswa hadir tepat waktu setiap hari dan memiliki inisiatif bertanya saat menemukan kebuntuan teknis. Kerjasama dalam tim agile standup meeting berjalan lancar.",
+            "action_plan": "Melibatkan siswa secara langsung pada pengerjaan modul fitur sekunder proyek klien."
+        },
+        {
+            "topic": "Evaluasi Tengah Periode (Midterm Review)",
+            "notes": "Review komprehensif 2 bulan masa magang. Nilai sikap kerja dan kompetensi teknis di atas rata-rata. Siswa mampu menyelesaikan tugas independen tanpa supervisi berlebihan.",
+            "action_plan": "Mempersiapkan topik proyek akhir dan pengumpulan bahan laporan PKL sekolah."
+        },
+        {
+            "topic": "Uji Fungsi Produk dan Validasi Kualitas Akhir",
+            "notes": "Pengujian akhir modul proyek yang dibangun siswa bersama tim QA. Seluruh parameter pengujian lolos uji dan dokumentasi sistem tersusun rapi.",
+            "action_plan": "Finalisasi nilai akhir PKL dan penandatanganan lembar persetujuan laporan."
+        }
+    ],
+    "monitoring_visits": [
+        {
+            "method": "site_visit",
+            "topic": "Kunjungan Monitoring Tatap Muka I - Observasi Adaptasi Industri",
+            "notes": "Guru pembimbing berkunjung langsung ke kantor PT Karya Digital Nusantara. Bertemu dengan HRD dan mentor industri. Pihak DU/DI memberikan apresiasi atas kesopanan, kesiapan mental, dan kedisiplinan siswa.",
+            "recommendation": "Pertahankan etos kerja positif dan tingkatkan kemampuan komunikasi teknis saat presentasi harian."
+        },
+        {
+            "method": "virtual_meeting",
+            "topic": "Monitoring Daring II - Progres Pengerjaan Laporan Akhir PKL",
+            "notes": "Sesi koordinasi via Google Meet bersama mentor dan kelompok siswa penempatan regional luar kota. Pembahasan draft bab 3 laporan magang dan kesiapan ujian kompetensi kejuruan.",
+            "recommendation": "Siswa diimbau segera melengkapi lembar pengesahan dan memvalidasi logbook sebelum batas akhir pengumpulan."
+        },
+        {
+            "method": "site_visit",
+            "topic": "Kunjungan Penjemputan Resmi dan Evaluasi Kemitraan DU/DI",
+            "notes": "Pertemuan penutupan masa PKL di PT Bank Nusantara Sejahtera. Penyerahan plakat terima kasih dari sekolah. Perusahaan menyampaikan minat untuk merekrut lulusan berprestasi sebagai karyawan kontrak.",
+            "recommendation": "Perpanjang perjanjian MoU untuk periode tahun ajaran berikutnya dengan penambahan kuota siswa."
+        }
+    ],
+    "submission_feedbacks": [
+        {
+            "score": 92.5,
+            "feedback": "Penjelasan arsitektur sistem dan diagram alur data sangat runtut dan detail. Penyertaan tangkapan layar hasil pengujian unit test menunjukkan pemahaman yang matang terhadap materi."
+        },
+        {
+            "score": 88.0,
+            "feedback": "Analisis kendala kerja dituliskan secara jujur dan solutif. Perhatikan kembali konsistensi margin tata letak penulisan naskah sesuai panduan penulisan ilmiah sekolah."
+        },
+        {
+            "score": 85.5,
+            "feedback": "Pengerjaan tugas tepat waktu dan sesuai instruksi mentor. Disarankan untuk menambahkan analisis perbandingan sebelum dan sesudah optimasi query basis data."
+        },
+        {
+            "score": 90.0,
+            "feedback": "Dokumentasi kode sangat rapi dan mudah dipahami. Portofolio antarmuka yang dibuat di Figma menunjukkan kepekaan estetika dan pemahaman UX yang sangat baik."
+        },
+        {
+            "score": 78.5,
+            "feedback": "Tugas telah diselesaikan, namun masih terdapat beberapa typo pada penulisan istilah asing. Harap lakukan revisi minor pada lampiran kode sumber sebelum dinilai final."
+        }
+    ],
+    "announcements": [
+        {
+            "title": "Pembukaan Pendaftaran dan Pemilihan Tempat PKL Tahun Ajaran 2026/2027",
+            "status": "published",
+            "message": "Diberitahukan kepada seluruh siswa kelas XI SMK bahwa proses pemilihan instansi mitra Praktik Kerja Lapangan resmi dibuka mulai tanggal 1 hingga 20 Juli 2026. Harap memastikan seluruh berkas CV, portofolio, dan surat izin orang tua telah diunggah ke portal Internara."
+        },
+        {
+            "title": "Jadwal Pembekalan Karakter & Keselamatan Kerja (K3) Peserta PKL",
+            "status": "scheduled",
+            "message": "Kegiatan pembekalan wajib akan diselenggarakan pada hari Senin-Rabu di Aula Graha Vokasi. Materi pembekalan meliputi etika komunikasi industri, pemahaman non-disclosure agreement (NDA), serta pengenalan budaya kerja 5R (Ringkas, Rapi, Resik, Rawat, Rajin)."
+        },
+        {
+            "title": "Batas Waktu Pengunggahan Logbook dan Verifikasi Mingguan",
+            "status": "published",
+            "message": "Mengingatkan seluruh peserta PKL aktif bahwa batas akhir verifikasi logbook harian oleh mentor industri adalah setiap hari Sabtu pukul 23.59 WIB. Kelalaian pengisian lebih dari 3 hari berturut-turut akan memicu penerbitan surat peringatan otomatis."
+        },
+        {
+            "title": "Rancangan Format Penilaian Akhir dan Sidang Uji Kompetensi",
+            "status": "draft",
+            "message": "Draf pedoman rubrik pengujian sidang akhir PKL tahun ajaran berjalan sedang dalam tahap finalisasi kurikulum. Pokja PKL akan mengundang guru pembimbing untuk penyelarasan bobot penilaian supervisor 40%, guru 20%, tugas 20%, dan ujian lisan 20%."
+        }
+    ],
+    "notifications": [
+        {
+            "title": "Logbook PKL Anda Telah Diverifikasi",
+            "message": "Mentor industri (Hendra Gunawan, S.T.) telah menyetujui dan memvalidasi catatan kegiatan harian Anda untuk tanggal kemarin.",
+            "is_read": false
+        },
+        {
+            "title": "Sertifikat Kelulusan PKL Telah Diterbitkan",
+            "message": "Selamat! Sertifikat resmi Praktik Kerja Lapangan Anda telah ditandatangani secara digital oleh Kepala Sekolah dan siap diunduh.",
+            "is_read": true
+        },
+        {
+            "title": "Jadwal Kunjungan Monitoring Guru Pembimbing",
+            "message": "Guru pembimbing Anda (Bambang Sudarmanto, M.T.) dijadwalkan melakukan kunjungan monitoring ke kantor mitra pada hari Kamis pukul 10.00 WIB.",
+            "is_read": false
+        },
+        {
+            "title": "Tugas Baru: Pengumpulan Laporan Proyek Akhir",
+            "message": "Tugas baru telah dipublikasikan oleh pembimbing akademik. Batas waktu pengunggahan adalah akhir bulan ini.",
+            "is_read": true
+        }
+    ],
+    "incidents": [
+        {
+            "type": "disciplinary",
+            "severity": "medium",
+            "status": "investigating",
+            "title": "Keterlambatan Berulang Peserta Magang Tanpa Konfirmasi",
+            "description": "Siswa tercatat hadir terlambat lebih dari 30 menit sebanyak 3 kali berturut-turut pada jam masuk kantor pukul 08.00 WIB tanpa pemberitahuan kepada pembimbing lapangan. Pembimbing industri telah memberikan teguran lisan pertama.",
+            "location": "PT Karya Digital Nusantara - Ruang Divisi Engineering",
+            "resolution": "Guru pembimbing telah menghubungi orang tua siswa dan mengadakan mediasi bersama mentor. Siswa membuat surat pernyataan komitmen kedisiplinan jam kerja."
+        },
+        {
+            "type": "other",
+            "severity": "low",
+            "status": "resolved",
+            "title": "Kerusakan Minor Kabel Adaptor Saat Pemindahan Meja Kerja",
+            "description": "Terjadi kerusakan pada kabel adaptor charger monitor display saat siswa membantu pemindahan workstation kantor. Kerusakan murni ketidaksengajaan mekanis dan tidak ada korban cedera.",
+            "location": "PT Mitra Manufaktur Indonesia - Ruang Training IT",
+            "resolution": "Perangkat adaptor pengganti telah disediakan dari inventaris cadangan IT perusahaan. Kasus ditutup dengan evaluasi SOP pemindahan perangkat elektronik."
+        },
+        {
+            "type": "safety",
+            "severity": "medium",
+            "status": "resolved",
+            "title": "Insiden Terpeleset di Area Loading Dock Akibat Lantai Basah",
+            "description": "Siswa terpeleset saat melintasi area loading dock yang licin setelah hujan deras. Mengalami luka lecet ringan pada lengan tangan kanan. Pertolongan pertama telah diberikan oleh tim medis klinik kantor.",
+            "location": "PT Perkasa Logistik - Gudang Transit B",
+            "resolution": "Pemasangan tanda peringatan lantai licin permanen dan kewajiban mengenakan safety shoes standar K3 bagi seluruh peserta pemagangan di area gudang."
+        }
+    ],
+    "account_applications": [
+        {
+            "email": "calon.siswa1@sekolah.sch.id",
+            "name": "Rizka Amelia",
+            "department": "Rekayasa Perangkat Lunak",
+            "status": "pending",
+            "notes": "Pengajuan akun siswa baru jalur mutasi masuk semester 3 dengan melampirkan rapor kompetensi kejuruan lengkap."
+        },
+        {
+            "email": "calon.siswa2@sekolah.sch.id",
+            "name": "Bagus Wicaksono",
+            "department": "Teknik Komputer dan Jaringan",
+            "status": "approved",
+            "notes": "Verifikasi berkas persyaratan pendaftaran PKL lengkap dan telah memenuhi batas minimal kehadiran sekolah 95%."
+        },
+        {
+            "email": "calon.siswa3@sekolah.sch.id",
+            "name": "Farida Hanum",
+            "department": "Akuntansi dan Keuangan",
+            "status": "rejected",
+            "rejection_reason": "Dokumen surat persetujuan orang tua/wali belum ditandatangani di atas meterai fisik/elektronik.",
+            "notes": "Siswa diminta mengunggah ulang dokumen revisi sebelum batas penutupan pendaftaran."
+        }
+    ],
+    "placement_change_requests": [
+        {
+            "student_email": "student1@example.com",
+            "reason": "Penyesuaian domisili keluarga yang pindah ke wilayah Bekasi, mengajukan perpindahan lokasi praktik ke mitra yang lebih dekat guna efisiensi mobilitas harian.",
+            "status": "pending"
+        },
+        {
+            "student_email": "student2@example.com",
+            "reason": "Rekomendasi dari mentor industri agar siswa dialihkan ke divisi IT Infrastructure untuk mendalami kompetensi administrasi server cloud.",
+            "status": "approved"
+        },
+        {
+            "student_email": "student3@example.com",
+            "reason": "Pengajuan perpindahan lokasi magang mandiri ditolak karena kuota di perusahaan tujuan sudah terisi penuh sesuai MoU sekolah.",
+            "status": "rejected"
+        }
+    ]
+}
