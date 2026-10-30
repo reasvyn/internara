@@ -16,7 +16,12 @@
             "total_supervisor_accounts": 20,
             "total_student_accounts": 100,
             "total_companies": 20,
-            "total_placements": 20
+            "total_placements": 20,
+            "standalone_demo_accounts": [
+                "admin@example.com",
+                "teacher@example.com",
+                "student@example.com"
+            ]
         }
     },
     "school": {
@@ -1430,12 +1435,73 @@
         }
     ],
     "users": {
+        "standalone_accounts": [
+            {
+                "name": "Dra. Hj. Nurul Hidayati, M.Pd.",
+                "email": "admin@example.com",
+                "username": "admin",
+                "role": "admin",
+                "role_title": "Administrator Utama Sistem PKL",
+                "phone": "08112345670",
+                "gender": "female",
+                "pob": "Depok",
+                "dob": "1978-08-17",
+                "id_number": "197808172002122001",
+                "national_id_number": "3276015708780001",
+                "address": "Jl. Margonda Raya No. 102, Beji, Kota Depok, Jawa Barat 16424",
+                "emergency_contact": {
+                    "name": "Ir. H. Syarif Hidayat",
+                    "phone": "08129876540",
+                    "relation": "Suami",
+                    "address": "Jl. Margonda Raya No. 102, Beji, Kota Depok, Jawa Barat 16424"
+                }
+            },
+            {
+                "name": "Bambang Sudarmanto, S.Kom., M.T.",
+                "email": "teacher@example.com",
+                "username": "teacher",
+                "role": "teacher",
+                "phone": "081281001000",
+                "gender": "male",
+                "department": "Rekayasa Perangkat Lunak",
+                "pob": "Semarang",
+                "dob": "1980-03-15",
+                "id_number": "198003152005011000",
+                "address": "Jl. Budi Utomo No. 7, Pasar Baru, Sawah Besar, Jakarta Pusat 10710",
+                "emergency_contact": {
+                    "name": "Ratna Dewi, S.Pd.",
+                    "phone": "081382001000",
+                    "relation": "Pasangan",
+                    "address": "Jl. Budi Utomo No. 7, Jakarta Pusat"
+                }
+            },
+            {
+                "name": "Muhammad Rizky Pratama",
+                "email": "student@example.com",
+                "username": "student",
+                "role": "student",
+                "phone": "082110001000",
+                "gender": "male",
+                "blood_type": "O",
+                "pob": "Jakarta",
+                "dob": "2008-04-10",
+                "id_number": "0081234000",
+                "national_id_number": "3175011004080000",
+                "address": "Jl. Budi Utomo No. 7, Pasar Baru, Sawah Besar, Jakarta Pusat 10710",
+                "emergency_contact": {
+                    "name": "Bpk. Bambang Pratama",
+                    "phone": "081280001000",
+                    "relation": "Orang Tua Kandung",
+                    "address": "Jl. Budi Utomo No. 7, Jakarta Pusat"
+                }
+            }
+        ],
         "admins": [
             {
                 "index": 1,
                 "name": "Dra. Hj. Nurul Hidayati, M.Pd.",
-                "email": "admin@example.com",
-                "username": "admin",
+                "email": "admin1@example.com",
+                "username": "admin1",
                 "role_title": "Koordinator Pokja PKL & Humas Industri",
                 "phone": "08112345671",
                 "gender": "female",
@@ -4791,7 +4857,7 @@
             "to_placement_index": 11,
             "reason": "Relokasi langsung oleh Admin Pokja PKL ke kantor cabang terdekat guna efisiensi mobilitas siswa sesuai rekomendasi domisili orang tua.",
             "status": "approved",
-            "processed_by_admin": "admin@example.com"
+            "processed_by_admin": "admin1@example.com"
         },
         {
             "student_email": "student6@example.com",
@@ -4799,7 +4865,7 @@
             "to_placement_index": 12,
             "reason": "Penyesuaian kuota penempatan industri manufaktur berdasarkan penambahan mesin lini produksi baru.",
             "status": "approved",
-            "processed_by_admin": "admin@example.com"
+            "processed_by_admin": "admin1@example.com"
         }
     ]
 }
