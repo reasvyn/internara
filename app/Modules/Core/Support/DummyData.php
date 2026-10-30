@@ -503,13 +503,21 @@ class DummyData
         $mappings = [
             'brand_name' => $school['name'] ?? null,
             'school_name' => $school['name'] ?? null,
+            'school.name' => $school['name'] ?? null,
             'school_npsn' => $school['institutional_code'] ?? null,
+            'school.institutional_code' => $school['institutional_code'] ?? null,
             'school_email' => $school['email'] ?? null,
+            'school.email' => $school['email'] ?? null,
             'school_phone' => $school['phone'] ?? null,
+            'school.phone' => $school['phone'] ?? null,
             'school_fax' => $school['fax'] ?? null,
+            'school.fax' => $school['fax'] ?? null,
             'school_address' => $school['address'] ?? null,
+            'school.address' => $school['address'] ?? null,
             'school_website' => $school['website'] ?? null,
+            'school.website' => $school['website'] ?? null,
             'school_principal_name' => $school['principal_name'] ?? null,
+            'school.principal_name' => $school['principal_name'] ?? null,
         ];
 
         foreach ($mappings as $key => $value) {
