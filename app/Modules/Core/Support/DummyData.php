@@ -21,14 +21,6 @@ use App\Modules\Enrollment\Domain\Placement\Models\PlacementChangeRequest;
 use App\Modules\Enrollment\Domain\Registration\Enums\RegistrationDocumentStatus;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Enrollment\Domain\Registration\Models\RegistrationDocument;
-use App\Modules\Evaluation\Models\EvaluationAnswer;
-use App\Modules\Evaluation\Models\EvaluationForm;
-use App\Modules\Evaluation\Models\EvaluationQuestion;
-use App\Modules\Evaluation\Models\EvaluationResponse;
-use App\Modules\Evaluation\Models\EvaluationSection;
-use App\Modules\Incident\Domain\IncidentReport\Enums\IncidentSeverity;
-use App\Modules\Incident\Domain\IncidentReport\Enums\IncidentStatus;
-use App\Modules\Incident\Domain\IncidentReport\Enums\IncidentType;
 use App\Modules\Incident\Domain\IncidentReport\Models\IncidentReport;
 use App\Modules\Journal\Domain\AbsenceRequest\Enums\AbsenceReasonType;
 use App\Modules\Journal\Domain\AbsenceRequest\Enums\AbsenceRequestStatus;
@@ -51,6 +43,7 @@ use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroup;
 use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroupMember;
 use App\Modules\Report\Domain\StudentReport\Enums\StudentReportStatus;
 use App\Modules\Report\Domain\StudentReport\Models\StudentReport;
+use App\Modules\Setting\Models\Setting;
 use App\Modules\SysAdmin\Domain\Announcement\Enums\AnnouncementStatus;
 use App\Modules\SysAdmin\Domain\Announcement\Models\Announcement;
 use App\Modules\User\Domain\Notify\Models\Notification;
@@ -65,12 +58,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
- * Factory-driven demo dataset generator (dev-only, autoloaded via `autoload-dev`).
+ * Dataset-driven demo dataset generator (dev-only and production demo).
  *
- * Implements spec [3UOZP] (#509): generates a coherent, interconnected demo dataset using
- * the existing model factories. Runs inside a single DB transaction (FR-H13), reuses base-seeded
- * data (roles, settings, active academic year — FR-H14), and is idempotent via firstOrCreate on
- * natural keys (FR-H5). Indonesian-locale demo content via app.faker_locale = id_ID (DD-7).
+ * Implements realistic Indonesian dataset from database/data/dummy.json.
+ * Provisions 20 PKL groups (1 company, 1 teacher, 1 supervisor, 5 students each = 100 students).
+ * Runs inside a single DB transaction (FR-H13) and is idempotent via firstOrCreate (FR-H5).
  */
 class DummyData
 {
@@ -78,6 +70,9 @@ class DummyData
 
     /** @var array<string, int> */
     private array $counts = [];
+
+    /** @var array<string, mixed>|null */
+    private ?array $dataset = null;
 
     private ?AcademicYear $activeYear = null;
 
@@ -156,7 +151,22 @@ class DummyData
     }
 
     /**
-     * Purges all dummy records matching the dummy ID prefix.
+     * Loads the master JSON dataset.
+     *
+     * @return array<string, mixed>
+     */
+    public static function dataset(): array
+    {
+        $path = database_path('data/dummy.json');
+        if (! file_exists($path)) {
+            return [];
+        }
+
+        return json_decode((string) file_get_contents($path), true) ?: [];
+    }
+
+    /**
+     * Purges all dummy records matching the dummy ID prefix and demo accounts.
      *
      * @return array<string, int> Counts of purged records per entity
      */
@@ -215,39 +225,19 @@ class DummyData
                 ->pluck('id')
                 ->all();
 
-            $dummyFormIds = EvaluationForm::where('id', 'like', "{$prefix}%")
-                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('created_by', $dummyUserIds))
-                ->pluck('id')
-                ->all();
-
-            $dummySectionIds = EvaluationSection::where('id', 'like', "{$prefix}%")
-                ->when(! empty($dummyFormIds), fn ($q) => $q->orWhereIn('form_id', $dummyFormIds))
-                ->pluck('id')
-                ->all();
-
-            $dummyQuestionIds = EvaluationQuestion::where('id', 'like', "{$prefix}%")
-                ->when(! empty($dummySectionIds), fn ($q) => $q->orWhereIn('section_id', $dummySectionIds))
-                ->pluck('id')
-                ->all();
-
-            $dummyResponseIds = EvaluationResponse::where('id', 'like', "{$prefix}%")
-                ->when(! empty($dummyFormIds), fn ($q) => $q->orWhereIn('form_id', $dummyFormIds))
-                ->when(! empty($dummyRegistrationIds), fn ($q) => $q->orWhereIn('registration_id', $dummyRegistrationIds))
-                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('evaluator_id', $dummyUserIds))
-                ->pluck('id')
-                ->all();
-
             $dummyDocumentIds = Document::where('id', 'like', "{$prefix}%")->pluck('id')->all();
 
             $purged = [];
 
-            // 1. Incidents
-            $purged['incident_reports'] = IncidentReport::where('id', 'like', "{$prefix}%")
-                ->when(! empty($dummyRegistrationIds), fn ($q) => $q->orWhereIn('registration_id', $dummyRegistrationIds))
-                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('reported_by', $dummyUserIds)->orWhereIn('resolved_by', $dummyUserIds))
-                ->delete();
+            // Incidents (legacy cleanup)
+            if (class_exists(IncidentReport::class)) {
+                $purged['incident_reports'] = IncidentReport::where('id', 'like', "{$prefix}%")
+                    ->when(! empty($dummyRegistrationIds), fn ($q) => $q->orWhereIn('registration_id', $dummyRegistrationIds))
+                    ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('reported_by', $dummyUserIds)->orWhereIn('resolved_by', $dummyUserIds))
+                    ->delete();
+            }
 
-            // 2. Sysadmin requests & notifications
+            // Sysadmin requests & notifications
             $purged['placement_change_requests'] = PlacementChangeRequest::where('id', 'like', "{$prefix}%")
                 ->when(! empty($dummyRegistrationIds), fn ($q) => $q->orWhereIn('registration_id', $dummyRegistrationIds))
                 ->when(! empty($dummyPlacementIds), fn ($q) => $q->orWhereIn('from_placement_id', $dummyPlacementIds)->orWhereIn('to_placement_id', $dummyPlacementIds))
@@ -267,7 +257,7 @@ class DummyData
                 ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('created_by', $dummyUserIds))
                 ->delete();
 
-            // 3. Finalization & Assessments
+            // Finalization & Assessments
             $purged['submissions'] = Submission::where('id', 'like', "{$prefix}%")
                 ->when(! empty($dummyAssignmentIds), fn ($q) => $q->orWhereIn('assignment_id', $dummyAssignmentIds))
                 ->when(! empty($dummyRegistrationIds), fn ($q) => $q->orWhereIn('registration_id', $dummyRegistrationIds))
@@ -290,7 +280,7 @@ class DummyData
                 ->when(! empty($dummyRubricIds), fn ($q) => $q->orWhereIn('rubric_id', $dummyRubricIds))
                 ->delete();
 
-            // 4. Daily operations
+            // Daily operations
             $purged['monitoring_visits'] = MonitoringVisit::where('id', 'like', "{$prefix}%")
                 ->when(! empty($dummyRegistrationIds), fn ($q) => $q->orWhereIn('registration_id', $dummyRegistrationIds))
                 ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('teacher_id', $dummyUserIds)->orWhereIn('verified_by', $dummyUserIds))
@@ -316,30 +306,6 @@ class DummyData
                 ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('user_id', $dummyUserIds)->orWhereIn('verified_by', $dummyUserIds)->orWhereIn('supervisor_id', $dummyUserIds))
                 ->delete();
 
-            // 5. Evaluation & Rubrics & Assignments
-            EvaluationAnswer::where('id', 'like', "{$prefix}%")
-                ->when(! empty($dummyResponseIds), fn ($q) => $q->orWhereIn('response_id', $dummyResponseIds))
-                ->when(! empty($dummyQuestionIds), fn ($q) => $q->orWhereIn('question_id', $dummyQuestionIds))
-                ->delete();
-
-            EvaluationResponse::where('id', 'like', "{$prefix}%")
-                ->when(! empty($dummyFormIds), fn ($q) => $q->orWhereIn('form_id', $dummyFormIds))
-                ->when(! empty($dummyRegistrationIds), fn ($q) => $q->orWhereIn('registration_id', $dummyRegistrationIds))
-                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('evaluator_id', $dummyUserIds))
-                ->delete();
-
-            EvaluationQuestion::where('id', 'like', "{$prefix}%")
-                ->when(! empty($dummySectionIds), fn ($q) => $q->orWhereIn('section_id', $dummySectionIds))
-                ->delete();
-
-            EvaluationSection::where('id', 'like', "{$prefix}%")
-                ->when(! empty($dummyFormIds), fn ($q) => $q->orWhereIn('form_id', $dummyFormIds))
-                ->delete();
-
-            $purged['evaluation_forms'] = EvaluationForm::where('id', 'like', "{$prefix}%")
-                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('created_by', $dummyUserIds))
-                ->delete();
-
             $purged['assignments'] = Assignment::where('id', 'like', "{$prefix}%")
                 ->when(! empty($dummyInternshipIds), fn ($q) => $q->orWhereIn('internship_id', $dummyInternshipIds))
                 ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('created_by', $dummyUserIds))
@@ -350,7 +316,7 @@ class DummyData
                 ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('created_by', $dummyUserIds))
                 ->delete();
 
-            // 6. Groups & Documents
+            // Groups & Documents
             InternshipGroupMember::where('id', 'like', "{$prefix}%")
                 ->when(! empty($dummyGroupIds), fn ($q) => $q->orWhereIn('internship_group_id', $dummyGroupIds))
                 ->when(! empty($dummyRegistrationIds), fn ($q) => $q->orWhereIn('registration_id', $dummyRegistrationIds))
@@ -370,7 +336,7 @@ class DummyData
                 ->when(! empty($dummyPlacementIds), fn ($q) => $q->orWhereIn('placement_id', $dummyPlacementIds))
                 ->delete();
 
-            // 7. Registrations & Placements & Internships
+            // Registrations & Placements & Internships
             $purged['registrations'] = Registration::where('id', 'like', "{$prefix}%")
                 ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('student_id', $dummyUserIds))
                 ->when(! empty($dummyInternshipIds), fn ($q) => $q->orWhereIn('internship_id', $dummyInternshipIds))
@@ -387,14 +353,16 @@ class DummyData
                 ->when(! empty($dummyAcademicYearIds), fn ($q) => $q->orWhereIn('academic_year_id', $dummyAcademicYearIds))
                 ->delete();
 
-            // 8. Partnerships & Companies
-            $purged['partnerships'] = Partnership::where('id', 'like', "{$prefix}%")
-                ->when(! empty($dummyCompanyIds), fn ($q) => $q->orWhereIn('company_id', $dummyCompanyIds))
-                ->delete();
+            // Partnerships (legacy cleanup)
+            if (class_exists(Partnership::class)) {
+                $purged['partnerships'] = Partnership::where('id', 'like', "{$prefix}%")
+                    ->when(! empty($dummyCompanyIds), fn ($q) => $q->orWhereIn('company_id', $dummyCompanyIds))
+                    ->delete();
+            }
 
             $purged['companies'] = Company::where('id', 'like', "{$prefix}%")->delete();
 
-            // 9. Profiles & Users
+            // Profiles & Users
             $purged['profiles'] = Profile::where('id', 'like', "{$prefix}%")
                 ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('user_id', $dummyUserIds))
                 ->delete();
@@ -407,13 +375,13 @@ class DummyData
                 $purged['users'] = 0;
             }
 
-            // 10. Departments
+            // Departments
             $purged['departments'] = Department::where('id', 'like', "{$prefix}%")->delete();
 
-            // 11. Past Academic Year (only if dummy ID)
+            // Past Academic Year
             $purged['academic_years'] = AcademicYear::where('id', 'like', "{$prefix}%")->delete();
 
-            // 12. Media Cleanups
+            // Media Cleanups
             $allDeletedIds = array_filter(array_merge(
                 $dummyUserIds,
                 $dummyAcademicYearIds,
@@ -425,7 +393,6 @@ class DummyData
                 $dummyGroupIds,
                 $dummyAssignmentIds,
                 $dummyRubricIds,
-                $dummyFormIds,
                 $dummyDocumentIds,
             ));
 
@@ -434,7 +401,6 @@ class DummyData
                 ->when(! empty($allDeletedIds), fn ($q) => $q->orWhereIn('model_id', $allDeletedIds))
                 ->delete();
 
-            // 13. Clean up any orphaned activity log entries
             DB::table('activity_log')
                 ->where('subject_id', 'like', "{$prefix}%")
                 ->orWhere('causer_id', 'like', "{$prefix}%")
@@ -447,28 +413,32 @@ class DummyData
     }
 
     /**
-     * Deterministic demo account emails (UC-2, §6.3) — single source of truth
-     * for the summary printed by DummySeeder. Derived from config/dummy.php.
+     * Deterministic demo account emails.
      *
      * @return list<string>
      */
     public static function demoAccounts(): array
     {
-        $accounts = [config('dummy.accounts.admin_email')];
+        $accounts = [
+            'admin@example.com',
+            'teacher@example.com',
+            'student@example.com',
+        ];
 
-        foreach (range(1, config('dummy.accounts.teacher_count')) as $i) {
-            $accounts[] = "teacher{$i}@example.com";
+        foreach (range(1, 4) as $i) {
+            $accounts[] = "admin{$i}@example.com";
         }
 
-        foreach (range(1, config('dummy.accounts.supervisor_count')) as $i) {
+        foreach (range(1, 20) as $i) {
+            $accounts[] = "teacher{$i}@example.com";
             $accounts[] = "supervisor{$i}@example.com";
         }
 
-        foreach (range(1, config('dummy.accounts.student_count')) as $i) {
+        foreach (range(1, 100) as $i) {
             $accounts[] = "student{$i}@example.com";
         }
 
-        return $accounts;
+        return array_values(array_unique($accounts));
     }
 
     /**
@@ -478,34 +448,28 @@ class DummyData
      */
     public function run(): array
     {
-        $this->password = config('dummy.password');
-        $originalLocale = config('app.faker_locale');
-        config(['app.faker_locale' => 'id_ID']);
+        $this->password = (string) config('dummy.password', 'password');
+        $this->dataset = self::dataset();
 
-        try {
-            return DB::transaction(function (): array {
-                $this->resetState();
+        return DB::transaction(function (): array {
+            $this->resetState();
 
-                $this->seedAcademicYears();
-                $this->seedDepartments();
-                $this->seedCompanies();
-                $this->seedPartnerships();
-                $this->seedInternships();
-                $this->seedPlacements();
-                $this->seedUsersAndProfiles();
-                $this->seedRegistrations();
-                $this->seedGroupsAndDocuments();
-                $this->seedAssessmentData();
-                $this->seedDailyOps();
-                $this->seedFinalization();
-                $this->seedSysAdminData();
-                $this->seedIncidents();
+            $this->seedSchoolProfile();
+            $this->seedAcademicYears();
+            $this->seedDepartments();
+            $this->seedCompanies();
+            $this->seedInternships();
+            $this->seedPlacements();
+            $this->seedUsersAndProfiles();
+            $this->seedRegistrations();
+            $this->seedGroupsAndDocuments();
+            $this->seedAssessmentData();
+            $this->seedDailyOps();
+            $this->seedFinalization();
+            $this->seedSysAdminData();
 
-                return $this->counts;
-            });
-        } finally {
-            config(['app.faker_locale' => $originalLocale]);
-        }
+            return $this->counts;
+        });
     }
 
     private function resetState(): void
@@ -529,120 +493,122 @@ class DummyData
         $this->documents = collect();
     }
 
-    /**
-     * FR-C1, DD-9 — reuse the active year seeded by AcademicYearSeeder; add exactly one past year.
-     */
+    private function seedSchoolProfile(): void
+    {
+        $school = $this->dataset['school'] ?? [];
+        if (empty($school)) {
+            return;
+        }
+
+        $mappings = [
+            'brand_name' => $school['name'] ?? null,
+            'school_name' => $school['name'] ?? null,
+            'school_npsn' => $school['institutional_code'] ?? null,
+            'school_email' => $school['email'] ?? null,
+            'school_phone' => $school['phone'] ?? null,
+            'school_fax' => $school['fax'] ?? null,
+            'school_address' => $school['address'] ?? null,
+            'school_website' => $school['website'] ?? null,
+            'school_principal_name' => $school['principal_name'] ?? null,
+        ];
+
+        foreach ($mappings as $key => $value) {
+            if ($value !== null) {
+                Setting::query()->updateOrCreate(
+                    ['key' => $key],
+                    ['value' => $value, 'group' => 'general']
+                );
+            }
+        }
+    }
+
     private function seedAcademicYears(): void
     {
+        $years = $this->dataset['academic_years'] ?? [];
+        $activeYearData = collect($years)->firstWhere('is_active', true) ?? [
+            'name' => AcademicYearPeriod::nameFor(now()),
+            'start_date' => AcademicYearPeriod::startDateFor(now()),
+            'end_date' => AcademicYearPeriod::endDateFor(now()),
+            'is_active' => true,
+        ];
+
         $this->activeYear = AcademicYear::query()->where('is_active', true)->first();
 
         if ($this->activeYear === null) {
             $this->activeYear = $this->firstOrCreate(
                 AcademicYear::factory(),
-                ['name' => AcademicYearPeriod::nameFor(now())],
+                ['name' => $activeYearData['name']],
                 [
-                    'name' => AcademicYearPeriod::nameFor(now()),
-                    'start_date' => AcademicYearPeriod::startDateFor(now()),
-                    'end_date' => AcademicYearPeriod::endDateFor(now()),
+                    'name' => $activeYearData['name'],
+                    'start_date' => $activeYearData['start_date'],
+                    'end_date' => $activeYearData['end_date'],
                     'is_active' => true,
                 ],
                 'academic_years',
             );
         }
 
-        [$startYear] = AcademicYearPeriod::yearsFor(now());
-        $pastName = ($startYear - 1).'/'.$startYear;
-
-        $this->pastYear = $this->firstOrCreate(
-            AcademicYear::factory(),
-            ['name' => $pastName],
-            [
-                'name' => $pastName,
-                'start_date' => ($startYear - 1).'-07-01',
-                'end_date' => $startYear.'-06-30',
-                'is_active' => false,
-            ],
-            'academic_years',
-        );
-    }
-
-    /**
-     * FR-C2 — at least three vocational-major departments (deterministic Indonesian names).
-     */
-    private function seedDepartments(): void
-    {
-        $names = [
-            'Rekayasa Perangkat Lunak',
-            'Teknik Komputer dan Jaringan',
-            'Akuntansi dan Keuangan',
-            'Tata Boga',
-        ];
-
-        foreach ($names as $name) {
-            $this->departments->push(
-                $this->firstOrCreate(Department::factory(), ['name' => $name], ['name' => $name], 'departments'),
+        $pastYearData = collect($years)->firstWhere('is_active', false);
+        if ($pastYearData) {
+            $this->pastYear = $this->firstOrCreate(
+                AcademicYear::factory(),
+                ['name' => $pastYearData['name']],
+                [
+                    'name' => $pastYearData['name'],
+                    'start_date' => $pastYearData['start_date'],
+                    'end_date' => $pastYearData['end_date'],
+                    'is_active' => false,
+                ],
+                'academic_years',
             );
         }
     }
 
-    /**
-     * FR-C3 — 6-8 companies across diverse industry sectors (deterministic Indonesian names).
-     */
+    private function seedDepartments(): void
+    {
+        $depts = $this->dataset['departments'] ?? [
+            ['name' => 'Rekayasa Perangkat Lunak'],
+            ['name' => 'Teknik Komputer dan Jaringan'],
+            ['name' => 'Akuntansi dan Keuangan Lembaga'],
+            ['name' => 'Tata Boga'],
+        ];
+
+        foreach ($depts as $dept) {
+            $this->departments->push(
+                $this->firstOrCreate(
+                    Department::factory(),
+                    ['name' => $dept['name']],
+                    ['name' => $dept['name']],
+                    'departments',
+                ),
+            );
+        }
+    }
+
     private function seedCompanies(): void
     {
-        $companies = [
-            ['name' => 'PT Karya Digital Nusantara', 'sector' => 'Technology'],
-            ['name' => 'PT Mitra Manufaktur Indonesia', 'sector' => 'Manufacturing'],
-            ['name' => 'PT Bank Nusantara Sejahtera', 'sector' => 'Finance'],
-            ['name' => 'RS Harapan Sehat', 'sector' => 'Healthcare'],
-            ['name' => 'PT Ritel Maju Jaya', 'sector' => 'Retail'],
-            ['name' => 'CV Edukasi Cerdas', 'sector' => 'Education'],
-            ['name' => 'PT Perkasa Logistik', 'sector' => 'Logistics'],
-            ['name' => 'PT Media Kreasi Utama', 'sector' => 'Technology'],
-            ['name' => 'PT Agro Prima Lestari', 'sector' => 'Manufacturing'],
-            ['name' => 'PT Konstruksi Mandiri Jaya', 'sector' => 'General'],
-        ];
+        $companies = $this->dataset['companies'] ?? [];
 
         foreach ($companies as $company) {
             $this->companies->push(
                 $this->firstOrCreate(
                     Company::factory(),
                     ['name' => $company['name']],
-                    ['name' => $company['name'], 'industry_sector' => $company['sector']],
+                    [
+                        'name' => $company['name'],
+                        'industry_sector' => $company['sector'] ?? 'General',
+                        'address' => $company['address'] ?? null,
+                        'phone' => $company['phone'] ?? null,
+                        'email' => $company['email'] ?? null,
+                        'website' => $company['website'] ?? null,
+                        'description' => $company['description'] ?? null,
+                    ],
                     'companies',
                 ),
             );
         }
     }
 
-    /**
-     * FR-C4 — one partnership per company, at least one active and one expired.
-     */
-    private function seedPartnerships(): void
-    {
-        [$startYear] = AcademicYearPeriod::yearsFor(now());
-
-        foreach ($this->companies as $index => $company) {
-            $isExpired = $index === $this->companies->count() - 1;
-
-            $factory = $isExpired ? Partnership::factory()->expired() : Partnership::factory()->active();
-
-            $this->firstOrCreate(
-                $factory,
-                ['company_id' => $company->id],
-                [
-                    'company_id' => $company->id,
-                    'agreement_number' => sprintf('MOU-%d-%02d', $startYear, $index + 1),
-                    'title' => 'Perjanjian Kerja Sama Praktik Kerja Lapangan',
-                ],
-                'partnerships',
-            );
-        }
-    }
-
-    /**
-     * FR-C5 — one active internship (current year) and one completed (past year).
-     */
     private function seedInternships(): void
     {
         $this->activeInternship = $this->firstOrCreate(
@@ -660,28 +626,34 @@ class DummyData
             'internships',
         );
 
-        $this->completedInternship = $this->firstOrCreate(
-            Internship::factory(),
-            ['name' => 'PKL Tahun Ajaran '.$this->pastYear->name],
-            [
-                'name' => 'PKL Tahun Ajaran '.$this->pastYear->name,
-                'academic_year_id' => $this->pastYear->id,
-                'start_date' => $this->pastYear->start_date->addMonths(2)->toDateString(),
-                'end_date' => $this->pastYear->end_date->subMonths(2)->toDateString(),
-                'status' => InternshipStatus::COMPLETED->value,
-                'phases' => $this->internshipPhases(),
-                'grading_weights' => ['supervisor' => 40, 'teacher' => 20, 'assignment' => 20, 'exam' => 20],
-            ],
-            'internships',
-        );
+        if ($this->pastYear) {
+            $this->completedInternship = $this->firstOrCreate(
+                Internship::factory(),
+                ['name' => 'PKL Tahun Ajaran '.$this->pastYear->name],
+                [
+                    'name' => 'PKL Tahun Ajaran '.$this->pastYear->name,
+                    'academic_year_id' => $this->pastYear->id,
+                    'start_date' => $this->pastYear->start_date->addMonths(2)->toDateString(),
+                    'end_date' => $this->pastYear->end_date->subMonths(2)->toDateString(),
+                    'status' => InternshipStatus::COMPLETED->value,
+                    'phases' => $this->internshipPhases(),
+                    'grading_weights' => ['supervisor' => 40, 'teacher' => 20, 'assignment' => 20, 'exam' => 20],
+                ],
+                'internships',
+            );
+        }
     }
 
-    /**
-     * FR-C6, DD-10 — one placement per company per internship.
-     */
     private function seedPlacements(): void
     {
-        foreach ($this->companies as $company) {
+        $placements = $this->dataset['placements'] ?? [];
+
+        foreach ($this->companies as $index => $company) {
+            $placementData = $placements[$index] ?? null;
+            $name = $placementData['name'] ?? ('Program PKL '.$company->name);
+            $quota = $placementData['quota'] ?? 10;
+            $description = $placementData['description'] ?? null;
+
             $this->activePlacements->push(
                 $this->firstOrCreate(
                     Placement::factory(),
@@ -689,79 +661,158 @@ class DummyData
                     [
                         'company_id' => $company->id,
                         'internship_id' => $this->activeInternship->id,
-                        'name' => 'Program PKL '.$company->name,
-                        'quota' => 15,
+                        'name' => $name,
+                        'quota' => $quota,
+                        'description' => $description,
                     ],
                     'placements',
                 ),
             );
 
-            $this->completedPlacements->push(
-                $this->firstOrCreate(
-                    Placement::factory(),
-                    ['company_id' => $company->id, 'internship_id' => $this->completedInternship->id],
-                    [
-                        'company_id' => $company->id,
-                        'internship_id' => $this->completedInternship->id,
-                        'name' => 'Program PKL '.$company->name,
-                        'quota' => 15,
-                    ],
-                    'placements',
-                ),
-            );
+            if ($this->completedInternship) {
+                $this->completedPlacements->push(
+                    $this->firstOrCreate(
+                        Placement::factory(),
+                        ['company_id' => $company->id, 'internship_id' => $this->completedInternship->id],
+                        [
+                            'company_id' => $company->id,
+                            'internship_id' => $this->completedInternship->id,
+                            'name' => $name,
+                            'quota' => $quota,
+                            'description' => $description,
+                        ],
+                        'placements',
+                    ),
+                );
+            }
         }
     }
 
-    /**
-     * FR-C7/FR-C8 — deterministic demo accounts (no superadmin, DD-8) with profiles.
-     */
     private function seedUsersAndProfiles(): void
     {
-        $this->admin = $this->ensureUser(config('dummy.accounts.admin_email'), 'admin', 'users');
+        $usersData = $this->dataset['users'] ?? [];
 
-        $this->ensureProfile($this->admin, Profile::factory(), [
-            'department_id' => null,
-            'company_id' => null,
-        ], 'profiles');
+        // 1. Standalone demo accounts
+        foreach ($usersData['standalone_accounts'] ?? [] as $acc) {
+            $user = $this->ensureUser($acc['email'], $acc['role'], 'users', $acc['name']);
+            if ($acc['role'] === 'admin') {
+                $this->admin = $user;
+                $this->ensureProfile($user, Profile::factory(), [
+                    'phone' => $acc['phone'] ?? null,
+                    'address' => $acc['address'] ?? null,
+                    'gender' => $acc['gender'] ?? 'female',
+                    'pob' => $acc['pob'] ?? null,
+                    'dob' => $acc['dob'] ?? null,
+                    'emergency_contact' => $acc['emergency_contact'] ?? null,
+                ], 'profiles');
+            } elseif ($acc['role'] === 'teacher') {
+                $dept = $this->departments->first();
+                $this->ensureProfile($user, Profile::factory()->forTeacher(), [
+                    'department_id' => $dept?->id,
+                    'id_number' => $acc['id_number'] ?? null,
+                    'phone' => $acc['phone'] ?? null,
+                    'address' => $acc['address'] ?? null,
+                    'gender' => $acc['gender'] ?? 'male',
+                    'emergency_contact' => $acc['emergency_contact'] ?? null,
+                ], 'profiles');
+            } elseif ($acc['role'] === 'student') {
+                $dept = $this->departments->first();
+                $this->ensureProfile($user, Profile::factory()->forStudent($dept), [
+                    'id_number' => $acc['id_number'] ?? null,
+                    'national_id_number' => $acc['national_id_number'] ?? null,
+                    'phone' => $acc['phone'] ?? null,
+                    'address' => $acc['address'] ?? null,
+                    'gender' => $acc['gender'] ?? 'male',
+                    'blood_type' => $acc['blood_type'] ?? 'O',
+                    'emergency_contact' => $acc['emergency_contact'] ?? null,
+                ], 'profiles');
+            }
+        }
 
+        // 2. 4 Admin accounts (admin1@example.com to admin4@example.com)
+        foreach ($usersData['admins'] ?? [] as $adm) {
+            $user = $this->ensureUser($adm['email'], 'admin', 'users', $adm['name']);
+            if ($this->admin === null) {
+                $this->admin = $user;
+            }
+            $this->ensureProfile($user, Profile::factory(), [
+                'phone' => $adm['phone'] ?? null,
+                'address' => $adm['address'] ?? null,
+                'gender' => $adm['gender'] ?? 'male',
+                'pob' => $adm['pob'] ?? null,
+                'dob' => $adm['dob'] ?? null,
+            ], 'profiles');
+        }
+
+        // 3. 20 Teachers
         $this->teachers = collect();
-        foreach (range(1, config('dummy.accounts.teacher_count')) as $i) {
-            $user = $this->ensureUser("teacher{$i}@example.com", 'teacher', 'users');
+        $teachersData = $usersData['teachers'] ?? [];
+        foreach ($teachersData as $i => $teacherData) {
+            $user = $this->ensureUser($teacherData['email'], 'teacher', 'users', $teacherData['name']);
             $this->teachers->push($user);
+            $dept = $this->departments->firstWhere('name', $teacherData['department'] ?? '')
+                ?? $this->departments->get($i % $this->departments->count());
+
             $this->ensureProfile($user, Profile::factory()->forTeacher(), [
-                'department_id' => $this->departments->get(($i - 1) % $this->departments->count())->id,
+                'department_id' => $dept?->id,
+                'id_number' => $teacherData['id_number'] ?? null,
+                'phone' => $teacherData['phone'] ?? null,
+                'address' => $teacherData['address'] ?? null,
+                'gender' => $teacherData['gender'] ?? 'male',
+                'pob' => $teacherData['pob'] ?? null,
+                'dob' => $teacherData['dob'] ?? null,
+                'emergency_contact' => $teacherData['emergency_contact'] ?? null,
             ], 'profiles');
         }
 
+        // 4. 20 Supervisors
         $this->supervisors = collect();
-        foreach (range(1, config('dummy.accounts.supervisor_count')) as $i) {
-            $user = $this->ensureUser("supervisor{$i}@example.com", 'supervisor', 'users');
+        $supervisorsData = $usersData['supervisors'] ?? [];
+        foreach ($supervisorsData as $i => $supData) {
+            $user = $this->ensureUser($supData['email'], 'supervisor', 'users', $supData['name']);
             $this->supervisors->push($user);
-            $company = $this->companies->get(($i - 1) % $this->companies->count());
+            $company = $this->companies->firstWhere('name', $supData['company_name'] ?? '')
+                ?? $this->companies->get($i % $this->companies->count());
+
             $this->ensureProfile($user, Profile::factory()->forSupervisor(), [
-                'company_id' => $company->id,
+                'company_id' => $company?->id,
                 'employment_status' => EmploymentStatus::FULL_TIME->value,
+                'id_number' => $supData['id_number'] ?? null,
+                'phone' => $supData['phone'] ?? null,
+                'address' => $supData['address'] ?? null,
+                'gender' => $supData['gender'] ?? 'male',
+                'emergency_contact' => $supData['emergency_contact'] ?? null,
             ], 'profiles');
         }
 
+        // 5. 100 Students
         $this->students = collect();
-        foreach (range(1, config('dummy.accounts.student_count')) as $i) {
-            $user = $this->ensureUser("student{$i}@example.com", 'student', 'users', $this->studentName());
+        $studentsData = $usersData['students'] ?? [];
+        foreach ($studentsData as $i => $stData) {
+            $user = $this->ensureUser($stData['email'], 'student', 'users', $stData['name']);
             $this->students->push($user);
-            $department = $this->departments->get(($i - 1) % $this->departments->count());
-            $this->ensureProfile($user, Profile::factory()->forStudent($department), [
-                'national_id_number' => (string) (1000000000 + $i),
+
+            $groupIndex = intdiv($i, 5);
+            $dept = $this->departments->get($groupIndex % $this->departments->count());
+
+            $this->ensureProfile($user, Profile::factory()->forStudent($dept), [
+                'id_number' => $stData['id_number'] ?? null,
+                'national_id_number' => $stData['national_id_number'] ?? null,
+                'phone' => $stData['phone'] ?? null,
+                'address' => $stData['address'] ?? null,
+                'gender' => $stData['gender'] ?? 'male',
+                'blood_type' => $stData['blood_type'] ?? 'O',
+                'pob' => $stData['pob'] ?? null,
+                'dob' => $stData['dob'] ?? null,
+                'emergency_contact' => $stData['emergency_contact'] ?? null,
             ], 'profiles');
         }
     }
 
-    /**
-     * FR-C9 — >= 80% of students registered; majority active with placement, remainder pending.
-     */
     private function seedRegistrations(): void
     {
-        // Current internship: 50 active students distributed across 10 placements (5 students per placement), plus 4 pending.
-        foreach ($this->students->take(50) as $index => $student) {
+        // 100 active students placed across 20 placements (5 students per placement)
+        foreach ($this->students as $index => $student) {
             $placementIndex = intdiv($index, 5);
             $placement = $this->activePlacements->get($placementIndex % $this->activePlacements->count());
 
@@ -781,49 +832,29 @@ class DummyData
             $this->activeRegistrations->push($registration);
         }
 
-        foreach ($this->students->slice(50, 4) as $index => $student) {
-            $company = $this->companies->get($index % $this->companies->count());
-            $registration = $this->firstOrCreate(
-                Registration::factory(),
-                ['student_id' => $student->id, 'internship_id' => $this->activeInternship->id],
-                [
-                    'student_id' => $student->id,
-                    'internship_id' => $this->activeInternship->id,
-                    'status' => 'pending',
-                    'proposed_company_details' => [
-                        'company_name' => $company->name,
-                        'address' => $company->address,
+        // Completed internship: first 10 students with completed placement
+        if ($this->completedInternship && $this->completedPlacements->isNotEmpty()) {
+            foreach ($this->students->take(10) as $index => $student) {
+                $registration = $this->firstOrCreate(
+                    Registration::factory(),
+                    ['student_id' => $student->id, 'internship_id' => $this->completedInternship->id],
+                    [
+                        'student_id' => $student->id,
+                        'internship_id' => $this->completedInternship->id,
+                        'placement_id' => $this->completedPlacements->get($index % $this->completedPlacements->count())->id,
+                        'start_date' => $this->completedInternship->start_date->toDateString(),
+                        'end_date' => $this->completedInternship->end_date->toDateString(),
+                        'status' => 'active',
                     ],
-                ],
-                'registrations',
-            );
-            $this->pendingRegistrations->push($registration);
-        }
-
-        // Completed internship: students 1-10 with placement (they completed the previous PKL).
-        foreach ($this->students->take(10) as $index => $student) {
-            $registration = $this->firstOrCreate(
-                Registration::factory(),
-                ['student_id' => $student->id, 'internship_id' => $this->completedInternship->id],
-                [
-                    'student_id' => $student->id,
-                    'internship_id' => $this->completedInternship->id,
-                    'placement_id' => $this->completedPlacements->get($index % $this->completedPlacements->count())->id,
-                    'start_date' => $this->completedInternship->start_date->toDateString(),
-                    'end_date' => $this->completedInternship->end_date->toDateString(),
-                    'status' => 'active',
-                ],
-                'registrations',
-            );
-            $this->completedRegistrations->push($registration);
+                    'registrations',
+                );
+                $this->completedRegistrations->push($registration);
+            }
         }
 
         $this->reconcileFilledQuotas();
     }
 
-    /**
-     * FR-H12 — every placement's filled_quota equals the number of active registrations assigned.
-     */
     private function reconcileFilledQuotas(): void
     {
         Placement::query()->each(function (Placement $placement): void {
@@ -836,16 +867,12 @@ class DummyData
         });
     }
 
-    /**
-     * FR-C10 (groups covering placed students) + FR-C11 (documents with mixed verification states).
-     */
     private function seedGroupsAndDocuments(): void
     {
-        $groupCount = 10;
-        $groups = collect();
+        $groupCount = min(20, $this->activePlacements->count());
 
         for ($index = 0; $index < $groupCount; $index++) {
-            $name = 'Kelompok '.($index + 1);
+            $name = 'Kelompok PKL '.($index + 1);
             $placement = $this->activePlacements->get($index % $this->activePlacements->count());
             $company = $this->companies->get($index % $this->companies->count());
 
@@ -860,7 +887,6 @@ class DummyData
                 ],
                 'groups',
             );
-            $groups->push($group);
 
             $teacher = $this->teachers->get($index % $this->teachers->count());
             $supervisor = $this->supervisors->get($index % $this->supervisors->count());
@@ -868,7 +894,7 @@ class DummyData
             $this->ensureGroupMember($group, ['user_id' => $teacher->id], InternshipGroupRole::SCHOOL_TEACHER->value);
             $this->ensureGroupMember($group, ['user_id' => $supervisor->id], InternshipGroupRole::INDUSTRY_SUPERVISOR->value);
 
-            // Exactly 5 students placed in this company/placement
+            // Exactly 5 students placed in this placement
             $placedStudents = $this->activeRegistrations
                 ->where('placement_id', $placement->id)
                 ->take(5);
@@ -878,21 +904,28 @@ class DummyData
             }
         }
 
-        $documents = [
-            ['slug' => 'kebijakan-pkl', 'title' => 'Kebijakan Praktik Kerja Lapangan', 'type' => 'policy'],
-            ['slug' => 'panduan-pkl', 'title' => 'Panduan Pelaksanaan PKL', 'type' => 'guideline'],
-            ['slug' => 'etika-pkl', 'title' => 'Kode Etik Peserta PKL', 'type' => 'policy'],
-        ];
+        // Documents from dataset
+        $handbooks = $this->dataset['handbooks'] ?? [];
+        $officialDocs = $this->dataset['official_documents'] ?? [];
+        $allDocs = array_merge($handbooks, $officialDocs);
 
-        foreach ($documents as $document) {
+        if (empty($allDocs)) {
+            $allDocs = [
+                ['slug' => 'kebijakan-pkl', 'title' => 'Kebijakan Praktik Kerja Lapangan', 'type' => 'policy'],
+                ['slug' => 'panduan-pkl', 'title' => 'Panduan Pelaksanaan PKL', 'type' => 'guideline'],
+            ];
+        }
+
+        foreach ($allDocs as $doc) {
             $this->documents->push(
                 $this->firstOrCreate(
                     Document::factory(),
-                    ['slug' => $document['slug']],
+                    ['slug' => $doc['slug']],
                     [
-                        'slug' => $document['slug'],
-                        'title' => $document['title'],
-                        'type' => $document['type'],
+                        'slug' => $doc['slug'],
+                        'title' => $doc['title'],
+                        'type' => $doc['type'] ?? $doc['category'] ?? 'guideline',
+                        'content' => $doc['description'] ?? '',
                         'created_by' => $this->admin->id,
                     ],
                     'documents',
@@ -902,15 +935,16 @@ class DummyData
 
         $requiredIds = $this->documents->pluck('id')->all();
         $this->activeInternship->update(['required_document_ids' => $requiredIds]);
-        $this->completedInternship->update(['required_document_ids' => $requiredIds]);
+        if ($this->completedInternship) {
+            $this->completedInternship->update(['required_document_ids' => $requiredIds]);
+        }
 
         $statuses = [
             RegistrationDocumentStatus::VERIFIED->value,
             RegistrationDocumentStatus::PENDING->value,
-            RegistrationDocumentStatus::REJECTED->value,
         ];
 
-        foreach ($this->activeRegistrations as $index => $registration) {
+        foreach ($this->activeRegistrations->take(20) as $index => $registration) {
             foreach ($this->documents as $docIndex => $document) {
                 $this->firstOrCreate(
                     RegistrationDocument::factory(),
@@ -942,171 +976,54 @@ class DummyData
         );
     }
 
-    /**
-     * FR-C12 (rubrics + assignments) and FR-H10 (evaluation forms with structure + responses).
-     */
     private function seedAssessmentData(): void
     {
-        foreach (['Rubrik Penilaian Supervisor', 'Rubrik Penilaian Guru'] as $name) {
+        $rubrics = $this->dataset['rubrics'] ?? [];
+        if (empty($rubrics)) {
+            $rubrics = [
+                ['name' => 'Rubrik Penilaian Pembimbing DUDI'],
+                ['name' => 'Rubrik Penilaian Guru Pembimbing Sekolah'],
+            ];
+        }
+
+        foreach ($rubrics as $rubricData) {
             $this->firstOrCreate(
                 Rubric::factory(),
-                ['internship_id' => $this->activeInternship->id, 'name' => $name],
-                ['internship_id' => $this->activeInternship->id, 'name' => $name, 'created_by' => $this->admin->id],
+                ['internship_id' => $this->activeInternship->id, 'name' => $rubricData['name']],
+                [
+                    'internship_id' => $this->activeInternship->id,
+                    'name' => $rubricData['name'],
+                    'created_by' => $this->admin->id,
+                ],
                 'rubrics',
             );
         }
 
-        $this->firstOrCreate(
-            Rubric::factory(),
-            ['internship_id' => $this->completedInternship->id, 'name' => 'Rubrik Penilaian PKL'],
-            [
-                'internship_id' => $this->completedInternship->id,
-                'name' => 'Rubrik Penilaian PKL',
-                'created_by' => $this->admin->id,
-            ],
-            'rubrics',
-        );
-
-        $activeTitles = ['Laporan Harian PKL', 'Proyek Akhir Unit', 'Esai Refleksi', 'Praktik Lapangan'];
-        $completedTitles = ['Laporan Magang', 'Presentasi Produk', 'Jurnal Kegiatan'];
-
-        foreach ($activeTitles as $title) {
-            $this->firstOrCreate(
-                Assignment::factory()->published(),
-                ['internship_id' => $this->activeInternship->id, 'title' => $title],
-                [
-                    'internship_id' => $this->activeInternship->id,
-                    'title' => $title,
-                    'document_id' => $this->documents->first()->id,
-                    'created_by' => $this->teachers->first()->id,
-                    'due_date' => $this->activeInternship->end_date->toDateString(),
-                ],
-                'assignments',
-            );
-        }
-
-        foreach ($completedTitles as $title) {
-            $this->firstOrCreate(
-                Assignment::factory()->published(),
-                ['internship_id' => $this->completedInternship->id, 'title' => $title],
-                [
-                    'internship_id' => $this->completedInternship->id,
-                    'title' => $title,
-                    'document_id' => $this->documents->first()->id,
-                    'created_by' => $this->teachers->first()->id,
-                    'due_date' => $this->completedInternship->end_date->toDateString(),
-                ],
-                'assignments',
-            );
-        }
-
-        $this->seedEvaluationForms();
-    }
-
-    /**
-     * FR-H10 — evaluation forms with sections/questions and responses + answers.
-     */
-    private function seedEvaluationForms(): void
-    {
-        $forms = [
-            ['name' => 'Evaluasi Mentor Industri', 'target_type' => 'mentor'],
-            ['name' => 'Evaluasi Program PKL', 'target_type' => 'program'],
-            ['name' => 'Evaluasi Perusahaan', 'target_type' => 'company'],
+        $assignments = $this->dataset['assignments'] ?? [
+            ['title' => 'Laporan Kemajuan Proyek Mingguan (Progress Report)', 'description' => 'Laporan rekapitulasi progres teknis PKL.'],
+            ['title' => 'Studi Kasus Penanganan Masalah Nyata di Industri', 'description' => 'Analisis kasus teknis dan solusi di tempat kerja.'],
         ];
 
-        foreach ($forms as $formData) {
-            $form = $this->firstOrCreate(
-                EvaluationForm::factory(),
-                ['name' => $formData['name']],
+        foreach ($assignments as $assignmentData) {
+            $this->firstOrCreate(
+                Assignment::factory()->published(),
+                ['internship_id' => $this->activeInternship->id, 'title' => $assignmentData['title']],
                 [
-                    'name' => $formData['name'],
-                    'target_type' => $formData['target_type'],
-                    'created_by' => $this->admin->id,
+                    'internship_id' => $this->activeInternship->id,
+                    'title' => $assignmentData['title'],
+                    'document_id' => $this->documents->first()?->id,
+                    'created_by' => $this->teachers->first()->id,
+                    'due_date' => $assignmentData['due_date'] ?? $this->activeInternship->end_date->toDateString(),
                 ],
-                'evaluation_forms',
+                'assignments',
             );
-
-            $sections = [
-                ['title' => 'Kualitas Bimbingan', 'questions' => [
-                    'Kejelasan arahan dan materi bimbingan',
-                    'Ketersediaan mentor saat dibutuhkan',
-                    'Kualitas umpan balik yang diberikan',
-                ]],
-                ['title' => 'Lingkungan Kerja', 'questions' => [
-                    'Kenyamanan dan keamanan lingkungan kerja',
-                    'Kelengkapan sarana dan fasilitas',
-                ]],
-            ];
-
-            foreach ($sections as $sectionIndex => $sectionData) {
-                $section = $this->firstOrCreate(
-                    EvaluationSection::factory(),
-                    ['form_id' => $form->id, 'title' => $sectionData['title']],
-                    ['form_id' => $form->id, 'title' => $sectionData['title'], 'order' => $sectionIndex],
-                    null,
-                );
-
-                foreach ($sectionData['questions'] as $questionIndex => $questionText) {
-                    $this->firstOrCreate(
-                        EvaluationQuestion::factory(),
-                        ['form_id' => $form->id, 'question_text' => $questionText],
-                        [
-                            'form_id' => $form->id,
-                            'question_text' => $questionText,
-                            'section_id' => $section->id,
-                            'order' => $questionIndex,
-                        ],
-                        null,
-                    );
-                }
-            }
-
-            $this->seedEvaluationResponses($form, $formData['target_type']);
         }
     }
 
-    private function seedEvaluationResponses(EvaluationForm $form, string $targetType): void
-    {
-        $targetIds = match ($targetType) {
-            'mentor' => $this->supervisors->take(2)->pluck('id')->all(),
-            'program' => [$this->activeInternship->id],
-            default => [$this->companies->first()->id],
-        };
-
-        foreach ($targetIds as $targetIndex => $targetId) {
-            $evaluator = $this->students->get($targetIndex % $this->students->count());
-
-            $response = $this->firstOrCreate(
-                EvaluationResponse::factory(),
-                ['form_id' => $form->id, 'evaluator_id' => $evaluator->id, 'target_type' => $targetType, 'target_id' => $targetId],
-                [
-                    'form_id' => $form->id,
-                    'evaluator_id' => $evaluator->id,
-                    'target_type' => $targetType,
-                    'target_id' => $targetId,
-                    'submitted_at' => now(),
-                ],
-                null,
-            );
-
-            foreach (EvaluationQuestion::where('form_id', $form->id)->get() as $question) {
-                $this->firstOrCreate(
-                    EvaluationAnswer::factory(),
-                    ['response_id' => $response->id, 'question_id' => $question->id],
-                    ['response_id' => $response->id, 'question_id' => $question->id, 'value' => (string) random_int(1, 5), 'score' => (float) random_int(1, 5)],
-                    null,
-                );
-            }
-        }
-    }
-
-    /**
-     * FR-H8 — daily ops only for current-internship active registrations.
-     */
     private function seedDailyOps(): void
     {
         foreach ($this->activeRegistrations as $index => $registration) {
-            $this->seedLogbooks($registration);
+            $this->seedLogbooks($registration, $index);
             $this->seedAttendances($registration, $index);
             $this->seedSupervisionAndVisits($registration, $index);
         }
@@ -1114,33 +1031,41 @@ class DummyData
         $this->seedAbsenceRequests();
     }
 
-    /**
-     * FR-C13 — 5-10 logbooks per active registration with mixed statuses.
-     */
-    private function seedLogbooks(Registration $registration): void
+    private function seedLogbooks(Registration $registration, int $regIndex): void
     {
         $statuses = [
             LogbookStatus::DRAFT->value,
-            LogbookStatus::DRAFT->value,
             LogbookStatus::SUBMITTED->value,
             LogbookStatus::SUBMITTED->value,
+            LogbookStatus::VERIFIED->value,
             LogbookStatus::VERIFIED->value,
             LogbookStatus::VERIFIED->value,
         ];
 
+        $groupIndex = intdiv($regIndex, 5);
+        $deptName = $this->departments->get($groupIndex % $this->departments->count())?->name ?? 'Rekayasa Perangkat Lunak';
+        $logbookList = $this->dataset['logbooks'][$deptName]
+            ?? $this->dataset['logbooks']['Rekayasa Perangkat Lunak']
+            ?? [];
+
         foreach ($statuses as $i => $status) {
             $date = $registration->start_date->copy()->addDays($i);
+            $logItem = $logbookList[$i % max(1, count($logbookList))] ?? [
+                'title' => 'Aktivitas Praktik Kerja Lapangan',
+                'content' => 'Melaksanakan tugas pemagangan sesuai instruksi kerja mentor industri.',
+            ];
+
             $values = [
                 'user_id' => $registration->student_id,
                 'registration_id' => $registration->id,
                 'date' => $date->toDateString(),
-                'content' => fake()->paragraph(),
+                'content' => $logItem['content'] ?? 'Melaksanakan tugas teknis pemagangan.',
                 'status' => $status,
             ];
 
             if ($status === LogbookStatus::VERIFIED->value) {
                 $values['is_verified'] = true;
-                $values['verified_by'] = $this->teachers->first()->id;
+                $values['verified_by'] = $this->teachers->get($groupIndex % $this->teachers->count())->id;
                 $values['verified_at'] = $date->copy()->addDay()->toDateTimeString();
             }
 
@@ -1153,9 +1078,6 @@ class DummyData
         }
     }
 
-    /**
-     * FR-C14 — 10-20 attendances per active registration with mixed statuses.
-     */
     private function seedAttendances(Registration $registration, int $index): void
     {
         $entries = [
@@ -1170,10 +1092,12 @@ class DummyData
             AttendanceStatus::PRESENT->value,
             AttendanceStatus::EARLY_OUT->value,
             AttendanceStatus::PRESENT->value,
-            AttendanceStatus::LATE->value,
+            AttendanceStatus::PRESENT->value,
         ];
 
         $supervisor = $this->supervisors->get($index % $this->supervisors->count());
+        $sickReasons = $this->dataset['attendance_absences']['sick_reasons'] ?? ['Sakit demam dan istirahat dokter.'];
+        $permissionReasons = $this->dataset['attendance_absences']['permission_reasons'] ?? ['Izin urusan administrasi keluarga.'];
 
         foreach ($entries as $i => $status) {
             $date = $registration->start_date->copy()->addDays($i + 10);
@@ -1183,6 +1107,10 @@ class DummyData
                 'date' => $date->toDateString(),
                 'clock_in' => $status === AttendanceStatus::LATE->value ? '08:15' : '07:45',
                 'clock_out' => '16:00',
+                'clock_in_latitude' => '-6.2088',
+                'clock_in_longitude' => '106.8456',
+                'clock_out_latitude' => '-6.2088',
+                'clock_out_longitude' => '106.8456',
                 'status' => $status,
                 'is_verified' => $i % 3 === 0,
             ];
@@ -1192,9 +1120,13 @@ class DummyData
                 $values['verified_at'] = $date->copy()->addDay()->toDateTimeString();
             }
 
-            if (in_array($status, [AttendanceStatus::SICK->value, AttendanceStatus::PERMISSION->value], true)) {
+            if ($status === AttendanceStatus::SICK->value) {
                 $values['absence_type'] = $status;
-                $values['absence_reason'] = fake()->sentence();
+                $values['absence_reason'] = $sickReasons[$index % count($sickReasons)];
+                $values['absence_status'] = 'approved';
+            } elseif ($status === AttendanceStatus::PERMISSION->value) {
+                $values['absence_type'] = $status;
+                $values['absence_reason'] = $permissionReasons[$index % count($permissionReasons)];
                 $values['absence_status'] = 'approved';
             }
 
@@ -1207,9 +1139,6 @@ class DummyData
         }
     }
 
-    /**
-     * FR-C14 — a few absence requests with mixed statuses.
-     */
     private function seedAbsenceRequests(): void
     {
         $requests = [
@@ -1218,9 +1147,18 @@ class DummyData
             [AbsenceRequestStatus::REJECTED->value, AbsenceReasonType::OTHER->value],
         ];
 
+        $sickReasons = $this->dataset['attendance_absences']['sick_reasons'] ?? ['Sakit demam rawat jalan.'];
+        $permissionReasons = $this->dataset['attendance_absences']['permission_reasons'] ?? ['Izin lomba kejuruan sekolah.'];
+
         foreach ($requests as $i => [$status, $reason]) {
             $registration = $this->activeRegistrations->get($i);
+            if (! $registration) {
+                continue;
+            }
             $date = $registration->start_date->copy()->addDays($i + 5);
+            $reasonText = $reason === AbsenceReasonType::SICK->value
+                ? ($sickReasons[$i % count($sickReasons)])
+                : ($permissionReasons[$i % count($permissionReasons)]);
 
             $this->firstOrCreate(
                 AbsenceRequest::factory(),
@@ -1230,7 +1168,7 @@ class DummyData
                     'registration_id' => $registration->id,
                     'date' => $date->toDateString(),
                     'absence_type' => $reason,
-                    'absence_reason' => fake()->sentence(),
+                    'absence_reason' => $reasonText,
                     'absence_status' => $status,
                 ],
                 'absence_requests',
@@ -1238,9 +1176,6 @@ class DummyData
         }
     }
 
-    /**
-     * FR-C15 — several supervision logs and monitoring visits per active registration.
-     */
     private function seedSupervisionAndVisits(Registration $registration, int $index): void
     {
         $groupIndex = intdiv($index, 5);
@@ -1253,8 +1188,13 @@ class DummyData
             SupervisionLogStatus::VERIFIED->value,
         ];
 
+        $topics = $this->dataset['supervision_topics'] ?? [
+            ['topic' => 'Pemantauan kemajuan PKL', 'notes' => 'Progres kerja berjalan baik.'],
+        ];
+
         foreach ($statuses as $i => $status) {
             $date = $registration->start_date->copy()->addDays($i + 20);
+            $topicItem = $topics[$i % count($topics)];
 
             $this->firstOrCreate(
                 SupervisionLog::factory(),
@@ -1264,17 +1204,22 @@ class DummyData
                     'supervisor_id' => $supervisor->id,
                     'type' => SupervisionType::MONITORING->value,
                     'date' => $date->toDateString(),
-                    'topic' => 'Pemantauan kemajuan PKL',
+                    'topic' => $topicItem['topic'],
+                    'notes' => $topicItem['notes'] ?? null,
                     'status' => $status,
                 ],
                 'supervision_logs',
             );
         }
 
-        $methods = [VisitMethod::SITE_VISIT->value, VisitMethod::VIRTUAL_MEETING->value];
+        $visits = $this->dataset['monitoring_visits'] ?? [
+            ['method' => VisitMethod::SITE_VISIT->value, 'topic' => 'Kunjungan Lapangan I', 'notes' => 'Observasi adaptasi kerja siswa.'],
+            ['method' => VisitMethod::VIRTUAL_MEETING->value, 'topic' => 'Monitoring Daring II', 'notes' => 'Koordinasi laporan progres PKL.'],
+        ];
 
-        foreach ($methods as $i => $method) {
+        foreach ($visits as $i => $visitItem) {
             $date = $registration->start_date->copy()->addDays($i + 30);
+            $method = $visitItem['method'] ?? VisitMethod::SITE_VISIT->value;
 
             $this->firstOrCreate(
                 MonitoringVisit::factory(),
@@ -1284,6 +1229,7 @@ class DummyData
                     'teacher_id' => $teacher->id,
                     'visit_date' => $date->toDateString(),
                     'method' => $method,
+                    'notes' => $visitItem['notes'] ?? null,
                     'is_verified' => $i === 0,
                 ],
                 'monitoring_visits',
@@ -1291,9 +1237,6 @@ class DummyData
         }
     }
 
-    /**
-     * FR-C16 (assessments + reports), FR-C17 (certificates), FR-C12 (submissions).
-     */
     private function seedFinalization(): void
     {
         foreach ($this->activeRegistrations as $index => $registration) {
@@ -1309,9 +1252,6 @@ class DummyData
         $this->seedSubmissions();
     }
 
-    /**
-     * FR-C16 — midterm (teacher) + final (supervisor) assessments for active registrations.
-     */
     private function seedAssessments(Registration $registration, int $index): void
     {
         $rubric = Rubric::where('internship_id', $this->activeInternship->id)->first();
@@ -1320,8 +1260,8 @@ class DummyData
         $supervisor = $this->supervisors->get($groupIndex % $this->supervisors->count());
 
         $evaluations = [
-            ['type' => 'midterm', 'evaluator' => $teacher, 'finalized' => false],
-            ['type' => 'final', 'evaluator' => $supervisor, 'finalized' => true],
+            ['type' => 'midterm', 'evaluator' => $teacher, 'finalized' => false, 'score' => 88.5],
+            ['type' => 'final', 'evaluator' => $supervisor, 'finalized' => true, 'score' => 92.0],
         ];
 
         foreach ($evaluations as $evaluation) {
@@ -1334,10 +1274,10 @@ class DummyData
                 ],
                 [
                     'registration_id' => $registration->id,
-                    'rubric_id' => $rubric->id,
+                    'rubric_id' => $rubric?->id,
                     'evaluator_id' => $evaluation['evaluator']->id,
                     'assessment_type' => $evaluation['type'],
-                    'score' => fake()->randomFloat(2, 70, 100),
+                    'score' => $evaluation['score'],
                     'finalized_at' => $evaluation['finalized'] ? now() : null,
                 ],
                 'assessments',
@@ -1345,9 +1285,6 @@ class DummyData
         }
     }
 
-    /**
-     * FR-C16 — draft reports for the current internship, finalized for the completed one.
-     */
     private function seedReport(Registration $registration, bool $finalized, int $index = 0): void
     {
         $values = [
@@ -1358,6 +1295,12 @@ class DummyData
         if ($finalized) {
             $values['finalized_by'] = $this->teachers->get($index % $this->teachers->count())->id;
             $values['finalized_at'] = now();
+            $values['supervisor_score'] = 91.5;
+            $values['teacher_score'] = 89.0;
+            $values['exam_score'] = 90.0;
+            $values['final_score'] = 90.5;
+            $values['grade_letter'] = 'A';
+            $values['industry_feedback'] = 'Siswa menunjukkan disiplin tinggi, kompetensi teknis yang kuat, dan kerjasama tim yang sangat baik.';
         }
 
         $this->firstOrCreate(
@@ -1368,18 +1311,17 @@ class DummyData
         );
     }
 
-    /**
-     * FR-C17 — issued certificates for completed-internship registrations.
-     */
     private function seedCertificate(Registration $registration): void
     {
+        $template = $this->dataset['certificate_template']['content_template'] ?? '<h1>Sertifikat PKL</h1><p>Diberikan kepada {{ student_name }}</p>';
+
         $this->firstOrCreate(
             Certificate::factory(),
             ['registration_id' => $registration->id],
             [
                 'registration_id' => $registration->id,
                 'status' => 'issued',
-                'template_content' => '<h1>Sertifikat PKL</h1><p>Diberikan kepada {{ student_name }}</p>',
+                'template_content' => $template,
                 'issued_by' => $this->admin->id,
                 'issued_at' => $registration->end_date?->copy()->addDays(7)->toDateTimeString(),
             ],
@@ -1387,33 +1329,35 @@ class DummyData
         );
     }
 
-    /**
-     * FR-C12 — submissions with mixed statuses for the published assignments.
-     */
     private function seedSubmissions(): void
     {
         $assignments = Assignment::where('internship_id', $this->activeInternship->id)->get();
+        $feedbacks = $this->dataset['submission_feedbacks'] ?? [
+            ['score' => 90.0, 'feedback' => 'Pengerjaan tugas sistematis dan sesuai arahan.'],
+        ];
 
         foreach ($assignments as $assignment) {
-            foreach ($this->activeRegistrations->take(8) as $index => $registration) {
+            foreach ($this->activeRegistrations->take(20) as $index => $registration) {
                 $status = match ($index % 3) {
                     0 => SubmissionStatus::GRADED->value,
                     1 => SubmissionStatus::VERIFIED->value,
                     default => SubmissionStatus::DRAFT->value,
                 };
 
+                $feedbackItem = $feedbacks[$index % count($feedbacks)];
+
                 $values = [
                     'assignment_id' => $assignment->id,
                     'registration_id' => $registration->id,
                     'student_id' => $registration->student_id,
-                    'content' => fake()->paragraph(),
+                    'content' => 'Dokumentasi hasil pengerjaan penugasan praktik kerja lapangan terlampir lengkap.',
                     'status' => $status,
                     'submitted_at' => $status === SubmissionStatus::DRAFT->value ? null : now()->subDays(2),
                 ];
 
                 if ($status === SubmissionStatus::GRADED->value) {
-                    $values['score'] = fake()->randomFloat(1, 70, 100);
-                    $values['feedback'] = fake()->sentence();
+                    $values['score'] = $feedbackItem['score'];
+                    $values['feedback'] = $feedbackItem['feedback'];
                     $values['graded_by'] = $this->teachers->first()->id;
                     $values['graded_at'] = now()->subDay();
                 }
@@ -1428,15 +1372,10 @@ class DummyData
         }
     }
 
-    /**
-     * FR-H11 — announcements, notifications, account applications, placement changes (each status).
-     */
     private function seedSysAdminData(): void
     {
-        $announcements = [
-            ['title' => 'Pembukaan Pendaftaran PKL', 'status' => AnnouncementStatus::PUBLISHED->value],
-            ['title' => 'Jadwal Pembekalan PKL', 'status' => AnnouncementStatus::SCHEDULED->value],
-            ['title' => 'Rancangan Penilaian Akhir', 'status' => AnnouncementStatus::DRAFT->value],
+        $announcements = $this->dataset['announcements'] ?? [
+            ['title' => 'Pembukaan Pendaftaran PKL', 'status' => AnnouncementStatus::PUBLISHED->value, 'message' => 'Pendaftaran PKL resmi dibuka.'],
         ];
 
         foreach ($announcements as $announcement) {
@@ -1445,7 +1384,7 @@ class DummyData
                 ['title' => $announcement['title']],
                 [
                     'title' => $announcement['title'],
-                    'message' => fake()->paragraph(),
+                    'message' => $announcement['message'],
                     'status' => $announcement['status'],
                     'created_by' => $this->admin->id,
                 ],
@@ -1453,9 +1392,8 @@ class DummyData
             );
         }
 
-        $notifications = [
-            ['title' => 'Pembaruan Sistem', 'is_read' => false],
-            ['title' => 'Sertifikat Tersedia', 'is_read' => true],
+        $notifications = $this->dataset['notifications'] ?? [
+            ['title' => 'Penempatan Magang Disetujui', 'message' => 'Pendaftaran PKL telah disetujui.', 'is_read' => true],
         ];
 
         foreach ($notifications as $notification) {
@@ -1465,7 +1403,7 @@ class DummyData
                 [
                     'user_id' => $this->admin->id,
                     'title' => $notification['title'],
-                    'message' => fake()->paragraph(),
+                    'message' => $notification['message'],
                     'is_read' => $notification['is_read'],
                     'read_at' => $notification['is_read'] ? now() : null,
                 ],
@@ -1473,10 +1411,8 @@ class DummyData
             );
         }
 
-        $applications = [
-            ['email' => 'applicant1@example.com', 'status' => 'pending'],
-            ['email' => 'applicant2@example.com', 'status' => 'approved'],
-            ['email' => 'applicant3@example.com', 'status' => 'rejected', 'rejection_reason' => 'Dokumen tidak lengkap'],
+        $applications = $this->dataset['account_applications'] ?? [
+            ['email' => 'calon.siswa1@sekolah.sch.id', 'status' => 'approved', 'notes' => 'Berkas lengkap'],
         ];
 
         foreach ($applications as $application) {
@@ -1494,15 +1430,16 @@ class DummyData
             );
         }
 
-        $statuses = [
-            PlacementChangeStatus::PENDING->value,
-            PlacementChangeStatus::APPROVED->value,
-            PlacementChangeStatus::REJECTED->value,
-        ];
+        $changes = $this->dataset['direct_placement_changes'] ?? [];
+        foreach ($changes as $i => $change) {
+            $student = User::firstWhere('email', $change['student_email'] ?? '');
+            $registration = $student ? Registration::firstWhere('student_id', $student->id) : null;
+            if (! $registration) {
+                continue;
+            }
 
-        foreach ($statuses as $i => $status) {
-            $registration = $this->activeRegistrations->get($i);
-            $toPlacement = $this->activePlacements->get(($i + 1) % $this->activePlacements->count());
+            $toPlacement = $this->activePlacements->get(($change['to_placement_index'] ?? 1) - 1)
+                ?? $this->activePlacements->first();
 
             $this->firstOrCreate(
                 PlacementChangeRequest::factory(),
@@ -1511,43 +1448,13 @@ class DummyData
                     'registration_id' => $registration->id,
                     'from_placement_id' => $registration->placement_id,
                     'to_placement_id' => $toPlacement->id,
-                    'reason' => 'Perubahan penempatan karena penyesuaian jadwal',
+                    'reason' => $change['reason'] ?? 'Relokasi langsung oleh Admin.',
                     'requested_by' => $registration->student_id,
-                    'status' => $status,
+                    'status' => $change['status'] ?? PlacementChangeStatus::APPROVED->value,
+                    'processed_by' => $this->admin->id,
+                    'processed_at' => now(),
                 ],
                 'placement_change_requests',
-            );
-        }
-    }
-
-    /**
-     * FR-C18 — incident reports with mixed severities and statuses.
-     */
-    private function seedIncidents(): void
-    {
-        $incidents = [
-            ['type' => IncidentType::DISCIPLINARY->value, 'severity' => IncidentSeverity::MEDIUM->value, 'status' => IncidentStatus::INVESTIGATING->value, 'offset' => 3],
-            ['type' => IncidentType::OTHER->value, 'severity' => IncidentSeverity::LOW->value, 'status' => IncidentStatus::RESOLVED->value, 'offset' => 8],
-        ];
-
-        foreach ($incidents as $i => $incident) {
-            $registration = $this->activeRegistrations->get($i);
-            $date = $registration->start_date->copy()->addDays($incident['offset']);
-
-            $this->firstOrCreate(
-                IncidentReport::factory(),
-                ['registration_id' => $registration->id, 'incident_date' => $date->toDateTimeString(), 'type' => $incident['type']],
-                [
-                    'registration_id' => $registration->id,
-                    'reported_by' => $this->supervisors->first()->id,
-                    'incident_date' => $date->toDateTimeString(),
-                    'type' => $incident['type'],
-                    'severity' => $incident['severity'],
-                    'status' => $incident['status'],
-                    'description' => fake()->paragraph(),
-                    'location' => 'Lokasi PKL',
-                ],
-                'incident_reports',
             );
         }
     }
@@ -1559,7 +1466,7 @@ class DummyData
         if ($user === null) {
             $user = User::factory()->create([
                 'id' => self::dummyId(),
-                'name' => $name ?? fake()->name(),
+                'name' => $name ?? 'Pengguna Demo',
                 'email' => $email,
                 'username' => Str::before($email, '@'),
                 'password' => Hash::make($this->password),
@@ -1576,15 +1483,6 @@ class DummyData
         $user->assignRole($role);
 
         return $user;
-    }
-
-    /**
-     * FR-C19 — a student name carries no academic title: `firstName` + `lastName` only,
-     * skipping the faker `id_ID` `suffix` provider (S.Pd, S.Kom, M.TI., ...). See DD-11.
-     */
-    private function studentName(): string
-    {
-        return fake()->firstName().' '.fake()->lastName();
     }
 
     private function ensureProfile(User $user, Factory $factory, array $values, string $countKey): Profile
