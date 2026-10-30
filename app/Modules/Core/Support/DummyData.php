@@ -951,7 +951,12 @@ class DummyData
             );
         }
 
-        $requiredIds = $this->documents->pluck('id')->all();
+        $requiredSlugs = [
+            'surat-persetujuan-orang-tua-wali',
+            'surat-pernyataan-kesiapan-siswa',
+            'surat-permohonan-pkl-mandiri',
+        ];
+        $requiredIds = $this->documents->whereIn('slug', $requiredSlugs)->pluck('id')->all();
         $this->activeInternship->update(['required_document_ids' => $requiredIds]);
         if ($this->completedInternship) {
             $this->completedInternship->update(['required_document_ids' => $requiredIds]);
@@ -962,8 +967,13 @@ class DummyData
             RegistrationDocumentStatus::PENDING->value,
         ];
 
+        $studentRequiredDocs = $this->documents->whereIn('slug', [
+            'surat-persetujuan-orang-tua-wali',
+            'surat-pernyataan-kesiapan-siswa',
+        ]);
+
         foreach ($this->activeRegistrations->take(20) as $index => $registration) {
-            foreach ($this->documents as $docIndex => $document) {
+            foreach ($studentRequiredDocs as $docIndex => $document) {
                 $this->firstOrCreate(
                     RegistrationDocument::factory(),
                     ['registration_id' => $registration->id, 'document_id' => $document->id],

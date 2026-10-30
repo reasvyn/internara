@@ -4020,22 +4020,28 @@
     ],
     "official_documents": [
         {
-            "slug": "surat-pernyataan-kesiapan-siswa",
-            "title": "Surat Pernyataan Kesiapan dan Tata Tertib Siswa PKL",
-            "type": "permit",
-            "description": "Dokumen bermeterai kesanggupan mematuhi seluruh peraturan sekolah dan instansi DUDI selama masa penempatan."
-        },
-        {
             "slug": "surat-persetujuan-orang-tua-wali",
             "title": "Surat Persetujuan dan Izin Orang Tua / Wali Murid",
             "type": "permit",
-            "description": "Persetujuan tertulis orang tua/wali atas penempatan lokasi, jam kerja, dan transportasi siswa."
+            "description": "Surat persetujuan tertulis dan izin resmi dari orang tua/wali siswa atas pelaksanaan Praktik Kerja Lapangan (PKL), penempatan industri, jam kerja, dan akomodasi/transportasi."
+        },
+        {
+            "slug": "surat-pernyataan-kesiapan-siswa",
+            "title": "Surat Pernyataan Kesiapan dan Tata Tertib Siswa PKL",
+            "type": "permit",
+            "description": "Dokumen bermeterai kesanggupan mematuhi seluruh tata tertib sekolah, regulasi K3 industri mitra, menjaga rahasia operasional perusahaan, serta menjaga nama baik SMK Negeri 2 Klaten."
+        },
+        {
+            "slug": "surat-permohonan-pkl-mandiri",
+            "title": "Surat Permohonan Pengajuan Tempat PKL Mandiri",
+            "type": "application",
+            "description": "Surat permohonan pengajuan tempat PKL mandiri oleh siswa/kelompok beserta formulir konfirmasi kesediaan menerima dari pimpinan industri/perusahaan yang diajukan."
         },
         {
             "slug": "surat-pengantar-resmi-sekolah",
             "title": "Surat Pengantar Permohonan dan Penerimaan PKL",
             "type": "letter",
-            "description": "Surat resmi institusi sekolah kepada pimpinan perusahaan tempat pelaksanaan praktik kerja lapangan."
+            "description": "Surat pengantar resmi dinas dari SMK Negeri 2 Klaten kepada pimpinan perusahaan tempat pelaksanaan praktik kerja lapangan."
         }
     ],
     "logbooks": {

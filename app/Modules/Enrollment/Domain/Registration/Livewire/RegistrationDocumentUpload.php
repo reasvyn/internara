@@ -97,7 +97,16 @@ class RegistrationDocumentUpload extends BaseFormView
 
         if ($this->registration) {
             $documentIds = $this->registration->internship->required_document_ids ?? [];
-            $documents = Document::whereIn('id', $documentIds)->get();
+            $docs = Document::whereIn('id', $documentIds)->get();
+
+            $isProposed = ! empty($this->registration->proposed_company_details)
+                && empty($this->registration->placement_id);
+
+            if (! $isProposed) {
+                $docs = $docs->reject(fn ($doc) => $doc->slug === 'surat-permohonan-pkl-mandiri');
+            }
+
+            $documents = $docs->values();
         }
 
         return view('enrollment.registration.registration-document-upload', [

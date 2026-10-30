@@ -89,7 +89,16 @@ class PklPreparation extends Component
 
         $documentIds = $this->registration->internship->required_document_ids ?? [];
 
-        return Document::whereIn('id', $documentIds)->get();
+        $documents = Document::whereIn('id', $documentIds)->get();
+
+        $isProposed = $this->placementType === 'proposed'
+            || (! empty($this->registration->proposed_company_details) && empty($this->registration->placement_id));
+
+        if (! $isProposed) {
+            $documents = $documents->reject(fn ($doc) => $doc->slug === 'surat-permohonan-pkl-mandiri');
+        }
+
+        return $documents->values();
     }
 
     #[Computed]
