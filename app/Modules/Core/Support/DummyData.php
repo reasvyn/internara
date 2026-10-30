@@ -723,7 +723,7 @@ class DummyData
                     'phone' => $acc['phone'] ?? null,
                     'address' => $acc['address'] ?? null,
                     'gender' => $acc['gender'] ?? 'male',
-                    'blood_type' => $acc['blood_type'] ?? 'O',
+                    'blood_type' => strtolower((string) ($acc['blood_type'] ?? 'o')),
                     'emergency_contact' => $acc['emergency_contact'] ?? null,
                 ], 'profiles');
             }
@@ -801,7 +801,7 @@ class DummyData
                 'phone' => $stData['phone'] ?? null,
                 'address' => $stData['address'] ?? null,
                 'gender' => $stData['gender'] ?? 'male',
-                'blood_type' => $stData['blood_type'] ?? 'O',
+                'blood_type' => strtolower((string) ($stData['blood_type'] ?? 'o')),
                 'pob' => $stData['pob'] ?? null,
                 'dob' => $stData['dob'] ?? null,
                 'emergency_contact' => $stData['emergency_contact'] ?? null,
