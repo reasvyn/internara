@@ -105,6 +105,11 @@ return [
             'title' => 'common.sidebar.teacher_portal',
             'items' => [
                 [
+                    'route' => 'teacher.handbooks',
+                    'icon' => 'o-bookmark-square',
+                    'label' => 'common.sidebar.handbooks',
+                ],
+                [
                     'route' => 'monitoring-visits.index',
                     'icon' => 'o-map-pin',
                     'label' => 'common.sidebar.visits',

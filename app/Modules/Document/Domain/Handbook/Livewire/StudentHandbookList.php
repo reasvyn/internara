@@ -32,6 +32,16 @@ class StudentHandbookList extends Component
 
     public bool $showReaderModal = false;
 
+    public function pageTitle(): string
+    {
+        return __('handbook.student_page_title');
+    }
+
+    public function pageDescription(): string
+    {
+        return __('handbook.student_page_description');
+    }
+
     public function openReader(string $id): void
     {
         $handbook = Document::ofType(DocumentCategory::HANDBOOK->value)->findOrFail($id);

@@ -1,8 +1,5 @@
 <div>
-    <x-ui::components.page-header
-        :title="__('handbook.student_page_title')"
-        :description="__('handbook.student_page_description')"
-    />
+    <x-ui::components.page-header :title="$this->pageTitle()" :description="$this->pageDescription()" />
 
     {{-- Reading Compliance Progress Metric --}}
     <x-ts-card shadowless class="border-base-content/10 bg-base-100 mb-6 rounded-lg border">

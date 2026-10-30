@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Document\Domain\Handbook\Livewire;
 
+use App\Modules\Academic\Domain\School\Entities\SchoolEntity;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Document\Domain\Handbook\Actions\CreateHandbookAction;
 use App\Modules\Document\Domain\Handbook\Actions\DeleteHandbookAction;
@@ -14,17 +15,29 @@ use App\Modules\Document\Domain\Handbook\Livewire\Forms\HandbookForm;
 use App\Modules\Document\Enums\DocumentCategory;
 use App\Modules\Document\Models\Document;
 use App\Modules\UI\Livewire\BaseRecordManager;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\WithFileUploads;
+use Symfony\Component\HttpFoundation\Response;
 use TallStackUi\Traits\Interactions;
 
 class HandbookManager extends BaseRecordManager
 {
     use Interactions;
     use WithFileUploads;
+
+    public string $tab = 'catalog';
+
+    public string $audienceFilter = 'all';
+
+    public ?string $readingHandbookId = null;
+
+    public bool $showReaderModal = false;
 
     public bool $showModal = false;
 
@@ -39,6 +52,93 @@ class HandbookManager extends BaseRecordManager
     public function boot(): void
     {
         $this->authorize('viewAny', Document::class);
+    }
+
+    public function setTab(string $tab): void
+    {
+        if (in_array($tab, ['catalog', 'manage'], true)) {
+            $this->tab = $tab;
+        }
+    }
+
+    public function setAudienceFilter(string $audience): void
+    {
+        $this->audienceFilter = $audience;
+    }
+
+    public function openReader(string $id): void
+    {
+        $this->readingHandbookId = $id;
+        $this->showReaderModal = true;
+    }
+
+    public function closeReader(): void
+    {
+        $this->showReaderModal = false;
+        $this->readingHandbookId = null;
+    }
+
+    #[Computed]
+    public function selectedHandbook(): ?Document
+    {
+        if (! $this->readingHandbookId) {
+            return null;
+        }
+
+        return Document::ofType(DocumentCategory::HANDBOOK->value)
+            ->with(['media'])
+            ->find($this->readingHandbookId);
+    }
+
+    /**
+     * @return Collection<int, Document>
+     */
+    #[Computed]
+    public function catalogHandbooks(): Collection
+    {
+        $query = Document::ofType(DocumentCategory::HANDBOOK->value)
+            ->with(['media'])
+            ->latest('updated_at');
+
+        if ($this->search !== '') {
+            $term = mb_strtolower(trim($this->search));
+            $query->where(function (Builder $q) use ($term) {
+                $q->whereRaw('LOWER(title) LIKE ?', ["%{$term}%"])
+                    ->orWhereRaw('LOWER(content) LIKE ?', ["%{$term}%"]);
+            });
+        }
+
+        $docs = $query->get();
+
+        if ($this->audienceFilter !== 'all') {
+            $docs = $docs->filter(function (Document $doc) {
+                $target = $doc->metadata['target_audience'] ?? 'all';
+
+                return $target === $this->audienceFilter;
+            });
+        }
+
+        return $docs->values();
+    }
+
+    public function download(string $id): Response
+    {
+        $handbook = Document::ofType(DocumentCategory::HANDBOOK->value)->findOrFail($id);
+        $media = $handbook->getFirstMedia('handbook_file');
+
+        if ($media && file_exists($media->getPath())) {
+            return $media->toResponse(request());
+        }
+
+        $school = SchoolEntity::get();
+        $html = view('document.handbook.pdf', [
+            'handbook' => $handbook,
+            'school' => $school,
+        ])->render();
+
+        return Pdf::loadHTML($html)
+            ->setPaper('a4', 'portrait')
+            ->download(Str::slug($handbook->title).'.pdf');
     }
 
     public function headers(): array
@@ -101,9 +201,10 @@ class HandbookManager extends BaseRecordManager
     public function save(CreateHandbookAction $create, UpdateHandbookAction $update): void
     {
         $fileRules = $this->form->id ? 'nullable' : 'required';
+        $validAudiences = implode(',', array_column(HandbookAudience::cases(), 'value'));
         $this->validate([
             'form.title' => 'required|string|max:255',
-            'form.audience' => 'required|string|in:all,student,teacher,supervisor',
+            'form.audience' => "required|string|in:{$validAudiences}",
             'uploadFile' => "{$fileRules}|file|mimes:pdf|max:10240",
         ]);
 

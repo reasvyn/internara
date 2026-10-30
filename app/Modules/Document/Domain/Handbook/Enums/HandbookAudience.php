@@ -12,6 +12,7 @@ enum HandbookAudience: string implements LabelEnum
     case STUDENT = 'student';
     case TEACHER = 'teacher';
     case SUPERVISOR = 'supervisor';
+    case ADMIN = 'admin';
 
     public function label(): string
     {
@@ -20,6 +21,7 @@ enum HandbookAudience: string implements LabelEnum
             self::STUDENT => __('handbook.audience_student'),
             self::TEACHER => __('handbook.audience_teacher'),
             self::SUPERVISOR => __('handbook.audience_supervisor'),
+            self::ADMIN => __('handbook.audience_admin'),
         };
     }
 }

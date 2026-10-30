@@ -51,6 +51,10 @@ final readonly class HandbookEntity extends BaseEntity
             return false;
         }
 
+        if ($this->audience === HandbookAudience::ADMIN) {
+            return $user->hasRole(['super_admin', 'admin']);
+        }
+
         return $user->hasRole($this->audience->value);
     }
 

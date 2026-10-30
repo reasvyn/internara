@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Modules\Document\Domain\Handbook\Livewire\HandbookManager;
 use App\Modules\Document\Domain\Handbook\Livewire\StudentHandbookList;
+use App\Modules\Document\Domain\Handbook\Livewire\TeacherHandbookList;
 use App\Modules\Document\Domain\OfficialDocument\Http\Controllers\DocumentRenderController;
 use App\Modules\Document\Domain\OfficialDocument\Livewire\ReportsManager;
 
@@ -23,6 +24,13 @@ Route::prefix('admin')
         ])->name('documents.render.store');
 
         Route::get('/handbooks', HandbookManager::class)->name('handbooks.index');
+    });
+
+Route::prefix('teacher')
+    ->name('teacher.')
+    ->middleware(['auth', 'role:teacher'])
+    ->group(function () {
+        Route::get('/handbooks', TeacherHandbookList::class)->name('handbooks');
     });
 
 Route::prefix('student')

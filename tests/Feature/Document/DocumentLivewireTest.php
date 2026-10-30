@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Document;
 
+use App\Modules\Document\Domain\Handbook\Actions\AcknowledgeHandbookAction;
 use App\Modules\Document\Domain\Handbook\Enums\HandbookAudience;
 use App\Modules\Document\Domain\Handbook\Livewire\HandbookManager;
 use App\Modules\Document\Domain\Handbook\Livewire\StudentHandbookList;
+use App\Modules\Document\Domain\Handbook\Livewire\TeacherHandbookList;
 use App\Modules\Document\Domain\OfficialDocument\Actions\DeleteReportAction;
 use App\Modules\Document\Domain\OfficialDocument\Actions\GenerateReportAction;
 use App\Modules\Document\Domain\OfficialDocument\Livewire\ReportsManager;
@@ -120,7 +122,7 @@ describe('7H5D6 / ZUFG8: Document Livewire UI Components', function (): void {
             ->assertSet('readingHandbookId', $doc->id);
 
         // Acknowledge flow
-        $component->call('acknowledge', $doc->id, app(\App\Modules\Document\Domain\Handbook\Actions\AcknowledgeHandbookAction::class))
+        $component->call('acknowledge', $doc->id, app(AcknowledgeHandbookAction::class))
             ->assertHasNoErrors();
 
         $component->call('closeReader')
@@ -180,5 +182,90 @@ describe('7H5D6 / ZUFG8: Document Livewire UI Components', function (): void {
         // Delete report
         $test->call('deleteReport', $generated, app(DeleteReportAction::class));
         expect(Document::where('id', $generated->id)->exists())->toBeFalse();
+    });
+
+    test('7H5D6-FR-DOC-006: TeacherHandbookList renders for authenticated teacher and displays teacher-targeted handbooks', function (): void {
+        $teacher = User::factory()->create();
+        $teacher->assignRole('teacher');
+        $this->actingAs($teacher);
+
+        Document::create([
+            'title' => 'Pedoman Bimbingan Guru PKL 2026',
+            'slug' => 'pedoman-bimbingan-guru-pkl-2026',
+            'type' => DocumentCategory::HANDBOOK->value,
+            'content' => 'Petunjuk bimbingan dan monitoring PKL',
+            'metadata' => [
+                'target_audience' => HandbookAudience::TEACHER->value,
+                'version' => 1,
+            ],
+            'version' => 1,
+            'is_active' => true,
+        ]);
+
+        Document::create([
+            'title' => 'Panduan Khusus Siswa Magang',
+            'slug' => 'panduan-khusus-siswa-magang',
+            'type' => DocumentCategory::HANDBOOK->value,
+            'content' => 'Petunjuk teknis siswa saja',
+            'metadata' => [
+                'target_audience' => HandbookAudience::STUDENT->value,
+                'version' => 1,
+            ],
+            'version' => 1,
+            'is_active' => true,
+        ]);
+
+        $test = Livewire::test(TeacherHandbookList::class);
+        $test->assertOk()
+            ->assertSee('Pedoman Bimbingan Guru PKL 2026')
+            ->assertDontSee('Panduan Khusus Siswa Magang');
+
+        expect($test->instance()->pageTitle())->toBe(__('handbook.teacher_page_title'));
+    });
+
+    test('7H5D6-FR-DOC-007: HandbookManager supports catalog mode, audience filter, reader modal, and PDF download', function (): void {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+
+        $doc = Document::create([
+            'title' => 'Panduan Pokja PKL Admin',
+            'slug' => 'panduan-pokja-pkl-admin',
+            'type' => DocumentCategory::HANDBOOK->value,
+            'content' => 'Petunjuk teknis Pokja PKL',
+            'metadata' => [
+                'target_audience' => HandbookAudience::ADMIN->value,
+                'description' => 'Deskripsi panduan Pokja',
+                'version' => 1,
+            ],
+            'version' => 1,
+            'is_active' => true,
+        ]);
+
+        $test = Livewire::test(HandbookManager::class);
+        $test->assertOk()
+            ->assertSet('tab', 'catalog')
+            ->assertSee('Panduan Pokja PKL Admin');
+
+        // Test reader modal
+        $test->call('openReader', $doc->id)
+            ->assertSet('showReaderModal', true)
+            ->assertSet('readingHandbookId', $doc->id);
+
+        expect($test->instance()->selectedHandbook?->id)->toBe($doc->id);
+
+        $test->call('closeReader')
+            ->assertSet('showReaderModal', false);
+
+        // Test filter by audience
+        $test->call('setAudienceFilter', 'student');
+        expect($test->instance()->catalogHandbooks->contains('id', $doc->id))->toBeFalse();
+
+        $test->call('setAudienceFilter', 'admin');
+        expect($test->instance()->catalogHandbooks->contains('id', $doc->id))->toBeTrue();
+
+        // Switch tab
+        $test->call('setTab', 'manage')
+            ->assertSet('tab', 'manage');
     });
 });
