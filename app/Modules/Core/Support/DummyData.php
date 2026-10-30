@@ -567,10 +567,14 @@ class DummyData
     private function seedDepartments(): void
     {
         $depts = $this->dataset['departments'] ?? [
-            ['name' => 'Rekayasa Perangkat Lunak'],
-            ['name' => 'Teknik Komputer dan Jaringan'],
-            ['name' => 'Akuntansi dan Keuangan Lembaga'],
-            ['name' => 'Tata Boga'],
+            ['name' => 'Sistem Informasi, Jaringan, dan Aplikasi', 'description' => 'Pengembangan aplikasi berbasis web/cloud, administrasi server jaringan enterprise, integrasi sistem cerdas, dan keamanan siber.'],
+            ['name' => 'Desain Pemodelan dan Informasi Bangunan', 'description' => 'Pemodelan 3D arsitektur, penyusunan rancangan teknik gedung (BIM), estimasi anggaran biaya (RAB), dan penggambaran konstruksi digital.'],
+            ['name' => 'Konstruksi Gedung, Sanitasi, dan Perawatan', 'description' => 'Pelaksanaan dan pengawasan konstruksi beton bertulang, sistem utilitas dan sanitasi gedung bertingkat, serta inspeksi perawatan fasilitas bangunan.'],
+            ['name' => 'Teknik Tenaga Listrik', 'description' => 'Instalasi tenaga listrik tegangan menengah dan rendah, otomatisasi industri berbasis PLC dan SCADA, serta pemeliharaan trafo dan panel distribusi daya.'],
+            ['name' => 'Teknik Elektronika Daya dan Komunikasi', 'description' => 'Perekayasaan sistem kendali elektronika industri, inverter daya, instrumentasi otomatis, serta sistem transmisi komunikasi nirkabel dan fiber optik.'],
+            ['name' => 'Teknik Fabrikasi Logam dan Manufaktur', 'description' => 'Proses pemesinan konvensional dan CNC, perancangan cetakan logam (mould & die), perakitan konstruksi mekanikal presisi, dan fabrikasi lembaran logam.'],
+            ['name' => 'Teknik Pengecoran Logam', 'description' => 'Teknologi metalurgi pengecoran fero dan non-fero, pembuatan pola dan cetakan pasir/resin, peleburan tanur induksi (furnace), serta uji metalografi material cetak.'],
+            ['name' => 'Teknik dan Manajemen Perawatan Otomotif', 'description' => 'Diagnosis sistem manajemen mesin modern (EFI/CRDi), pemeliharaan sasis dan pemindah tenaga otomotif, manajemen bengkel resmi, dan sistem kelistrikan kendaraan listrik/hibrida.'],
         ];
 
         foreach ($depts as $dept) {
@@ -578,7 +582,10 @@ class DummyData
                 $this->firstOrCreate(
                     Department::factory(),
                     ['name' => $dept['name']],
-                    ['name' => $dept['name']],
+                    [
+                        'name' => $dept['name'],
+                        'description' => $dept['description'] ?? null,
+                    ],
                     'departments',
                 ),
             );
@@ -793,7 +800,10 @@ class DummyData
             $this->students->push($user);
 
             $groupIndex = intdiv($i, 5);
-            $dept = $this->departments->get($groupIndex % $this->departments->count());
+            $groupData = ($this->dataset['groups'] ?? [])[$groupIndex] ?? null;
+            $deptName = $groupData['department_name'] ?? null;
+            $dept = ($deptName ? $this->departments->firstWhere('name', $deptName) : null)
+                ?? $this->departments->get($groupIndex % $this->departments->count());
 
             $this->ensureProfile($user, Profile::factory()->forStudent($dept), [
                 'id_number' => $stData['id_number'] ?? null,
@@ -1043,9 +1053,12 @@ class DummyData
         ];
 
         $groupIndex = intdiv($regIndex, 5);
-        $deptName = $this->departments->get($groupIndex % $this->departments->count())?->name ?? 'Rekayasa Perangkat Lunak';
+        $groupData = ($this->dataset['groups'] ?? [])[$groupIndex] ?? null;
+        $deptName = $groupData['department_name']
+            ?? $this->departments->get($groupIndex % $this->departments->count())?->name
+            ?? 'Sistem Informasi, Jaringan, dan Aplikasi';
         $logbookList = $this->dataset['logbooks'][$deptName]
-            ?? $this->dataset['logbooks']['Rekayasa Perangkat Lunak']
+            ?? $this->dataset['logbooks']['Sistem Informasi, Jaringan, dan Aplikasi']
             ?? [];
 
         foreach ($statuses as $i => $status) {
