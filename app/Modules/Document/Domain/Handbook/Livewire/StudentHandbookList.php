@@ -4,17 +4,20 @@ declare(strict_types=1);
 
 namespace App\Modules\Document\Domain\Handbook\Livewire;
 
+use App\Modules\Academic\Domain\School\Entities\SchoolEntity;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Document\Domain\Handbook\Actions\AcknowledgeHandbookAction;
 use App\Modules\Document\Enums\DocumentCategory;
 use App\Modules\Document\Models\Document;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Spatie\Activitylog\Models\Activity;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\Response;
 use TallStackUi\Traits\Interactions;
 
 class StudentHandbookList extends Component
@@ -77,7 +80,7 @@ class StudentHandbookList extends Component
         }
     }
 
-    public function download(string $id): StreamedResponse
+    public function download(string $id): Response
     {
         $handbook = Document::ofType(DocumentCategory::HANDBOOK->value)->findOrFail($id);
         $entity = $handbook->asHandbook();
@@ -86,15 +89,21 @@ class StudentHandbookList extends Component
             abort(403);
         }
 
-        if (! $entity->isAvailable()) {
-            abort(404);
-        }
-
         $media = $handbook->getFirstMedia('handbook_file');
 
-        abort_unless($media, 404);
+        if ($media && file_exists($media->getPath())) {
+            return $media->toResponse(request());
+        }
 
-        return $media->toResponse(request());
+        $school = SchoolEntity::get();
+        $html = view('document.handbook.pdf', [
+            'handbook' => $handbook,
+            'school' => $school,
+        ])->render();
+
+        return Pdf::loadHTML($html)
+            ->setPaper('a4', 'portrait')
+            ->download(Str::slug($handbook->title).'.pdf');
     }
 
     /**

@@ -111,8 +111,7 @@
                 <div>
                     <div class="flex items-center justify-between gap-2">
                         <div class="flex items-center gap-1.5">
-                            <x-ts-badge :text="__('handbook.audience_student')" color="neutral" sm />
-                            <span class="text-base-content/50 font-mono text-xs">v{{ $entity->version() }}</span>
+                            <span class="badge badge-outline badge-sm text-base-content/60 font-mono text-xs">v{{ $entity->version() }}.0</span>
                         </div>
 
                         @if ($isPending)
@@ -155,18 +154,14 @@
                 </div>
 
                 <div class="border-base-content/10 mt-5 flex items-center justify-between gap-2 border-t pt-3.5">
-                    @if ($entity->isAvailable() || $media)
-                        <x-ts-button
-                            :title="__('handbook.download')"
-                            icon="arrow-down-tray"
-                            color="secondary"
-                            outline
-                            sm
-                            wire:click="download('{{ $handbook->id }}')"
-                        />
-                    @else
-                        <div class="text-base-content/40 text-xs italic">{{ __('handbook.file') }}</div>
-                    @endif
+                    <x-ts-button
+                        :title="__('handbook.download')"
+                        icon="arrow-down-tray"
+                        color="secondary"
+                        outline
+                        sm
+                        wire:click="download('{{ $handbook->id }}')"
+                    />
 
                     @if ($isPending)
                         <x-ts-button
@@ -237,45 +232,38 @@
             </x-slot:title>
 
             <div class="space-y-4">
-                <div class="border-base-content/10 bg-base-200/40 space-y-2 rounded-lg border p-4">
-                    <div class="flex items-center justify-between text-xs">
-                        <span class="text-base-content/60 font-medium">{{ __('handbook.target_audience') }}:</span>
-                        <x-ts-badge :text="__('handbook.audience_student')" color="neutral" sm />
-                    </div>
-
-                    @if ($selectedMedia)
+                @if ($selectedMedia)
+                    <div class="border-base-content/10 bg-base-200/40 rounded-lg border p-3">
                         <div class="flex items-center justify-between text-xs">
                             <span class="text-base-content/60 font-medium">{{ __('handbook.file') }}:</span>
                             <span class="text-base-content font-mono">{{ $selectedMedia->file_name }} ({{ $selectedMedia->human_readable_size }})</span>
                         </div>
-                    @endif
-                </div>
+                    </div>
+                @endif
 
                 <div>
                     <h4 class="text-base-content mb-2 text-xs font-semibold tracking-wider uppercase">
                         {{ __('handbook.guideline_content') }}
                     </h4>
-                    <div class="border-base-content/10 bg-base-100 text-base-content/80 max-h-64 overflow-y-auto rounded-lg border p-4 text-sm leading-relaxed whitespace-pre-line">
-                        {{ $selectedEntity->description() ?: $this->selectedHandbook->content ?: __('handbook.no_handbooks') }}
+                    <div class="border-base-content/10 bg-base-100 text-base-content/85 max-h-80 overflow-y-auto rounded-lg border p-4 text-sm leading-relaxed whitespace-pre-line">
+                        {{ $this->selectedHandbook->content ?: $selectedEntity->description() ?: __('handbook.no_handbooks') }}
                     </div>
                 </div>
 
-                @if ($selectedEntity->isAvailable() || $selectedMedia)
-                    <div class="border-base-content/10 bg-base-200/50 flex items-center justify-between rounded-lg border p-3">
-                        <div class="text-base-content/70 flex items-center gap-2 text-xs">
-                            <x-ts-icon name="arrow-down-tray" class="size-4" />
-                            <span>{{ __('handbook.download') }} PDF</span>
-                        </div>
-                        <x-ts-button
-                            :text="__('handbook.download')"
-                            icon="arrow-down-tray"
-                            color="secondary"
-                            outline
-                            xs
-                            wire:click="download('{{ $this->selectedHandbook->id }}')"
-                        />
+                <div class="border-base-content/10 bg-base-200/50 flex items-center justify-between rounded-lg border p-3">
+                    <div class="text-base-content/70 flex items-center gap-2 text-xs">
+                        <x-ts-icon name="arrow-down-tray" class="size-4" />
+                        <span>Dokumen Panduan PDF Resmi</span>
                     </div>
-                @endif
+                    <x-ts-button
+                        :text="__('handbook.download')"
+                        icon="arrow-down-tray"
+                        color="secondary"
+                        outline
+                        xs
+                        wire:click="download('{{ $this->selectedHandbook->id }}')"
+                    />
+                </div>
 
                 @if ($selectedIsPending)
                     <div class="border-warning/30 bg-warning/10 space-y-3 rounded-lg border p-4">

@@ -943,7 +943,12 @@ class DummyData
                         'slug' => $doc['slug'],
                         'title' => $doc['title'],
                         'type' => $doc['type'] ?? $doc['category'] ?? 'guideline',
-                        'content' => $doc['description'] ?? '',
+                        'content' => $doc['content'] ?? $doc['description'] ?? '',
+                        'metadata' => [
+                            'target_audience' => $doc['audience'] ?? 'all',
+                            'description' => $doc['description'] ?? '',
+                        ],
+                        'is_active' => true,
                         'created_by' => $this->admin->id,
                     ],
                     'documents',
