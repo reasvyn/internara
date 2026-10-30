@@ -46,6 +46,8 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh /usr/local/bin/fpm-healthcheck 
     && mkdir -p /opt/app-public \
     && cp -a /app/public/. /opt/app-public/
 
+WORKDIR /app
+
 EXPOSE 9000
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["php-fpm"]

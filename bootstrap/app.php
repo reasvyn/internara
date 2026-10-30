@@ -20,6 +20,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
+use Livewire\Features\SupportFileUploads\MissingFileUploadsTraitException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withProviders([
@@ -119,6 +120,14 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
             abort(400, $message);
+        });
+
+        $exceptions->render(function (MissingFileUploadsTraitException $e, Request $request) {
+            if ($request->expectsJson() || $request->hasHeader('X-Livewire')) {
+                return response()->json(['message' => 'File uploads not supported on this component.'], 400);
+            }
+
+            abort(400, 'File uploads not supported on this component.');
         });
     })
     ->create();

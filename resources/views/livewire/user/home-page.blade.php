@@ -49,7 +49,7 @@
                                 <x-ts-icon name="clipboard-document-list" class="size-6" />
                             </div>
 
-                            @if ($registration['status'] === 'open')
+                            @if (($registration['status'] ?? null) === 'open')
                                 <x-ts-badge
                                     color="success"
                                     round="sm"
@@ -57,7 +57,7 @@
                                     icon="check-circle"
                                     class="px-2.5 py-1 text-xs font-semibold"
                                 />
-                            @elseif ($registration['status'] === 'upcoming')
+                            @elseif (($registration['status'] ?? null) === 'upcoming')
                                 <x-ts-badge
                                     color="info"
                                     round="sm"
@@ -65,7 +65,7 @@
                                     icon="clock"
                                     class="px-2.5 py-1 text-xs font-semibold"
                                 />
-                            @elseif ($registration['status'] === 'closed')
+                            @elseif (($registration['status'] ?? null) === 'closed')
                                 <x-ts-badge
                                     color="warning"
                                     round="sm"
@@ -88,7 +88,7 @@
 
                         {{-- Dynamic Status & Steps Area --}}
                         <div class="my-3.5 space-y-3">
-                            @if ($registration['status'] === 'open')
+                            @if (($registration['status'] ?? null) === 'open')
                                 {{-- Schedule Capsule --}}
                                 <div class="border-base-content/10 bg-base-200/50 flex items-center gap-2.5 rounded-md border px-3 py-2 text-xs">
                                     <x-ts-icon name="calendar-days" class="text-base-content/60 size-4 shrink-0" />
@@ -117,7 +117,7 @@
                                         <span>{{ __('user.home.step_3') }}</span>
                                     </div>
                                 </div>
-                            @elseif ($registration['status'] === 'upcoming')
+                            @elseif (($registration['status'] ?? null) === 'upcoming')
                                 <div class="border-info/20 bg-info/5 rounded-md border p-3.5 text-xs">
                                     <div class="text-info flex items-center gap-2 font-semibold">
                                         <x-ts-icon name="clock" class="size-4 shrink-0" />
@@ -134,7 +134,7 @@
                                         {{ __('user.home.registration_not_open_yet') }}
                                     </p>
                                 </div>
-                            @elseif ($registration['status'] === 'closed')
+                            @elseif (($registration['status'] ?? null) === 'closed')
                                 <div class="border-warning/20 bg-warning/5 flex items-start gap-2.5 rounded-md border p-3.5 text-xs">
                                     <x-ts-icon name="x-circle" class="text-warning mt-0.5 size-4 shrink-0" />
                                     <p class="text-base-content/75 text-xs leading-relaxed">
@@ -156,7 +156,7 @@
                     </div>
 
                     {{-- Action Row (Only rendered when registration is open) --}}
-                    @if ($registration['status'] === 'open')
+                    @if (($registration['status'] ?? null) === 'open')
                         <div class="mt-auto w-full pt-3">
                             <x-ts-button
                                 wire:navigate
@@ -197,8 +197,8 @@
                             :text="__('user.home.login_action')"
                             icon="arrow-right"
                             icon-right
-                            :color="$registration['status'] === 'open' ? 'secondary' : 'primary'"
-                            :outline="$registration['status'] === 'open'"
+                            :color="($registration['status'] ?? null) === 'open' ? 'secondary' : 'primary'"
+                            :outline="($registration['status'] ?? null) === 'open'"
                             lg
                             class="w-full font-bold"
                         />
