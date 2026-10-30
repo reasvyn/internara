@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "version": "2.0.0",
+    "version": "1.0.0",
     "meta": {
         "title": "Internara Comprehensive Demo Dataset (Production Aligned)",
         "description": "Dataset realistis komprehensif tanpa fitur yang sudah dicut (tanpa incidents, tanpa partnerships, tanpa student relocation, tanpa generic evaluation forms). Disesuaikan dengan kebutuhan 20 kelompok PKL: 1 perusahaan, 5 siswa, 1 guru per kelompok (total 4 admin, 20 guru, 20 supervisor, 100 siswa).",
