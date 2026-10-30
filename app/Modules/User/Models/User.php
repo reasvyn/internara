@@ -78,6 +78,22 @@ class User extends BaseAuthenticatable implements HasMedia
         syncRoles as parentSyncRoles;
         scopeRole as parentScopeRole;
         scopeWithoutRole as parentScopeWithoutRole;
+        getRoleNames as parentGetRoleNames;
+    }
+
+    public function getRoleNames(): \Illuminate\Support\Collection
+    {
+        $roles = $this->parentGetRoleNames();
+
+        if ($roles->contains('superadmin') && ! $roles->contains('super_admin')) {
+            return $roles->concat(['super_admin']);
+        }
+
+        if ($roles->contains('super_admin') && ! $roles->contains('superadmin')) {
+            return $roles->concat(['superadmin']);
+        }
+
+        return $roles;
     }
 
     public function hasRole($roles, ?string $guard = null): bool

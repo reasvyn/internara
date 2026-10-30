@@ -46,11 +46,24 @@
         @php
             $currentUser = auth()->user();
             $currentUserRoles = $currentUser ? $currentUser->getRoleNames()->all() : [];
+            if (in_array('superadmin', $currentUserRoles, true) || in_array('super_admin', $currentUserRoles, true)) {
+                if (! in_array('superadmin', $currentUserRoles, true)) {
+                    $currentUserRoles[] = 'superadmin';
+                }
+                if (! in_array('super_admin', $currentUserRoles, true)) {
+                    $currentUserRoles[] = 'super_admin';
+                }
+                if (! in_array('admin', $currentUserRoles, true)) {
+                    $currentUserRoles[] = 'admin';
+                }
+            }
         @endphp
         @foreach ($groups as $groupKey => $group)
             @php
                 $groupRoles = (array) ($group['roles'] ?? []);
-                $canSeeGroup = empty($groupRoles) || ! empty(array_intersect($groupRoles, $currentUserRoles));
+                $canSeeGroup = empty($groupRoles)
+                    || ($currentUser && $currentUser->hasAnyRole($groupRoles))
+                    || ! empty(array_intersect($groupRoles, $currentUserRoles));
             @endphp
             @if ($canSeeGroup)
                 @php
@@ -103,7 +116,9 @@
                         @foreach ($groupItems as $item)
                             @php
                                 $itemRoles = (array) ($item['roles'] ?? $group['roles'] ?? []);
-                                $canSeeItem = empty($itemRoles) || ! empty(array_intersect($itemRoles, $currentUserRoles));
+                                $canSeeItem = empty($itemRoles)
+                                    || ($currentUser && $currentUser->hasAnyRole($itemRoles))
+                                    || ! empty(array_intersect($itemRoles, $currentUserRoles));
                             @endphp
                             @if ($canSeeItem)
                                 @php
