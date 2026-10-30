@@ -63,7 +63,20 @@ class PklPreparation extends Component
                 $this->proposedCompanyName = $this->registration->proposed_company_details['company_name'] ?? null;
                 $this->proposedCompanyAddress = $this->registration->proposed_company_details['company_address'] ?? null;
             }
+
+            if ($this->isLocked()) {
+                $this->step = 3;
+            }
         }
+    }
+
+    public function isLocked(): bool
+    {
+        if (! $this->registration) {
+            return false;
+        }
+
+        return in_array($this->registration->status, ['confirmed', 'active', 'completed'], true);
     }
 
     #[Computed]
@@ -120,7 +133,7 @@ class PklPreparation extends Component
 
     public function savePlacementPreference(SubmitPlacementPreferenceAction $action): void
     {
-        if (! $this->registration) {
+        if (! $this->registration || $this->isLocked()) {
             return;
         }
 
@@ -153,7 +166,7 @@ class PklPreparation extends Component
 
     public function uploadDocuments(UploadRegistrationDocumentAction $action): void
     {
-        if (! $this->registration) {
+        if (! $this->registration || $this->isLocked()) {
             return;
         }
 
@@ -186,6 +199,10 @@ class PklPreparation extends Component
 
     public function goToStep(int $targetStep): void
     {
+        if ($this->isLocked()) {
+            return;
+        }
+
         $this->step = $targetStep;
     }
 

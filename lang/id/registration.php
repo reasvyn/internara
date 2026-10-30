@@ -27,6 +27,17 @@ return [
     'no_cohort_title' => 'Belum Ada Periode PKL Aktif',
     'no_cohort_desc' => 'Saat ini belum ada periode persiapan PKL yang dibuka untuk angkatan/rombel Anda. Silakan hubungi Koordinator PKL/Hubin sekolah.',
 
+    'verified_placement_title' => 'Status Penempatan & Verifikasi Berkas PKL',
+    'verified_placement_subtitle' => 'Data penempatan industri dan berkas persyaratan Anda telah diverifikasi oleh sekolah.',
+    'locked_badge' => 'Penempatan Resmi Terverifikasi',
+    'company_name' => 'Perusahaan Mitra / Tempat PKL',
+    'company_address' => 'Alamat Tempat PKL',
+    'internship_period' => 'Periode Pelaksanaan PKL',
+    'supervising_teacher' => 'Guru Pembimbing Sekolah',
+    'verified_documents' => 'Dokumen Persyaratan Terverifikasi',
+    'locked_notice_title' => 'Data Penempatan Telah Terkunci',
+    'locked_notice_desc' => 'Data pendaftaran dan penempatan PKL Anda telah resmi diverifikasi oleh Tim Pokja PKL sekolah dan berstatus aktif. Data penempatan tidak dapat diubah secara mandiri oleh siswa. Apabila terdapat kendala operasional atau kebutuhan permohonan penggantian tempat magang, silakan berkoordinasi dengan Guru Pembimbing atau Koordinator Hubin/PKL sekolah untuk diproses secara administratif.',
+
     'center_title' => 'Pendaftaran Praktik Kerja Lapangan',
     'center' => [
         'title' => 'Pendaftaran Magang',

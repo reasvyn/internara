@@ -27,6 +27,17 @@ return [
     'no_cohort_title' => 'No Active PKL Cohort Period',
     'no_cohort_desc' => 'There is currently no active PKL preparation period assigned to your class cohort. Please contact your school internship coordinator.',
 
+    'verified_placement_title' => 'Verified Placement & PKL Credentials',
+    'verified_placement_subtitle' => 'Your placement data and required documents have been verified by the school.',
+    'locked_badge' => 'Verified Official Placement',
+    'company_name' => 'Partner Company / Placement Location',
+    'company_address' => 'Placement Address',
+    'internship_period' => 'Internship Period',
+    'supervising_teacher' => 'Supervising Teacher',
+    'verified_documents' => 'Verified Requirement Documents',
+    'locked_notice_title' => 'Placement is Locked',
+    'locked_notice_desc' => 'Your PKL registration and placement have been officially verified and locked by the school. Students cannot alter placements independently. Any placement change requests must be handled administratively through your supervising teacher or PKL coordinator.',
+
     'center_title' => 'Internship Registration',
     'center' => [
         'title' => 'Internship Registration',

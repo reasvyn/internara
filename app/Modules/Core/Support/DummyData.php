@@ -967,25 +967,20 @@ class DummyData
             $this->completedInternship->update(['required_document_ids' => $requiredIds]);
         }
 
-        $statuses = [
-            RegistrationDocumentStatus::VERIFIED->value,
-            RegistrationDocumentStatus::PENDING->value,
-        ];
-
         $studentRequiredDocs = $this->documents->whereIn('slug', [
             'surat-persetujuan-orang-tua-wali',
             'surat-pernyataan-kesiapan-siswa',
         ]);
 
-        foreach ($this->activeRegistrations->take(20) as $index => $registration) {
-            foreach ($studentRequiredDocs as $docIndex => $document) {
+        foreach ($this->activeRegistrations as $registration) {
+            foreach ($studentRequiredDocs as $document) {
                 $this->firstOrCreate(
                     RegistrationDocument::factory(),
                     ['registration_id' => $registration->id, 'document_id' => $document->id],
                     [
                         'registration_id' => $registration->id,
                         'document_id' => $document->id,
-                        'status' => $statuses[($index + $docIndex) % count($statuses)],
+                        'status' => RegistrationDocumentStatus::VERIFIED->value,
                     ],
                     'registration_documents',
                 );
