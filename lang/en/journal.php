@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    'learning_outcomes' => 'Learning Outcomes',
     'student' => 'Student',
     'teacher' => 'Teacher',
     'status' => 'Status',
@@ -165,5 +166,21 @@ return [
         'already_clocked_in' => 'Already clocked in for today.',
         'must_clock_in_first' => 'You must clock in first.',
         'already_clocked_out' => 'Already clocked out for today.',
+        'today_overview' => "Today's Attendance Status",
+        'current_time' => 'Current Time',
+        'clock_in_btn' => 'Clock In',
+        'clock_out_btn' => 'Clock Out',
+        'in_progress' => 'Shift in Progress',
+        'completed_badge' => "Today's Attendance Completed",
+        'recent_history' => 'Recent Attendance History',
+        'history_empty' => 'No attendance records yet.',
+        'unaccounted_badge' => ':count Dates Require Clarification',
+        'unaccounted_desc' => 'There are working days with no attendance recorded. Please submit an absence/sick request so your attendance records remain valid.',
+        'file_absence' => 'Submit Absence Request',
+        'placement_info' => 'Placement Information',
+        'work_location' => 'Work Location',
+        'clock_in_title' => 'Check-in Time',
+        'clock_out_title' => 'Check-out Time',
+        'default_program_name' => 'Internship Program',
     ],
 ];

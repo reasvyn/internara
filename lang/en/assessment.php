@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    'status' => 'Status',
     'rubrics' => 'Assessment Rubrics',
     'rubrics_subtitle' => 'Define grading structure with competencies and indicators',
     'new_rubric' => 'New Rubric',

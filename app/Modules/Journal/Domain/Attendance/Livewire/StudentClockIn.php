@@ -45,16 +45,26 @@ class StudentClockIn extends BaseFormView
     #[Layout('ui::layouts.app')]
     public function render(ReadUnaccountedDatesAction $unaccountedDates): View
     {
-        $today = Attendance::where('user_id', auth()->id())
+        $user = auth()->user();
+
+        $today = Attendance::where('user_id', $user->id)
             ->whereDate('date', now()->toDateString())
             ->first();
 
-        $registration = auth()->user()->getActiveRegistration();
+        $registration = $user->getActiveRegistration();
+        if ($registration) {
+            $registration->loadMissing(['placement.company', 'internship']);
+        }
+
+        $recentAttendances = Attendance::where('user_id', $user->id)
+            ->latest('date')
+            ->take(7)
+            ->get();
 
         return view('journal.attendance.student-clock-in', [
             'todayAttendance' => $today,
-            // Working days with neither attendance nor an absence request: the
-            // student is required to file one for each of them.
+            'registration' => $registration,
+            'recentAttendances' => $recentAttendances,
             'unaccountedDates' => $registration
                 ? $unaccountedDates->execute($registration)
                 : collect(),

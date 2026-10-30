@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    'learning_outcomes' => 'Capaian Pembelajaran',
     'student' => 'Siswa',
     'teacher' => 'Guru',
     'status' => 'Status',
@@ -165,5 +166,21 @@ return [
         'already_clocked_in' => 'Sudah clock in hari ini.',
         'must_clock_in_first' => 'Anda harus clock in terlebih dahulu.',
         'already_clocked_out' => 'Sudah clock out hari ini.',
+        'today_overview' => 'Status Kehadiran Hari Ini',
+        'current_time' => 'Waktu Saat Ini',
+        'clock_in_btn' => 'Presensi Datang',
+        'clock_out_btn' => 'Presensi Pulang',
+        'in_progress' => 'Sedang Berlangsung',
+        'completed_badge' => 'Presensi Hari Ini Lengkap',
+        'recent_history' => 'Riwayat Kehadiran Terbaru',
+        'history_empty' => 'Belum ada catatan kehadiran.',
+        'unaccounted_badge' => ':count Tanggal Perlu Konfirmasi',
+        'unaccounted_desc' => 'Terdapat hari kerja yang belum memiliki catatan presensi atau surat izin. Segera ajukan surat izin/sakit agar data kehadiran tetap valid.',
+        'file_absence' => 'Ajukan Izin/Sakit',
+        'placement_info' => 'Informasi Penempatan',
+        'work_location' => 'Lokasi Kerja',
+        'clock_in_title' => 'Jam Datang',
+        'clock_out_title' => 'Jam Pulang',
+        'default_program_name' => 'Praktik Kerja Lapangan',
     ],
 ];

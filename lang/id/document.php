@@ -14,6 +14,8 @@ return [
     'category' => 'Kategori',
     'content' => 'Konten (Didukung Blade)',
     'content_hint' => 'Gunakan {{ $target->name }} untuk nilai dinamis.',
+    'template_content' => 'Konten (Didukung Blade)',
+    'template_hint' => 'Gunakan {{ $target->name }} untuk nilai dinamis.',
     'description' => 'Deskripsi',
     'active' => 'Aktif',
     'inactive' => 'Tidak Aktif',

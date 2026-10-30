@@ -309,4 +309,9 @@ return [
             'reason' => 'Auto-inactivated due to inactivity.',
         ],
     ],
+
+    'account_ineligible_for_slip' => 'Account is not eligible to generate an account slip.',
+    'dashboard' => [
+        'title' => 'User Dashboard',
+    ],
 ];

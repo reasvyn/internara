@@ -14,6 +14,8 @@ return [
     'category' => 'Category',
     'content' => 'Content (Blade Supported)',
     'content_hint' => 'Use {{ $target->name }} for dynamic values.',
+    'template_content' => 'Content (Blade Supported)',
+    'template_hint' => 'Use {{ $target->name }} for dynamic values.',
     'description' => 'Description',
     'active' => 'Active',
     'inactive' => 'Inactive',

@@ -13,5 +13,9 @@
     "Terminated": "Diakhiri",
     "Student": "Siswa",
     "School Teacher": "Guru Sekolah",
-    "Industry Supervisor": "Supervisor Industri"
+    "Industry Supervisor": "Supervisor Industri",
+    "Lock this account?": "Kunci akun ini?",
+    "Unlock this account?": "Buka kunci akun ini?",
+    "Access denied.": "Akses ditolak.",
+    "permission denied": "Izin ditolak"
 }

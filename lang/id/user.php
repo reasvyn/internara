@@ -309,4 +309,9 @@ return [
             'reason' => 'Dinonaktifkan otomatis karena tidak aktif.',
         ],
     ],
+
+    'account_ineligible_for_slip' => 'Akun tidak memenuhi syarat untuk membuat slip akun.',
+    'dashboard' => [
+        'title' => 'Dasbor Pengguna',
+    ],
 ];

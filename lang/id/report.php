@@ -16,6 +16,8 @@ return [
     'status' => 'Status',
     'status_draft' => 'Draft',
     'status_finalized' => 'Final',
+    'grades_calculated' => 'Nilai akhir berhasil dihitung.',
+    'finalize_grade_card_confirm' => 'Apakah Anda yakin ingin memfinalisasi rapor nilai ini?',
     'file_not_found' => 'Berkas laporan tidak ditemukan.',
     'student' => 'Siswa',
     'submitted_at' => 'Dikumpulkan Pada',

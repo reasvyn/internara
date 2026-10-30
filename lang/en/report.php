@@ -16,6 +16,8 @@ return [
     'status' => 'Status',
     'status_draft' => 'Draft',
     'status_finalized' => 'Finalized',
+    'grades_calculated' => 'Final grades successfully calculated.',
+    'finalize_grade_card_confirm' => 'Are you sure you want to finalize this grade card?',
     'file_not_found' => 'Report file not found.',
     'student' => 'Student',
     'submitted_at' => 'Submitted At',

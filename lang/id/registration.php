@@ -14,6 +14,7 @@ return [
     ],
 
     'preparation_title' => 'Persiapan Praktik Kerja Lapangan (PKL)',
+    'documents' => 'Dokumen Persyaratan',
     'preparation_subtitle' => 'Lengkapi preferensi penempatan industri dan berkas persyaratan untuk',
     'placement_choice_title' => 'Pilih Jalur Penempatan',
     'placement_choice_desc' => 'Pilih kuota mitra industri sekolah yang tersedia atau ajukan tempat PKL mandiri.',
@@ -60,6 +61,7 @@ return [
     ],
 
     'verification' => [
+        'status' => 'Status Verifikasi',
         'title' => 'Verifikasi Pendaftaran',
         'subtitle' => 'Tinjau dan proses pendaftaran siswa yang tertunda',
         'empty' => 'Tidak ada pendaftaran tertunda',

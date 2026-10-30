@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    'bad_request' => 'Permintaan Tidak Valid',
     'unauthorized' => 'Tidak Diizinkan',
     'payment_required' => 'Pembayaran Diperlukan',
     'forbidden' => 'Dilarang',

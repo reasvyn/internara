@@ -190,6 +190,7 @@ contract source.
 | `scan_security.py` | XSS, CSP, SQL injection, mass assignment, auth, secrets, CSRF, uploads, rate limiting, dependency auditing (composer/npm audit) | `S1`–`S10` | arch-guard, security-audit |
 | `scan_spec_tests.py` | Spec↔tests coverage (FR/NFR/UC traceability, required `arch`/`unit`/`feature`/`browser` layers, non-testable markers) | `SPEC_TEST_UNCOVERED`, `SPEC_TEST_LAYER_MISSING`, `SPEC_TEST_ORPHAN`, `SPEC_TEST_MISSING_FILE`, `SPEC_TEST_NON_TESTABLE` | arch-guard, spec-audit, pest-testing |
 | `scan_tests.py` | Run test suite, parse per-module results | — (data fetch) | pest-testing, test-writing |
+| `scan_translations.py` | Comprehensive translation key resolution, en/id parity, and codebase usage coverage | `TRANSLATION_*` | arch-guard, i18n-audit |
 | `scan_ui_consistency.py` | UI consistency checks | `UI_*` | arch-guard |
 | `scan_violations.py` | C1-C8, D1-D6 architecture invariant violations | `C1`–`C8`, `D1`–`D6`, `P2`, `P5` | arch-guard |
 | `sync_module_refs.py` | Repair module reference docs from the real filesystem: stale path prefixes, missing rows/sections, and stale `Extends`/`Implements` cells (`--dry-run`, `--check` read-only, `--module`) | — (doc writes; `--check` exits 1 while drift remains) | sync-docs, doc-writing |

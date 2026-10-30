@@ -14,6 +14,7 @@ return [
     ],
 
     'preparation_title' => 'PKL Internship Preparation',
+    'documents' => 'Required Documents',
     'preparation_subtitle' => 'Complete your placement preference and required documents for',
     'placement_choice_title' => 'Select Placement Channel',
     'placement_choice_desc' => 'Choose between available partner company quotas or propose your own internship company.',
@@ -60,6 +61,7 @@ return [
     ],
 
     'verification' => [
+        'status' => 'Verification Status',
         'title' => 'Registration Verification',
         'subtitle' => 'Review and process pending student registrations',
         'empty' => 'No pending registrations',

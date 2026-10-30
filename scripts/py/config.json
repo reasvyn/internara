@@ -75,6 +75,10 @@
       "script": "scan_ui_consistency.py",
       "description": "UI consistency checks"
     },
+    "translations": {
+      "script": "scan_translations.py",
+      "description": "Translation key resolution, parity between en and id, and codebase coverage"
+    },
     "violations": {
       "script": "scan_violations.py",
       "description": "C1-C8, D1-D6 architecture invariant violations"

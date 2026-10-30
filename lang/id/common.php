@@ -252,4 +252,14 @@ return [
         'terminated' => 'Dihentikan',
         'verified' => 'Terverifikasi',
     ],
+    'company' => 'Perusahaan',
+    'student' => 'Siswa',
+    'partner' => 'Mitra',
+    'dates' => 'Tanggal Pelaksanaan',
+    'save_and_continue' => 'Simpan dan Lanjutkan',
+    'upload_and_continue' => 'Unggah dan Lanjutkan',
+    'status' => [
+        'no_records' => 'Belum ada data tercatat.',
+        'verified' => 'Terverifikasi',
+    ],
 ];

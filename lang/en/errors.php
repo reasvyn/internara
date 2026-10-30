@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    'bad_request' => 'Bad Request',
     'unauthorized' => 'Unauthorized',
     'payment_required' => 'Payment Required',
     'forbidden' => 'Forbidden',

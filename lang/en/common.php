@@ -252,4 +252,14 @@ return [
         'terminated' => 'Terminated',
         'verified' => 'Verified',
     ],
+    'company' => 'Company',
+    'student' => 'Student',
+    'partner' => 'Partner',
+    'dates' => 'Execution Dates',
+    'save_and_continue' => 'Save and Continue',
+    'upload_and_continue' => 'Upload and Continue',
+    'status' => [
+        'no_records' => 'No records found.',
+        'verified' => 'Verified',
+    ],
 ];

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    'status' => 'Status',
     'rubrics' => 'Rubrik Penilaian',
     'rubrics_subtitle' => 'Tentukan struktur penilaian dengan kompetensi dan indikator',
     'new_rubric' => 'Rubrik Baru',
