@@ -60,6 +60,7 @@ This index provides a structured map of all documentation in the Internara proje
 
 ## Security & Access
 
+- **[Authentication & User Management Spec](specs/authentication-and-user-management.md)** — Feature specification covering Auth, User CRUD, and Flat RBAC ([YB7RG], [95EVB], [T4B26])
 - **[SECURITY.md](../SECURITY.md)** — Vulnerability reporting policy (repo root)
 - **[RBAC](guides/rbac.md)** — Authentication flow, flat role hierarchy, functional roles, permissions model
 - **[System Observability](guides/system-observability.md)** — SmartLogger, Pulse, audit logs, compliance
