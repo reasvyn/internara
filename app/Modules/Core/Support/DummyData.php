@@ -21,7 +21,6 @@ use App\Modules\Enrollment\Domain\Placement\Models\PlacementChangeRequest;
 use App\Modules\Enrollment\Domain\Registration\Enums\RegistrationDocumentStatus;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Enrollment\Domain\Registration\Models\RegistrationDocument;
-use App\Modules\Incident\Domain\IncidentReport\Models\IncidentReport;
 use App\Modules\Journal\Domain\AbsenceRequest\Enums\AbsenceReasonType;
 use App\Modules\Journal\Domain\AbsenceRequest\Enums\AbsenceRequestStatus;
 use App\Modules\Journal\Domain\AbsenceRequest\Models\AbsenceRequest;
@@ -228,14 +227,6 @@ class DummyData
             $dummyDocumentIds = Document::where('id', 'like', "{$prefix}%")->pluck('id')->all();
 
             $purged = [];
-
-            // Incidents (legacy cleanup)
-            if (class_exists(IncidentReport::class)) {
-                $purged['incident_reports'] = IncidentReport::where('id', 'like', "{$prefix}%")
-                    ->when(! empty($dummyRegistrationIds), fn ($q) => $q->orWhereIn('registration_id', $dummyRegistrationIds))
-                    ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('reported_by', $dummyUserIds)->orWhereIn('resolved_by', $dummyUserIds))
-                    ->delete();
-            }
 
             // Sysadmin requests & notifications
             $purged['placement_change_requests'] = PlacementChangeRequest::where('id', 'like', "{$prefix}%")

@@ -239,21 +239,6 @@ scheduling/verification.
 
 ---
 
-### Incident — Issue Tracking (Inactive in MVP)
-
-Incident reports and workplace concern documentation (routes deactivated per #540).
-
-- Overview: [incident.md](incident.md)
-- Reference: [incident-reference.md](incident-reference.md)
-
-**Key Concepts:** IncidentReport, Severity, Resolution
-
-**Dependencies:** User, Program, Core
-
-**Used By:** None
-
----
-
 ## Supporting Modules
 
 ### Partners — Industrial Partners
@@ -333,14 +318,14 @@ acknowledgements.
 - **Super Admin**: SysAdmin, User
 - **Academics**: Academics, Program, Assignment
 - **Supervisor**: Program, Enrollment, Journals
-- **Teacher**: User, Evaluation, Incident
+- **Teacher**: User, Evaluation
 - **Student**: Enrollment, Journals, Assignment
 
 ---
 
 ## Architecture Overview
 
-All 19 modules are vertical slices cross-cutting the 4-layer architecture defined in
+All 18 modules are vertical slices cross-cutting the 4-layer architecture defined in
 [`docs/architecture.md`](../../architecture.md):
 
 - **Layer 4 — Presentation/UI** — Livewire, Blade, TallstackUI v4, Tailwind CSS v4, Controllers, Policies, Routes,

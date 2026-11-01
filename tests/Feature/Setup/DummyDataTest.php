@@ -136,8 +136,7 @@ describe('3UOZP: dummy dataset', function (): void {
 
         expect(DB::table('attendances')->count())->toBeGreaterThan(0)
             ->and(DB::table('logbooks')->count())->toBeGreaterThan(0)
-            ->and(DB::table('certificates')->count())->toBeGreaterThan(0)
-            ->and(DB::table('incident_reports')->count())->toBeGreaterThan(0);
+            ->and(DB::table('certificates')->count())->toBeGreaterThan(0);
     });
 
     test('dummy dataset provisions at least 10 groups each with 5 students, 1 teacher, 1 supervisor, and 1 company', function (): void {
