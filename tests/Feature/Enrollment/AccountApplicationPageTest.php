@@ -48,6 +48,7 @@ function aaValidForm(Department $dept, Internship $internship, ?Placement $place
 // themselves are identical for every caller.
 function aaApplyAsStudent(): Testable
 {
+    aaPageInternship();
     $student = User::factory()->create();
     $student->assignRole('student');
 

@@ -101,6 +101,7 @@ test('920SO-NFR-APPLY-006: new and reactivated submissions use the same confirma
 });
 
 test('920SO-NFR-APPLY-007: apply form exposes labels for its core inputs', function (): void {
+    additionalApplicationInternship();
     $html = test()->get('/apply')->assertOk()->getContent();
 
     expect($html)->toContain('for="form.name"')
@@ -229,4 +230,11 @@ test('920SO-FR-APPLY-027: form payload is flat and excludes inactive mode fields
 
     expect($component->get('form')->toArray())->toHaveKeys(['name', 'email', 'internship_id', 'academic_year'])
         ->and($component->get('form')->toArray()['placement_id'])->toBeNull();
+});
+
+test('920SO-FR-APPLY-030: apply page shows closed notification when no open internship exists', function (): void {
+    Livewire::test(ApplyPage::class)
+        ->assertSee(__('registration.account_application.closed_title'))
+        ->assertSee(__('registration.account_application.closed_desc'))
+        ->assertDontSee(__('registration.account_application.submit'));
 });

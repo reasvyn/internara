@@ -128,6 +128,9 @@ return [
         'proposed_address' => 'Alamat Perusahaan Usulan',
         'submit' => 'Kirim Pendaftaran',
         'success' => 'Pendaftaran berhasil dikirim. Anda akan diberitahu setelah ditinjau.',
+        'closed_title' => 'Pendaftaran Akun Belum Dibuka',
+        'closed_desc' => 'Pendaftaran akun mandiri hanya dapat diakses saat ada program PKL yang membuka pendaftaran. Silakan hubungi koordinator PKL sekolah.',
+        'back_to_home' => 'Kembali ke Beranda',
     ],
 
     'document_upload' => [

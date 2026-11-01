@@ -128,6 +128,9 @@ return [
         'proposed_address' => 'Proposed Company Address',
         'submit' => 'Submit Application',
         'success' => 'Application submitted successfully. You will be notified once reviewed.',
+        'closed_title' => 'Account Registration Closed',
+        'closed_desc' => 'Account registration is only accessible when an active internship program is open for enrollment. Please contact your school coordinator.',
+        'back_to_home' => 'Back to Home',
     ],
 
     'document_upload' => [

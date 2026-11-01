@@ -13,8 +13,10 @@ use App\Modules\UI\Livewire\BaseFormView;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Layout;
 use TallStackUi\Traits\Interactions;
 
+#[Layout('ui::layouts.guest')]
 class ApplyPage extends BaseFormView
 {
     use Interactions;
@@ -31,7 +33,23 @@ class ApplyPage extends BaseFormView
     #[Computed]
     public function internships(): Collection
     {
-        return Internship::whereIn('status', ['published', 'active'])->get();
+        return Internship::query()
+            ->whereIn('status', ['published', 'active'])
+            ->where(function ($q) {
+                $q->whereNull('registration_start_date')->orWhere(
+                    'registration_start_date',
+                    '<=',
+                    now()->toDateString(),
+                );
+            })
+            ->where(function ($q) {
+                $q->whereNull('registration_end_date')->orWhere(
+                    'registration_end_date',
+                    '>=',
+                    now()->toDateString(),
+                );
+            })
+            ->get();
     }
 
     #[Computed]
@@ -49,6 +67,12 @@ class ApplyPage extends BaseFormView
 
     public function submit(ApplyAccountAction $action): void
     {
+        if ($this->internships->isEmpty()) {
+            $this->toast()->error(__('registration.account_application.closed_desc'))->send();
+
+            return;
+        }
+
         $this->authorize('create', AccountApplication::class);
 
         $this->form->validate();

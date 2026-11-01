@@ -170,18 +170,20 @@
                             />
                         @endif
 
-                        <div class="border-base-content/10 @if (($registration['status'] ?? null) === 'open') mt-3.5 border-t pt-2.5 @endif text-center">
-                            <p class="text-base-content/60 text-xs leading-relaxed">
-                                {{ __('user.home.no_account_notice') }}
-                                <a
-                                    wire:navigate
-                                    href="{{ route('apply') }}"
-                                    class="text-primary font-semibold hover:underline"
-                                >
-                                    {{ __('user.home.apply_account_action') }}
-                                </a>
-                            </p>
-                        </div>
+                        @if (($registration['status'] ?? null) === 'open')
+                            <div class="border-base-content/10 mt-3.5 border-t pt-2.5 text-center">
+                                <p class="text-base-content/60 text-xs leading-relaxed">
+                                    {{ __('user.home.no_account_notice') }}
+                                    <a
+                                        wire:navigate
+                                        href="{{ route('apply') }}"
+                                        class="text-primary font-semibold hover:underline"
+                                    >
+                                        {{ __('user.home.apply_account_action') }}
+                                    </a>
+                                </p>
+                            </div>
+                        @endif
                     </div>
                 </div>
 
