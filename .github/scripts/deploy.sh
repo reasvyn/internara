@@ -148,12 +148,6 @@ docker image prune -f >/dev/null 2>&1 || true
 echo "==> Clearing application and view cache"
 docker compose "${ENV_FILE_ARGS[@]}" exec -T app php artisan optimize:clear || true
 
-if [ "${SEED_DUMMY:-false}" = "true" ] || [ "${RESET_DUMMY:-false}" = "true" ]; then
-    echo "==> Cleaning database and seeding official SMKN 2 Klaten dummy dataset"
-    docker compose "${ENV_FILE_ARGS[@]}" exec -T app php artisan dummy:rollback --force || true
-    docker compose "${ENV_FILE_ARGS[@]}" exec -T app php artisan dummy:seed --force || true
-fi
-
 echo "==> Syncing compiled public assets to host public/build"
 APP_CONTAINER_ID=$(docker compose "${ENV_FILE_ARGS[@]}" ps -q app 2>/dev/null || true)
 if [ -n "$APP_CONTAINER_ID" ]; then
