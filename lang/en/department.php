@@ -21,7 +21,7 @@ return [
     ],
     'search_placeholder' => 'Search department...',
     'name' => 'Department Name',
-    'name_placeholder' => 'e.g. Rekayasa Perangkat Lunak',
+    'name_placeholder' => 'e.g. Information Systems, Networking, and Applications',
     'description' => 'Description',
     'created_at' => 'Created',
     'save_success_created' => 'Department created successfully.',
@@ -33,8 +33,8 @@ return [
     'delete_blocked_bulk' => '{0} No departments skipped|{1} 1 department skipped (has profiles)|[2,*] :count departments skipped (have profiles).',
     'import_invalid' => 'Invalid CSV format. The file must have a "name" column.',
     'import_summary' => ':created departments imported, :skipped skipped (duplicates).',
-    'template_example_name' => 'e.g. Software Engineering',
-    'template_example_description' => 'e.g. Department focused on software development',
+    'template_example_name' => 'e.g. Information Systems, Networking, and Applications',
+    'template_example_description' => 'e.g. Web/cloud application development, enterprise networking, and cybersecurity',
 
     'guide' => [
         'title' => 'Department Guide',

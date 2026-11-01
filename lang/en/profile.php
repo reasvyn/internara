@@ -39,7 +39,7 @@ return [
     'employment_status' => 'Employment Status',
     'job_title' => 'Job Title',
     'competence_field' => 'Field of Competence',
-    'competence_field_placeholder' => 'e.g., Software Engineering, Multimedia',
+    'competence_field_placeholder' => 'e.g., Information Systems, Networking, and Applications',
     'select_option' => 'Select an option',
 
     'job_title_placeholder' => 'e.g., Head of Department',

@@ -576,6 +576,16 @@ class DummyData
             ['name' => 'Teknik dan Manajemen Perawatan Otomotif', 'description' => 'Diagnosis sistem manajemen mesin modern (EFI/CRDi), pemeliharaan sasis dan pemindah tenaga otomotif, manajemen bengkel resmi, dan sistem kelistrikan kendaraan listrik/hibrida.'],
         ];
 
+        $realNames = array_column($depts, 'name');
+
+        // Purge any placeholder departments outside the 8 official SMKN 2 Klaten competencies
+        $placeholderDepts = Department::whereNotIn('name', $realNames)->get();
+        foreach ($placeholderDepts as $placeholder) {
+            AccountApplication::where('department_id', $placeholder->id)->delete();
+            Profile::where('department_id', $placeholder->id)->update(['department_id' => null]);
+            $placeholder->delete();
+        }
+
         foreach ($depts as $dept) {
             $this->departments->push(
                 $this->firstOrCreate(

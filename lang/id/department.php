@@ -21,7 +21,7 @@ return [
     ],
     'search_placeholder' => 'Cari jurusan...',
     'name' => 'Nama Jurusan',
-    'name_placeholder' => 'contoh: Rekayasa Perangkat Lunak',
+    'name_placeholder' => 'contoh: Sistem Informasi, Jaringan, dan Aplikasi',
     'description' => 'Deskripsi',
     'created_at' => 'Dibuat',
     'save_success_created' => 'Jurusan berhasil dibuat.',
@@ -33,8 +33,8 @@ return [
     'delete_blocked_bulk' => '{0} Tidak ada jurusan yang dilewati|{1} 1 jurusan dilewati (memiliki profil)|[2,*] :count jurusan dilewati (memiliki profil).',
     'import_invalid' => 'Format CSV tidak valid. File harus memiliki kolom "name".',
     'import_summary' => ':created jurusan diimpor, :skipped dilewati (duplikat).',
-    'template_example_name' => 'contoh: Rekayasa Perangkat Lunak',
-    'template_example_description' => 'contoh: Jurusan yang berfokus pada pengembangan perangkat lunak',
+    'template_example_name' => 'contoh: Sistem Informasi, Jaringan, dan Aplikasi',
+    'template_example_description' => 'contoh: Pengembangan aplikasi web/cloud, administrasi jaringan enterprise, dan keamanan siber.',
 
     'guide' => [
         'title' => 'Panduan Jurusan',

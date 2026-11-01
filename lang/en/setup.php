@@ -230,9 +230,9 @@ return [
         'department_subtitle' => 'Academic Specialization',
         'department_desc' => 'Create your first department. You can add more later.',
         'department_name' => 'Department Name',
-        'department_name_placeholder' => 'e.g.: Software Engineering',
+        'department_name_placeholder' => 'e.g.: Information Systems, Networking, and Applications',
         'department_description' => 'Description (Optional)',
-        'department_description_placeholder' => 'Short description of this department...',
+        'department_description_placeholder' => 'Description of this competency area...',
 
         'finalize' => 'Finalize',
         'finalize_subtitle' => 'System Readiness Audit',

@@ -230,9 +230,9 @@ return [
         'department_subtitle' => 'Spesialisasi Akademik',
         'department_desc' => 'Buat jurusan pertama Anda. Anda dapat menambahkan lebih banyak nanti.',
         'department_name' => 'Nama Jurusan',
-        'department_name_placeholder' => 'contoh: Rekayasa Perangkat Lunak',
+        'department_name_placeholder' => 'contoh: Sistem Informasi, Jaringan, dan Aplikasi',
         'department_description' => 'Deskripsi (Opsional)',
-        'department_description_placeholder' => 'Keterangan singkat mengenai jurusan ini...',
+        'department_description_placeholder' => 'Keterangan kompetensi keahlian...',
 
         'finalize' => 'Finalisasi',
         'finalize_subtitle' => 'Audit Kesiapan Sistem',

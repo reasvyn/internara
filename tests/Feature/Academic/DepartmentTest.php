@@ -279,4 +279,18 @@ describe('4HWSB: departments', function (): void {
         expect($rules['name'])->toContain('max:255')
             ->and($rules['description'])->toContain('max:1000');
     });
+
+    test('4HWSB-FR-DEPT-020: migration purges placeholder departments leaving only 8 official SMKN 2 Klaten competencies', function (): void {
+        Department::factory()->create(['name' => 'Placeholder Jurusan 1']);
+        Department::factory()->create(['name' => 'Placeholder Jurusan 2']);
+
+        $migration = require database_path('migrations/2026_11_01_220000_purge_placeholder_departments.php');
+        $migration->up();
+
+        expect(Department::where('name', 'Placeholder Jurusan 1')->exists())->toBeFalse()
+            ->and(Department::where('name', 'Placeholder Jurusan 2')->exists())->toBeFalse()
+            ->and(Department::count())->toBe(8)
+            ->and(Department::where('name', 'Sistem Informasi, Jaringan, dan Aplikasi')->exists())->toBeTrue()
+            ->and(Department::where('name', 'Teknik dan Manajemen Perawatan Otomotif')->exists())->toBeTrue();
+    });
 });

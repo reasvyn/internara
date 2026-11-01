@@ -39,7 +39,7 @@ return [
     'employment_status' => 'Status Kepegawaian',
     'job_title' => 'Jabatan',
     'competence_field' => 'Bidang Kompetensi',
-    'competence_field_placeholder' => 'Contoh: Rekayasa Perangkat Lunak, Multimedia',
+    'competence_field_placeholder' => 'Contoh: Sistem Informasi, Jaringan, dan Aplikasi',
     'select_option' => 'Pilih opsi',
 
     'job_title_placeholder' => 'Contoh: Kepala Jurusan',
