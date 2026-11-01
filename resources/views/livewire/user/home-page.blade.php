@@ -155,12 +155,12 @@
                         </div>
                     </div>
 
-                    {{-- Action Row (Only rendered when registration is open) --}}
-                    @if (($registration['status'] ?? null) === 'open')
-                        <div class="mt-auto w-full pt-3">
+                    {{-- Action Row & Footer --}}
+                    <div class="mt-auto w-full pt-3">
+                        @if (($registration['status'] ?? null) === 'open')
                             <x-ts-button
                                 wire:navigate
-                                href="{{ route('apply') }}"
+                                href="{{ route('login') }}"
                                 :text="__('user.home.register_now')"
                                 icon="arrow-right"
                                 icon-right
@@ -168,8 +168,21 @@
                                 lg
                                 class="w-full font-bold shadow-xs transition-all duration-200 hover:shadow-md"
                             />
+                        @endif
+
+                        <div class="border-base-content/10 @if (($registration['status'] ?? null) === 'open') mt-3.5 border-t pt-2.5 @endif text-center">
+                            <p class="text-base-content/60 text-xs leading-relaxed">
+                                {{ __('user.home.no_account_notice') }}
+                                <a
+                                    wire:navigate
+                                    href="{{ route('apply') }}"
+                                    class="text-primary font-semibold hover:underline"
+                                >
+                                    {{ __('user.home.apply_account_action') }}
+                                </a>
+                            </p>
                         </div>
-                    @endif
+                    </div>
                 </div>
 
                 {{-- Login Card --}}
