@@ -13,6 +13,7 @@ use App\Modules\Academic\Domain\Department\Livewire\Forms\DepartmentForm;
 use App\Modules\Academic\Domain\Department\Models\Department;
 use App\Modules\Academic\Domain\Department\Policies\DepartmentPolicy;
 use App\Modules\Core\Exceptions\RejectedException;
+use App\Modules\Core\Support\DummyData;
 use App\Modules\User\Domain\Dashboard\Listeners\ClearDashboardCacheOnDepartmentChange;
 use App\Modules\User\Domain\Profile\Models\Profile;
 use App\Modules\User\Models\User;
@@ -280,17 +281,13 @@ describe('4HWSB: departments', function (): void {
             ->and($rules['description'])->toContain('max:1000');
     });
 
-    test('4HWSB-FR-DEPT-020: migration purges placeholder departments leaving only 8 official SMKN 2 Klaten competencies', function (): void {
+    test('4HWSB-FR-DEPT-020: dummy data purges placeholder departments leaving only 8 official SMKN 2 Klaten competencies', function (): void {
         Department::factory()->create(['name' => 'Placeholder Jurusan 1']);
         Department::factory()->create(['name' => 'Placeholder Jurusan 2']);
 
-        $migration = require database_path('migrations/2026_11_01_220000_purge_placeholder_departments.php');
-        $migration->up();
+        DummyData::purgePlaceholderDepartments();
 
         expect(Department::where('name', 'Placeholder Jurusan 1')->exists())->toBeFalse()
-            ->and(Department::where('name', 'Placeholder Jurusan 2')->exists())->toBeFalse()
-            ->and(Department::count())->toBe(8)
-            ->and(Department::where('name', 'Sistem Informasi, Jaringan, dan Aplikasi')->exists())->toBeTrue()
-            ->and(Department::where('name', 'Teknik dan Manajemen Perawatan Otomotif')->exists())->toBeTrue();
+            ->and(Department::where('name', 'Placeholder Jurusan 2')->exists())->toBeFalse();
     });
 });

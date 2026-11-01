@@ -367,6 +367,7 @@ class DummyData
             }
 
             // Departments
+            self::purgePlaceholderDepartments();
             $purged['departments'] = Department::where('id', 'like', "{$prefix}%")->delete();
 
             // Past Academic Year
@@ -458,6 +459,7 @@ class DummyData
             $this->seedDailyOps();
             $this->seedFinalization();
             $this->seedSysAdminData();
+            self::purgePlaceholderDepartments();
 
             return $this->counts;
         });
@@ -578,13 +580,7 @@ class DummyData
 
         $realNames = array_column($depts, 'name');
 
-        // Purge any placeholder departments outside the 8 official SMKN 2 Klaten competencies
-        $placeholderDepts = Department::whereNotIn('name', $realNames)->get();
-        foreach ($placeholderDepts as $placeholder) {
-            AccountApplication::where('department_id', $placeholder->id)->delete();
-            Profile::where('department_id', $placeholder->id)->update(['department_id' => null]);
-            $placeholder->delete();
-        }
+        self::purgePlaceholderDepartments();
 
         foreach ($depts as $dept) {
             $this->departments->push(
@@ -713,7 +709,7 @@ class DummyData
             $user = $this->ensureUser($acc['email'], $acc['role'], 'users', $acc['name']);
             if ($acc['role'] === 'admin') {
                 $this->admin = $user;
-                $this->ensureProfile($user, Profile::factory(), [
+                $this->ensureProfile($user, Profile::factory()->forAdmin(), [
                     'phone' => $acc['phone'] ?? null,
                     'address' => $acc['address'] ?? null,
                     'gender' => $acc['gender'] ?? 'female',
@@ -751,7 +747,7 @@ class DummyData
             if ($this->admin === null) {
                 $this->admin = $user;
             }
-            $this->ensureProfile($user, Profile::factory(), [
+            $this->ensureProfile($user, Profile::factory()->forAdmin(), [
                 'phone' => $adm['phone'] ?? null,
                 'address' => $adm['address'] ?? null,
                 'gender' => $adm['gender'] ?? 'male',
@@ -1548,6 +1544,24 @@ class DummyData
     private function bump(string $key): void
     {
         $this->counts[$key] = ($this->counts[$key] ?? 0) + 1;
+    }
+
+    public static function purgePlaceholderDepartments(): int
+    {
+        $realNames = array_column(self::dataset()['departments'] ?? [], 'name');
+        if (empty($realNames)) {
+            return 0;
+        }
+
+        $placeholderDepts = Department::whereNotIn('name', $realNames)->get();
+        $count = $placeholderDepts->count();
+        foreach ($placeholderDepts as $placeholder) {
+            AccountApplication::where('department_id', $placeholder->id)->delete();
+            Profile::where('department_id', $placeholder->id)->update(['department_id' => null]);
+            $placeholder->delete();
+        }
+
+        return $count;
     }
 
     /**

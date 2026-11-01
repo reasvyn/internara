@@ -35,9 +35,19 @@ class ProfileFactory extends Factory
             ],
             'id_number' => null,
             'internal_notes' => $this->faker->sentence(),
-            'department_id' => Department::factory(),
+            'department_id' => null,
             'company_id' => null,
         ];
+    }
+
+    public function forAdmin(): static
+    {
+        return $this->state(
+            fn () => [
+                'department_id' => null,
+                'company_id' => null,
+            ],
+        );
     }
 
     public function forStudent(Department|int|null $department = null): static

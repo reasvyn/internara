@@ -23,7 +23,7 @@ class AccountApplicationFactory extends Factory
                 'phone' => $this->faker->phoneNumber(),
                 'address' => $this->faker->address(),
                 'entry_year' => $this->faker->year(),
-                'class_name' => 'XII-RPL-1',
+                'class_name' => 'XII-SIJA-1',
             ],
             'status' => 'pending',
             'rejection_reason' => null,
