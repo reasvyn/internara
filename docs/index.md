@@ -38,6 +38,7 @@ This index provides a structured map of all documentation in the Internara proje
 
 - **[Installation & Initial Configuration Spec](specs/installation-and-initial-configuration.md)** — Feature specification covering CLI installation and setup wizard ([8NZAU], [VEJCX])
 - **[Authentication & User Management Spec](specs/authentication-and-user-management.md)** — Feature specification covering Auth, User CRUD, and Flat RBAC ([YB7RG], [95EVB], [T4B26])
+- **[Registration & Document Checklist Spec](specs/registration-and-document-checklist.md)** — Feature specification covering PKL registration, placement plotting, and pre-PKL document checklist ([MBB5R], [7H5D6])
 - **[Daily Journal & Attendance Spec](specs/daily-journal-and-attendance.md)** — Core Pillar 1 specification covering GPS attendance, reflective logbooks, and absence requests ([1KSWL])
 
 ---
