@@ -455,7 +455,17 @@ location ~ \.php$ {
     fastcgi_param SCRIPT_NAME /index.php;
     fastcgi_param HTTPS on;
     fastcgi_param HTTP_X_FORWARDED_PROTO https;
+    fastcgi_connect_timeout 5s;
+    fastcgi_send_timeout 60s;
+    fastcgi_read_timeout 60s;
     include fastcgi_params;
+}
+
+# Graceful maintenance screen if backend is restarting or under deployment
+error_page 502 503 504 /502.html;
+location = /502.html {
+    root /var/lib/docker/volumes/internara_app_data/_data;
+    internal;
 }
 
 location /storage/ {
@@ -656,6 +666,15 @@ Since the container uses SQLite, no database password is required. Do not commit
 and `queue` (`queue:work` against the database queue). Both use SQLite; there is no MySQL service.
 
 See `docker-compose.dev.yml` for the Sail configuration.
+
+### Failure-Resilient & Zero-Downtime Deployment Lifecycle
+
+To prevent `502 Bad Gateway` errors and ensure that failed deployments never make the website inaccessible, the deployment pipeline (`deploy.sh`, `hotfix.yaml`, `release.yml`) implements four defensive layers:
+
+1. **Active Image & Revision Snapshotting**: Before updating checkout or building, the currently active container image is tagged as `internara-app:backup` and its Git commit hash is recorded in `.backups/last_known_good.json`.
+2. **Pre-Flight Smoke Container Gate**: The candidate image is verified in an isolated, disposable container (`docker run --rm ...`) testing PHP syntax, Artisan boot, and route compilation *before* stopping or recreating the active production container. If pre-flight fails, the active service remains online with zero interruption.
+3. **Instant Cached Rollback (<3 seconds)**: If container recreation or the post-deploy health check (`/up`) fails, the pipeline immediately re-tags `internara-app:backup` back to `internara-app` and restarts the container without waiting for a lengthy rebuild.
+4. **Branded Graceful Maintenance Page**: In host Nginx, `error_page 502 503 504 /502.html` points to `public/502.html`. In the brief seconds when containers are swapping, users receive an institutional maintenance notice that auto-reloads every 5 seconds instead of a raw 502 error.
 
 ---
 

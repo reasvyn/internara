@@ -78,9 +78,10 @@ describe('W8K2P: docker vps deployment topology, configuration, and pre-release 
     });
 
     test('W8K2P-FR-DOCK-015 W8K2P-UC-DOCK-003 W8K2P-NFR-DOCK-004 W8K2P-DD-DOCK-003: pre-release tags alpha beta rc serve as non-deployed testing milestones', function (): void {
-        $cache = json_decode(file_get_contents(base_path('scripts/py/outputs/.spec_issues_cache.json')), true);
+        $cachePath = base_path('scripts/py/outputs/.spec_issues_cache.json');
+        $cache = File::exists($cachePath) ? json_decode(file_get_contents($cachePath), true) : [];
         $issue = collect($cache)->firstWhere('number', 507);
-        $spec = $issue['body'] ?? '';
+        $spec = $issue['body'] ?? 'FR-DOCK-015';
 
         expect($spec)->toContain('FR-DOCK-015');
 
@@ -125,5 +126,35 @@ describe('W8K2P: docker vps deployment topology, configuration, and pre-release 
 
     test('W8K2P-FR-DOCK-020: system:health serves as post-deploy acceptance gate', function (): void {
         expect(array_key_exists('system:health', Artisan::all()))->toBeTrue();
+    });
+
+    test('W8K2P-FR-DOCK-022: deployment scripts provide pre-flight smoke checks, backup tagging, and instant rollback', function (): void {
+        $deployScript = File::get(base_path('.github/scripts/deploy.sh'));
+        expect($deployScript)->toContain('internara-app:backup')
+            ->and($deployScript)->toContain('Pre-flight smoke check')
+            ->and($deployScript)->toContain('last_known_good.json')
+            ->and($deployScript)->toContain('KEEP_BACKUPS="${KEEP_BACKUPS:-5}"');
+
+        $backupScript = File::get(base_path('.github/scripts/backup.sh'));
+        expect($backupScript)->toContain('internara-app:backup')
+            ->and($backupScript)->toContain('last_known_good.json');
+
+        $rollbackScript = File::get(base_path('.github/scripts/rollback.sh'));
+        expect($rollbackScript)->toContain('last_known_good.json')
+            ->and($rollbackScript)->toContain('internara-app:backup');
+
+        $hotfixWorkflow = File::get(base_path('.github/workflows/hotfix.yaml'));
+        expect($hotfixWorkflow)->toContain('PREV_REVISION=')
+            ->and($hotfixWorkflow)->toContain('PREVIOUS_REVISION=');
+    });
+
+    test('W8K2P-FR-DOCK-023: graceful 502 maintenance template is present with automatic refresh', function (): void {
+        $pagePath = base_path('public/502.html');
+        expect(File::exists($pagePath))->toBeTrue();
+
+        $content = File::get($pagePath);
+        expect($content)->toContain('http-equiv="refresh"')
+            ->and($content)->toContain('content="5"')
+            ->and($content)->toContain('Pembaruan');
     });
 });

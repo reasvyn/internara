@@ -10,8 +10,15 @@ BACKUP_DIR="${DEPLOY_DIR}/.backups"
 
 cd "$DEPLOY_DIR"
 
-# Find the latest backup
-LATEST_BACKUP=$(ls -t "$BACKUP_DIR"/backup_*.json 2>/dev/null | head -1)
+# Find the latest backup or last known good state
+LATEST_BACKUP=""
+if [ -f "$BACKUP_DIR/last_known_good.json" ]; then
+    LATEST_BACKUP="$BACKUP_DIR/last_known_good.json"
+fi
+
+if [ -z "$LATEST_BACKUP" ]; then
+    LATEST_BACKUP=$(ls -t "$BACKUP_DIR"/backup_*.json 2>/dev/null | head -1)
+fi
 
 if [ -z "$LATEST_BACKUP" ]; then
     echo "==> No backup found to rollback to" >&2
@@ -21,9 +28,9 @@ fi
 echo "==> Found backup: $LATEST_BACKUP"
 
 # Extract revision from backup
-BACKUP_REVISION=$(jq -r '.revision' "$LATEST_BACKUP" 2>/dev/null || echo "")
-BACKUP_TAG=$(jq -r '.tag' "$LATEST_BACKUP" 2>/dev/null || echo "")
-BACKUP_TIMESTAMP=$(jq -r '.timestamp' "$LATEST_BACKUP" 2>/dev/null || echo "unknown")
+BACKUP_REVISION=$(jq -r '.revision // empty' "$LATEST_BACKUP" 2>/dev/null || echo "")
+BACKUP_TAG=$(jq -r '.tag // empty' "$LATEST_BACKUP" 2>/dev/null || echo "")
+BACKUP_TIMESTAMP=$(jq -r '.timestamp // empty' "$LATEST_BACKUP" 2>/dev/null || echo "unknown")
 
 if [ -z "$BACKUP_REVISION" ] || [ "$BACKUP_REVISION" = "null" ]; then
     echo "==> Backup revision is invalid" >&2
@@ -88,9 +95,16 @@ if [ -n "$ENV_FILE" ] && [ -f "$ENV_FILE" ] && [ "$ENV_FILE" != "$DEPLOY_DIR/.en
 fi
 
 # Redeploy with the rolled-back version
-echo "==> Redeploying..."
-docker compose "${ENV_FILE_ARGS[@]}" build --no-cache --pull
-docker compose "${ENV_FILE_ARGS[@]}" up -d --remove-orphans --force-recreate
+echo "==> Restoring container state..."
+if docker image inspect internara-app:backup >/dev/null 2>&1; then
+    echo "==> Fast-restoring container directly from internara-app:backup image"
+    docker tag internara-app:backup internara-app
+    docker compose "${ENV_FILE_ARGS[@]}" up -d --remove-orphans --force-recreate
+else
+    echo "==> Backup image not cached; rebuilding from checked out revision..."
+    docker compose "${ENV_FILE_ARGS[@]}" build --pull
+    docker compose "${ENV_FILE_ARGS[@]}" up -d --remove-orphans --force-recreate
+fi
 
 echo "==> Waiting for health check..."
 for i in {1..30}; do

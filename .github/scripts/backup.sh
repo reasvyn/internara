@@ -22,17 +22,40 @@ echo "==> Creating backup: $TIMESTAMP"
 echo "  Revision: $CURRENT_REVISION"
 echo "  Tag: $CURRENT_TAG"
 
+# Tag current running container image if Docker is available
+CURRENT_APP_ID=$(docker compose ps -q app 2>/dev/null || true)
+CURRENT_IMAGE=""
+if [ -n "$CURRENT_APP_ID" ]; then
+    CURRENT_IMAGE=$(docker inspect --format '{{.Image}}' "$CURRENT_APP_ID" 2>/dev/null || true)
+    if [ -n "$CURRENT_IMAGE" ]; then
+        echo "  Active Image: $CURRENT_IMAGE (tagged as internara-app:backup)"
+        docker tag "$CURRENT_IMAGE" internara-app:backup 2>/dev/null || true
+    fi
+fi
+
 # Store backup metadata
 cat > "$BACKUP_DIR/backup_${TIMESTAMP}.json" << EOF
 {
     "timestamp": "$TIMESTAMP",
     "revision": "$CURRENT_REVISION",
     "tag": "$CURRENT_TAG",
+    "image_id": "$CURRENT_IMAGE",
     "created_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 }
 EOF
 
-# Keep only last 5 backups (disk space management)
+# Update pointer to last known good deployment
+cat > "$BACKUP_DIR/last_known_good.json" << EOF
+{
+    "timestamp": "$TIMESTAMP",
+    "revision": "$CURRENT_REVISION",
+    "tag": "$CURRENT_TAG",
+    "image_id": "$CURRENT_IMAGE",
+    "created_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+}
+EOF
+
+# Keep last 5 backups (disk space management)
 ls -t "$BACKUP_DIR"/backup_*.json 2>/dev/null | tail -n +6 | xargs -r rm -f
 
 echo "==> Backup created: $BACKUP_DIR/backup_${TIMESTAMP}.json"

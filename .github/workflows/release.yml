@@ -563,6 +563,8 @@ jobs:
 
                       # Backup current deployment before changes
                       echo "==> Creating backup"
+                      PREV_REVISION=$(git rev-parse HEAD 2>/dev/null || echo "")
+                      echo "==> Active revision before update: $PREV_REVISION"
                       bash .github/scripts/backup.sh
 
                       # Checkout and reset to the version tag
@@ -572,8 +574,8 @@ jobs:
                       git reset --hard "$VERSION_TAG"
                       echo "==> Checked out $VERSION_TAG"
 
-                      # Run deployment with production env file
-                      DB_PASSWORD="${DB_PASSWORD:-}" HEALTH_URL="$HEALTH_URL" VERSION_TAG="$VERSION_TAG" ENV_FILE="$ENV_FILE" bash .github/scripts/deploy.sh
+                      # Run deployment with production env file and explicit PREVIOUS_REVISION
+                      PREVIOUS_REVISION="$PREV_REVISION" DB_PASSWORD="${DB_PASSWORD:-}" HEALTH_URL="$HEALTH_URL" VERSION_TAG="$VERSION_TAG" ENV_FILE="$ENV_FILE" bash .github/scripts/deploy.sh
 
             - name: Notify deployment success
               if: success()

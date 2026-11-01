@@ -165,14 +165,18 @@ jobs:
                       fi
                       echo "==> Deploying in: $DEPLOY_PATH"
                       cd "$DEPLOY_PATH"
+                      # Capture active revision and create backup before switching checkout
+                      PREV_REVISION=$(git rev-parse HEAD 2>/dev/null || echo "")
+                      echo "==> Active revision before update: $PREV_REVISION"
+                      bash .github/scripts/backup.sh 2>/dev/null || true
                       # Ensure we are on hotfix and at the pushed commit
                       git fetch --quiet origin hotfix
                       git checkout --quiet hotfix
                       # Reset to the exact commit GitHub just pushed (prevents TOCTOU)
                       git reset --hard --quiet "origin/hotfix"
                       echo "==> Checked out $(git rev-parse --short HEAD) on $(git branch --show-current)"
-                      # Run the same deploy path as release production (health-gated, auto-rollback)
-                      DB_PASSWORD="${DB_PASSWORD:-}" HEALTH_URL="$HEALTH_URL" VERSION_TAG="$VERSION_TAG" ENV_FILE="$ENV_FILE" bash .github/scripts/deploy.sh
+                      # Run the deploy with explicit PREVIOUS_REVISION (health-gated, preflight-checked, auto-rollback)
+                      PREVIOUS_REVISION="$PREV_REVISION" DB_PASSWORD="${DB_PASSWORD:-}" HEALTH_URL="$HEALTH_URL" VERSION_TAG="$VERSION_TAG" ENV_FILE="$ENV_FILE" bash .github/scripts/deploy.sh
                       echo "==> Hotfix deploy finished"
 
             - name: Notify success

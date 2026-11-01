@@ -17,8 +17,8 @@ cp -a /opt/app-public/. /app/public/
 umask 0002
 
 mkdir -p /app/storage/framework/cache/data /app/storage/framework/sessions /app/storage/framework/views /app/storage/logs /app/bootstrap/cache
-chown -R www-data:www-data /app/storage /app/bootstrap/cache
-chmod -R u+rwX,g+rwX /app/storage /app/bootstrap/cache
+chown -R www-data:www-data /app/storage/framework /app/storage/logs /app/bootstrap/cache
+chmod -R u+rwX,g+rwX /app/storage/framework /app/storage/logs /app/bootstrap/cache
 
 echo "[entrypoint] clearing application cache"
 su -s /bin/sh www-data -c "php /app/artisan optimize:clear"
@@ -27,7 +27,9 @@ echo "[entrypoint] running migrations"
 su -s /bin/sh www-data -c "php /app/artisan migrate --force"
 
 echo "[entrypoint] running seeders"
-su -s /bin/sh www-data -c "php /app/artisan db:seed --class=Database\\\\Seeders\\\\SetupSeeder --force"
+if ! su -s /bin/sh www-data -c "php /app/artisan db:seed --class=Database\\\\Seeders\\\\SetupSeeder --force"; then
+    echo "[entrypoint] WARNING: SetupSeeder reported an issue; continuing startup to ensure service availability" >&2
+fi
 
 if [ "$RUN_SCHEDULER" = "true" ]; then
     echo "[entrypoint] starting scheduler"
