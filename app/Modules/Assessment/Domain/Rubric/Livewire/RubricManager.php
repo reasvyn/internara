@@ -424,6 +424,6 @@ class RubricManager extends BaseRecordManager
 
     public function render(): View
     {
-        return view('assessment.rubric.rubric-manager');
+        return view('assessment.rubric.rubric-manager')->title(__('assessment.rubrics'));
     }
 }

@@ -49,6 +49,6 @@ class StudentDashboard extends UserDashboard
 
     public function render(): View
     {
-        return view('user.dashboard.student');
+        return view('user.dashboard.student')->title(__('dashboard.title'));
     }
 }

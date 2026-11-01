@@ -303,6 +303,6 @@ class SetupWizard extends BaseWizard
             'appName' => AppInfo::get('name', config('app.name')),
             'appVersion' => AppInfo::version(),
             'stepKeys' => $this->steps(),
-        ]);
+        ])->title($this->title());
     }
 }

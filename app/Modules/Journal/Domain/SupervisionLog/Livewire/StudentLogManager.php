@@ -153,6 +153,6 @@ class StudentLogManager extends BaseRecordManager
     #[Layout('ui::layouts.app')]
     public function render(): View
     {
-        return view('journal.supervision-log.student-log-manager');
+        return view('journal.supervision-log.student-log-manager')->title(__('journals.student_log_title'));
     }
 }

@@ -313,6 +313,6 @@ class PartnershipManager extends BaseRecordManager
     #[Layout('ui::layouts.app')]
     public function render(): View
     {
-        return view('partner.partnership.partnership-manager');
+        return view('partner.partnership.partnership-manager')->title(__('partnership.title'));
     }
 }

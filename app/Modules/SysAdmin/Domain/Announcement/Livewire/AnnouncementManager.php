@@ -139,6 +139,6 @@ class AnnouncementManager extends BaseRecordManager
                     'name' => $role->label(),
                 ],
             ),
-        ]);
+        ])->title(__('announcement.title'));
     }
 }

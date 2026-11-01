@@ -85,6 +85,6 @@ class ReportsManager extends BaseRecordManager
         return view('document.official-document.reports-manager', [
             'reports' => $this->rows(),
             'types' => $this->reportTypes,
-        ]);
+        ])->title(__('document.reports'));
     }
 }

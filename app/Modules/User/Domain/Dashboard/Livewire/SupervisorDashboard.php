@@ -55,6 +55,6 @@ class SupervisorDashboard extends UserDashboard
 
     public function render(): View
     {
-        return view('user.dashboard.supervisor');
+        return view('user.dashboard.supervisor')->title(__('dashboard.title'));
     }
 }

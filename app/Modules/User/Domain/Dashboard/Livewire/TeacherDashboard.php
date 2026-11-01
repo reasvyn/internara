@@ -51,6 +51,6 @@ class TeacherDashboard extends UserDashboard
 
     public function render(): View
     {
-        return view('user.dashboard.teacher');
+        return view('user.dashboard.teacher')->title(__('dashboard.title'));
     }
 }

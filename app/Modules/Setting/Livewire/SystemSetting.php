@@ -338,6 +338,6 @@ class SystemSetting extends BaseFormView
     {
         return view('setting.system-setting', [
             'presets' => Theme::presets(),
-        ]);
+        ])->title(__('setting.title'));
     }
 }

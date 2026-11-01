@@ -71,6 +71,6 @@ class RecoverySlipManager extends Component
 
         return view('auth.account-recovery.recovery-slip-manager', [
             'users' => $users,
-        ]);
+        ])->title(__('auth.recovery_slip.title'));
     }
 }

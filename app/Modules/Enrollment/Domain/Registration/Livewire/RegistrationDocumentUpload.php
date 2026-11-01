@@ -116,6 +116,6 @@ class RegistrationDocumentUpload extends BaseFormView
                     ->with('document')
                     ->get()
                 : collect(),
-        ]);
+        ])->title(__('registration.doc_upload_title'));
     }
 }

@@ -452,6 +452,6 @@ class InternshipManager extends BaseRecordManager
 
     public function render(): View
     {
-        return view('program.internship.internship-manager');
+        return view('program.internship.internship-manager')->title(__('internship.title'));
     }
 }

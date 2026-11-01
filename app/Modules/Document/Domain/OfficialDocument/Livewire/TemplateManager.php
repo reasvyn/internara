@@ -105,6 +105,6 @@ class TemplateManager extends BaseRecordManager
         return view('document.official-document.template-manager', [
             'templates' => $this->rows(),
             'headers' => $this->headers(),
-        ]);
+        ])->title(__('document.templates'));
     }
 }

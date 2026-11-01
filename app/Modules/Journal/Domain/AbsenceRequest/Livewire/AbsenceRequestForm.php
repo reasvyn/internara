@@ -85,6 +85,6 @@ class AbsenceRequestForm extends BaseFormView
             'existingRequests' => AbsenceRequest::where('user_id', auth()->id())
                 ->latest('date')
                 ->paginate(10),
-        ]);
+        ])->title(__('journals.absence.title'));
     }
 }

@@ -93,6 +93,6 @@ class RegistrationWizard extends Component
 
     public function render(): View
     {
-        return view('enrollment.registration.registration-wizard');
+        return view('enrollment.registration.registration-wizard')->title(__('registration.wizard.title'));
     }
 }

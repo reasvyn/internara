@@ -70,6 +70,6 @@ class RecoveryCode extends Component
     #[Layout('ui::layouts.app')]
     public function render(): View
     {
-        return view('auth.account-recovery.recovery-code');
+        return view('auth.account-recovery.recovery-code')->title(__('profile.recovery.title'));
     }
 }

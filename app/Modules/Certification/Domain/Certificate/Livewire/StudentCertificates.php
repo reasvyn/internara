@@ -29,6 +29,6 @@ class StudentCertificates extends Component
 
         return view('certification.certificate.student-certificates', [
             'certificates' => $certificates,
-        ]);
+        ])->title(__('certificate.my_certificates'));
     }
 }

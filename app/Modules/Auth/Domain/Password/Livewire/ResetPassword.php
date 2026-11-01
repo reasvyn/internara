@@ -74,9 +74,9 @@ class ResetPassword extends Component
         );
     }
 
-    #[Layout('auth::layouts.auth', ['title' => 'Reset Password'])]
+    #[Layout('auth::layouts.auth')]
     public function render(): View
     {
-        return view('auth.password.reset-password');
+        return view('auth.password.reset-password')->title(__('passwords.reset_password_title'));
     }
 }

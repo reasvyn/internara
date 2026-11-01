@@ -68,9 +68,9 @@ class AccountRecovery extends Component
         );
     }
 
-    #[Layout('auth::layouts.auth', ['title' => 'Account Recovery'])]
+    #[Layout('auth::layouts.auth')]
     public function render(): View
     {
-        return view('auth.account-recovery.account-recovery');
+        return view('auth.account-recovery.account-recovery')->title(__('auth.account_recovery.title'));
     }
 }

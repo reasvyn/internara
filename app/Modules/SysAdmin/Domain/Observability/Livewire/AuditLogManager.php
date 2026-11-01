@@ -92,6 +92,6 @@ class AuditLogManager extends BaseRecordManager
             'modules' => $modules,
             'actions' => $actions,
             'users' => $users,
-        ]);
+        ])->title(__('sysadmin.activity_title'));
     }
 }

@@ -75,6 +75,6 @@ class DirectPlacementManager extends BaseFormView
 
     public function render(): View
     {
-        return view('enrollment.placement.direct-placement-manager');
+        return view('enrollment.placement.direct-placement-manager')->title(__('placement.direct_placement.title'));
     }
 }

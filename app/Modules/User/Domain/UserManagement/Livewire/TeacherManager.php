@@ -217,6 +217,6 @@ class TeacherManager extends BaseRecordManager
 
     public function render(): View
     {
-        return view('user.user-management.teacher-manager');
+        return view('user.user-management.teacher-manager')->title(__('user.teacher.title'));
     }
 }

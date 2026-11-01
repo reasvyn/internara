@@ -240,6 +240,6 @@ class ProfileEditor extends BaseFormView
 
     public function render(): View
     {
-        return view('user.profile.profile-editor');
+        return view('user.profile.profile-editor')->title(__('profile.title'));
     }
 }

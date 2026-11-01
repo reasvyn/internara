@@ -190,6 +190,6 @@ class VisitManager extends BaseRecordManager
     #[Layout('ui::layouts.app')]
     public function render(): View
     {
-        return view('journal.monitoring-visit.visit-manager');
+        return view('journal.monitoring-visit.visit-manager')->title(__('journals.visit_title'));
     }
 }

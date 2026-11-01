@@ -83,6 +83,6 @@ class CertificateTemplateManager extends BaseRecordManager
     #[Layout('ui::layouts.app')]
     public function render(): View
     {
-        return view('certification.certificate.certificate-template-manager');
+        return view('certification.certificate.certificate-template-manager')->title(__('certificate.title'));
     }
 }

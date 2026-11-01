@@ -100,6 +100,6 @@ class LogbookEntry extends BaseRecordEntry
 
         return view('journal.logbook.logbook-entry', [
             'journals' => $journal,
-        ]);
+        ])->title(__('logbook.daily_journals'));
     }
 }

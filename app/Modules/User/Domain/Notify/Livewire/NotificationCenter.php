@@ -159,6 +159,6 @@ class NotificationCenter extends BaseRecordManager
 
     public function render(): View
     {
-        return view('user.notifications.notification-center');
+        return view('user.notifications.notification-center')->title(__('notifications.ui.title'));
     }
 }

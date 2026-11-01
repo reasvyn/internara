@@ -258,6 +258,6 @@ class AcademicYearManager extends BaseRecordManager
         return view('academic.academic-year.academic-year-manager', [
             'years' => $this->rows(),
             'stats' => $this->stats,
-        ]);
+        ])->title(__('academic_year.title'));
     }
 }

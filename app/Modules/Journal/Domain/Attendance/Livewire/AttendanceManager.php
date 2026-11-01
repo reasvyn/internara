@@ -197,6 +197,6 @@ class AttendanceManager extends Component
             'students' => $students,
             'existing' => $existing,
             'statuses' => AttendanceStatus::cases(),
-        ]);
+        ])->title(__('journals.attendance.management_title'));
     }
 }

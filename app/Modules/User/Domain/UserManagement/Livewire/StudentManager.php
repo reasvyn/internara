@@ -243,6 +243,6 @@ class StudentManager extends BaseRecordManager
 
     public function render(): View
     {
-        return view('user.user-management.student-manager');
+        return view('user.user-management.student-manager')->title(__('user.student.title'));
     }
 }

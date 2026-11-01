@@ -18,7 +18,7 @@
 @stack('meta')
 
 <!-- Title -->
-<title>{{ $title ? $title.' - '.brand('name') : brand('name') }}</title>
+<title>{{ $title ? $title.' - '.brand('name') : brand('title') }}</title>
 
 <!-- Favicon -->
 <link rel="icon" href="{{ $favicon }}" sizes="any" />

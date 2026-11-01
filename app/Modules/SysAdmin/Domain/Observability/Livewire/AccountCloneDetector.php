@@ -24,6 +24,6 @@ class AccountCloneDetector extends Component
     {
         return view('sysadmin.observability.accounts-clones', [
             'clones' => $this->clones,
-        ]);
+        ])->title(__('sysadmin.clone_detection.title'));
     }
 }

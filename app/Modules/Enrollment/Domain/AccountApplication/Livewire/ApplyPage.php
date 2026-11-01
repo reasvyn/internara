@@ -62,6 +62,6 @@ class ApplyPage extends BaseFormView
 
     public function render(): View
     {
-        return view('enrollment.account-application.apply-page');
+        return view('enrollment.account-application.apply-page')->title(__('registration.account_application.title'));
     }
 }

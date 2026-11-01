@@ -246,6 +246,6 @@ class LogbookManager extends BaseRecordManager
     #[Layout('ui::layouts.app')]
     public function render(): View
     {
-        return view('journal.logbook.logbook-manager');
+        return view('journal.logbook.logbook-manager')->title(__('logbook.title'));
     }
 }

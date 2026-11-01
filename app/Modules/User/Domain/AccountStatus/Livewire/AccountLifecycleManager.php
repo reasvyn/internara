@@ -93,6 +93,6 @@ class AccountLifecycleManager extends Component
 
         return view('user.account-status.accounts.lifecycle', [
             'users' => $users,
-        ]);
+        ])->title(__('auth.lifecycle.title'));
     }
 }

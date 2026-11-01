@@ -95,7 +95,7 @@ class SubmitAssignment extends BaseFormView
             return view('assignment.submission.submit-assignment', [
                 'assignments' => collect(),
                 'submissions' => collect(),
-            ]);
+            ])->title(__('submission.my_assignments'));
         }
 
         $assignments = Assignment::where('internship_id', $registration->internship_id)
@@ -111,6 +111,6 @@ class SubmitAssignment extends BaseFormView
         return view('assignment.submission.submit-assignment', [
             'assignments' => $assignments,
             'submissions' => $submissions,
-        ]);
+        ])->title(__('submission.my_assignments'));
     }
 }

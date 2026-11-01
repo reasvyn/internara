@@ -228,6 +228,6 @@ class StudentHandbookList extends Component
     #[Layout('ui::layouts.app')]
     public function render(): View
     {
-        return view('document.handbook.student-handbook-list');
+        return view('document.handbook.student-handbook-list')->title($this->pageTitle());
     }
 }

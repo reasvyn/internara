@@ -238,6 +238,6 @@ class AssignmentManager extends BaseRecordManager
 
     public function render(): View
     {
-        return view('assignment.assignment-manager');
+        return view('assignment.assignment-manager')->title(__('assignment.heading'));
     }
 }

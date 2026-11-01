@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8" />
-    <title>{{ __('sysadmin.maintenance.title') }}</title>
+    <title>{{ __('sysadmin.maintenance.title') }} - {{ brand('name') }}</title>
 </head>
 <body>
     <h1>503</h1>

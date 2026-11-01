@@ -222,6 +222,6 @@ class SupervisorManager extends BaseRecordManager
 
     public function render(): View
     {
-        return view('user.user-management.supervisor-manager');
+        return view('user.user-management.supervisor-manager')->title(__('user.supervisor.title'));
     }
 }

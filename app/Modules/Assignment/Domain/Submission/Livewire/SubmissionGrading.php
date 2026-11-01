@@ -172,6 +172,6 @@ class SubmissionGrading extends Component
                 'submissions',
                 fn ($q) => $q->whereIn('status', ['submitted', 'revision_required']),
             )->get(),
-        ]);
+        ])->title(__('submission.grading_title'));
     }
 }

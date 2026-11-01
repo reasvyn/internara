@@ -350,6 +350,6 @@ class InternshipGroupManager extends BaseRecordManager
 
     public function render(): View
     {
-        return view('program.internship-group.internship-group-manager');
+        return view('program.internship-group.internship-group-manager')->title(__('internship.groups'));
     }
 }

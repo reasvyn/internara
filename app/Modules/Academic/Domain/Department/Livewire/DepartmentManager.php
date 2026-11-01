@@ -323,6 +323,6 @@ class DepartmentManager extends BaseRecordManager
     {
         return view('academic.department.department-manager', [
             'stats' => $this->stats,
-        ]);
+        ])->title(__('department.title'));
     }
 }

@@ -208,6 +208,6 @@ class PklPreparation extends Component
 
     public function render(): View
     {
-        return view('enrollment.registration.pkl-preparation');
+        return view('enrollment.registration.pkl-preparation')->title(__('registration.preparation_title'));
     }
 }

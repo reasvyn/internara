@@ -229,6 +229,6 @@ class PartnerAssessmentPage extends BaseFormView
 
     public function render(): View
     {
-        return view('assessment::partner-assessment-page');
+        return view('assessment::partner-assessment-page')->title(__('assessment.partner_assessment_title'));
     }
 }

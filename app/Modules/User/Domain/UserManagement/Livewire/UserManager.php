@@ -494,6 +494,6 @@ class UserManager extends BaseRecordManager
 
     public function render(): View
     {
-        return view('user.user-management.user-manager');
+        return view('user.user-management.user-manager')->title(__('user.manager.title'));
     }
 }

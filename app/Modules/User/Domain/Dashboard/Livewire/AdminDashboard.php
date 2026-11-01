@@ -119,7 +119,7 @@ class AdminDashboard extends UserDashboard
             'isSuperAdmin' => $this->isSuperAdmin,
             'totalUsersCombined' => $this->totalUsersCombined,
             'failedLoginsClass' => $this->failedLoginsClass,
-        ]);
+        ])->title(__('dashboard.title'));
     }
 
     private function preparePipelineMetrics(): void

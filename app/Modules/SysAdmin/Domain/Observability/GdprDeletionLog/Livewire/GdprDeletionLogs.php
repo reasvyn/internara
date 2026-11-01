@@ -51,6 +51,6 @@ class GdprDeletionLogs extends Component
         return view('sysadmin.observability.gdpr-deletion-log.gdpr-deletion-logs', [
             'logs' => $this->logs(),
             'headers' => $this->headers(),
-        ]);
+        ])->title(__('sysadmin.gdpr_logs.title'));
     }
 }

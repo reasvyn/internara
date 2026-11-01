@@ -77,6 +77,6 @@ class ApplicationReview extends Component
 
     public function render(): View
     {
-        return view('sysadmin.livewire.application-review');
+        return view('sysadmin.livewire.application-review')->title(__('internship.applications.title'));
     }
 }

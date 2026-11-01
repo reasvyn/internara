@@ -119,7 +119,7 @@ class SchoolEditor extends BaseFormView
 
     public function render(): View
     {
-        return view('academic.school.school-editor');
+        return view('academic.school.school-editor')->title(__('school.title'));
     }
 
     private function getLogoUrl(): ?string

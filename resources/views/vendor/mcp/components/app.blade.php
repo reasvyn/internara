@@ -8,9 +8,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    @if($title)
-    <title>{{ $title }}</title>
-    @endif
+    <title>{{ $title ? $title.' - '.brand('name') : brand('title') }}</title>
     <script>{!! $mcpSdk !!}</script>
     {!! $libraryScripts !!}
     {{ $head ?? '' }}

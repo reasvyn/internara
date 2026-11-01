@@ -264,6 +264,6 @@ class HandbookManager extends BaseRecordManager
     #[Layout('ui::layouts.app')]
     public function render(): View
     {
-        return view('document.handbook.handbook-manager');
+        return view('document.handbook.handbook-manager')->title(__('handbook.title'));
     }
 }

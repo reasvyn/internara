@@ -32,6 +32,6 @@ class StudentVisitList extends Component
     #[Layout('ui::layouts.app')]
     public function render(): View
     {
-        return view('journal.monitoring-visit.student-visit-list');
+        return view('journal.monitoring-visit.student-visit-list')->title(__('journals.visit_title'));
     }
 }

@@ -68,6 +68,6 @@ class StudentClockIn extends BaseFormView
             'unaccountedDates' => $registration
                 ? $unaccountedDates->execute($registration)
                 : collect(),
-        ]);
+        ])->title(__('journal.attendance.title'));
     }
 }

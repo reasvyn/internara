@@ -91,6 +91,6 @@ class SupervisorReviewManager extends BaseRecordManager
     #[Layout('ui::layouts.app')]
     public function render(): View
     {
-        return view('journal.supervision-log.supervisor-review-manager');
+        return view('journal.supervision-log.supervisor-review-manager')->title(__('journals.review_title'));
     }
 }

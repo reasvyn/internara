@@ -194,6 +194,6 @@ class CertificateList extends BaseRecordManager
     {
         return view('certification.certificate.certificate-list', [
             'statusOptions' => CertificateStatus::cases(),
-        ]);
+        ])->title(__('certificate.issued_title'));
     }
 }

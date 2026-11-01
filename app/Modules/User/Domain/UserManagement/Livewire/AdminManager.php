@@ -220,6 +220,6 @@ class AdminManager extends BaseRecordManager
 
     public function render(): View
     {
-        return view('user.user-management.admin-manager');
+        return view('user.user-management.admin-manager')->title(__('user.admin.title'));
     }
 }

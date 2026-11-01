@@ -393,6 +393,6 @@ class CompanyManager extends BaseRecordManager
     #[Layout('ui::layouts.app')]
     public function render(): View
     {
-        return view('partner.company.company-manager');
+        return view('partner.company.company-manager')->title(__('company.title'));
     }
 }

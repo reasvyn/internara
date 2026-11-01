@@ -283,6 +283,6 @@ class AssessmentGrading extends BaseFormView
 
     public function render(): View
     {
-        return view('assessment.assessment-grading');
+        return view('assessment.assessment-grading')->title(__('assessment.grading'));
     }
 }

@@ -204,6 +204,6 @@ class StudentReportsManager extends BaseRecordManager
     {
         return view('report.student-report.reports-manager', [
             'statuses' => StudentReportStatus::cases(),
-        ]);
+        ])->title(__('report.management'));
     }
 }
