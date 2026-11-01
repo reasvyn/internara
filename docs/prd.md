@@ -48,6 +48,7 @@ Internara is a dedicated, single-purpose web application specifically designed t
 
 ### 1.5 Product Boundaries & Explicit Non-Goals
 To preserve platform reliability, low operational overhead, and maintainability, the following capabilities are explicitly out of scope:
+- **Incident & Emergency Response Management**: The platform does not handle workplace incident reporting, emergency dispatches, or grievance case workflows. All urgent matters requiring rapid operational response are far more effectively communicated directly via instant messaging applications (e.g., WhatsApp) and direct phone calls between students, teachers, and industrial supervisors.
 - **Multi-Tenant SaaS / Commercial Subscriptions**: Internara is strictly single-tenant and self-hosted per school. No tenant isolation overhead or payment gateways.
 - **General Enterprise HR / Payroll**: Does not manage employee payroll, corporate hiring funnels, or post-graduation job boards.
 - **Real-Time WebSockets / Chat**: Does not implement live instant messaging. Notifications are delivered through in-app notification centers and transactional email to prevent server bloat and content moderation burdens.
@@ -120,7 +121,7 @@ flowchart TD
 
 ## 4. Comprehensive Functional Requirements (FR)
 
-The system consists of 19 dedicated, vertically-sliced domain modules. Requirements are categorized below by operational domain.
+The system consists of 18 active, vertically-sliced domain modules (incident tracking is intentionally excluded from software scope in favor of direct communication). Requirements are categorized below by operational domain.
 
 ### 4.1 System Provisioning & Access Governance
 
@@ -186,11 +187,6 @@ The system consists of 19 dedicated, vertically-sliced domain modules. Requireme
 - **FR-ASN-001 (Assignment Publishing)**: Allows teachers to publish academic tasks, research assignments, or periodic PKL progress reports with submission deadlines and file attachment guidelines.
 - **FR-ASN-002 (Student Submission)**: Allows students to upload assignment solutions (PDF, DOCX, ZIP) with submission timestamps and revision history.
 - **FR-ASN-003 (Grading & Constructive Feedback)**: Allows teachers to score submissions (0–100 scale), annotate evaluation comments, and return submissions for revision if requirements are unmet.
-
-#### Module: Incident & Workplace Safety (`Incident`)
-- **FR-ICD-001 (Confidential Incident Reporting)**: Provides a secure channel for students or teachers to report workplace safety violations, sexual harassment, labor exploitation, or severe health hazards.
-- **FR-ICD-002 (Severity Triage & Case Management)**: Categorizes incidents by severity (`Low`, `Medium`, `High`, `Critical`), restricting access strictly to authorized school administrators.
-- **FR-ICD-003 (Action Plan & Case Resolution)**: Logs emergency mediation actions, placement transfers, legal referrals, and final resolution sign-off.
 
 ---
 
@@ -343,7 +339,7 @@ All non-functional requirements are specified with measurable Service Level Obje
 | **RSK-002** | **External Supervisor Disengagement**: Industry supervisors fail to log in or complete evaluations before end-of-semester grading deadlines. | High | High | Implement passwordless encrypted magic links sent via email/WhatsApp, automated reminder notices, and a cross-role proxy rule allowing authorized teachers to input confirmed evaluations with an audit trail. | Product Lead |
 | **RSK-003** | **GPS Geofence Spoofing**: Students using mock location or fake GPS applications to falsify fieldwork attendance. | Medium | High | Enforce server-side distance calculation, inspect browser high-accuracy geolocation parameters, log device user-agent anomalies, and require photo evidence with every check-in. | Security Lead |
 | **RSK-004** | **Shared Hosting Concurrency Bottlenecks**: Database locks or resource exhaustion on budget shared hosts when 500+ students check in simultaneously at 08:00 AM. | Medium | Medium | SQLite configured with WAL mode and high busy timeout; staggered background queue processing; lightweight Livewire DOM payloads; clean N+1 eager-loading across all read queries. | Backend Lead |
-| **RSK-005** | **Sensitive Student Data Exposure**: Leakage of student personal data or confidential incident reports. | Low | Critical | Field-level authorization checks on all queries; PII masking in logs; strict role-scoped access control; automated weekly security scans via `scan_security.py`. | Security Lead |
+| **RSK-005** | **Sensitive Student Data Exposure**: Leakage of student personal data or academic records. | Low | Critical | Field-level authorization checks on all queries; PII masking in logs; strict role-scoped access control; automated weekly security scans via `scan_security.py`. | Security Lead |
 
 ---
 
@@ -359,13 +355,13 @@ This PRD formalizes and aligns all 56 feature specifications tracked across the 
 - **Company Partnerships & Program Cohorts (#475–#478)**: Spec IDs `XI3LB`, `NTHQA`, `7C5WM`, `IT0OE`.
 - **Enrollment & Placement (#479–#481)**: Spec IDs `MBB5R`, `J9GBH`, `920SO`.
 - **Journals, Attendance & Field Activities (#485, #486)**: Spec IDs `1KSWL`, `2EHSE`.
-- **Incident & Safety Management (#487)**: Spec ID `3RU9S`.
 - **Coursework & Assignments (#490–#492)**: Spec IDs `T657Z`, `T657B`, `T657C`.
 - **Evaluation & Assessments (#489)**: Spec ID `AXKZW`.
 - **Document Management & Handbooks (#493, #494, #500)**: Spec IDs `PKYX6`, `ZUFG8`, `7H5D6`.
 - **Certification & Credentials (#495)**: Spec ID `J0M04`.
 - **Reporting & Final Grade Cards (#499)**: Spec ID `R6BMW`.
 - **System Administration & Compliance (#467, #502, #504)**: Spec IDs `3S55V`, `HBXCI`, `7HNCF`.
+- **Incident & Safety Management (#487 / [3RU9S])**: Formally excluded from system scope per architectural boundary (urgent field emergencies are handled directly via phone/messaging apps).
 
 ---
 
