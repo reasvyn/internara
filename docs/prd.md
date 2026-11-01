@@ -144,7 +144,7 @@ The system consists of 19 dedicated, vertically-sliced domain modules. Requireme
 - **FR-PTN-003 (Partnership Agreement / MoU Tracking)**: Records Memorandum of Understanding (MoU) numbers, start dates, expiration dates, and document attachments, triggering proactive renewal warnings (30, 14, and 7 days prior to expiry).
 
 #### Module: Internship Programs (`Program`)
-- **FR-PRG-001 (Cohort Program Creation)**: Creates internship programs tied to an academic year, department, and cohort date range (e.g., "PKL Semester Gasal 2026/2027").
+- **FR-PRG-001 (Cohort Program Creation & Grading Rules)**: Creates internship programs tied to an academic year, department, and cohort date range (e.g., "PKL Semester Gasal 2026/2027"), allowing administrators to configure program-specific grading component weights and passing thresholds.
 - **FR-PRG-002 (Internship Grouping / Rombel)**: Organizes participating students into operational internship groups assigned to a specific company location.
 - **FR-PRG-003 (Dual Mentorship Binding)**: Binds each internship group to two mandatory mentor roles: exactly one School Supervising Teacher and at least one Industry Field Supervisor.
 
@@ -190,7 +190,7 @@ The system consists of 19 dedicated, vertically-sliced domain modules. Requireme
 - **FR-EVL-002 (Polymorphic Evaluation Targets)**: Allows evaluations to target students, teachers, companies, or the overall internship program for continuous institutional quality improvement.
 
 #### Module: Student Reports & Final Grade Cards (`Report`)
-- **FR-RPT-001 (Composite Score Aggregation Engine)**: Calculates final weighted grades based on configurable components (e.g., 40% Industry Evaluation + 20% Teacher Assessment + 20% Daily Logbooks + 20% Final Assignment/Exam).
+- **FR-RPT-001 (Admin-Configurable Composite Score Aggregation Engine)**: Calculates final weighted grades based on administrator-configurable component weights (Industry Supervisor Evaluation, School Teacher Assessment, Daily Activity Logbooks / Attendance, and Final Assignment / Exam) with automated 100% total sum validation. If unconfigured or reset by the administrator, the system defaults proportionally across all active evaluation components (e.g., equal 25% distribution across all four components).
 - **FR-RPT-002 (Letter Grade Conversion)**: Automatically converts aggregated numerical scores into institutional letter grades (e.g., A ≥ 85, B ≥ 75, C ≥ 65, D < 65) based on school grading thresholds.
 - **FR-RPT-003 (Official Coordinator Sign-Off & Lock)**: Allows the PKL Coordinator to review aggregated cohort scores, apply manual moderations if justified, and officially sign off, locking records against further modifications.
 - **FR-RPT-004 (Grade Card PDF Export)**: Generates official, printable Final Grade Card PDFs (*Kartu Nilai Akhir*) formatted with school letterhead and authorized signatures.
