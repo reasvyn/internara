@@ -367,7 +367,6 @@ class DummyData
             }
 
             // Departments
-            self::purgePlaceholderDepartments();
             $purged['departments'] = Department::where('id', 'like', "{$prefix}%")->delete();
 
             // Past Academic Year
@@ -459,7 +458,6 @@ class DummyData
             $this->seedDailyOps();
             $this->seedFinalization();
             $this->seedSysAdminData();
-            self::purgePlaceholderDepartments();
 
             return $this->counts;
         });
@@ -577,10 +575,6 @@ class DummyData
             ['name' => 'Teknik Pengecoran Logam', 'description' => 'Teknologi metalurgi pengecoran fero dan non-fero, pembuatan pola dan cetakan pasir/resin, peleburan tanur induksi (furnace), serta uji metalografi material cetak.'],
             ['name' => 'Teknik dan Manajemen Perawatan Otomotif', 'description' => 'Diagnosis sistem manajemen mesin modern (EFI/CRDi), pemeliharaan sasis dan pemindah tenaga otomotif, manajemen bengkel resmi, dan sistem kelistrikan kendaraan listrik/hibrida.'],
         ];
-
-        $realNames = array_column($depts, 'name');
-
-        self::purgePlaceholderDepartments();
 
         foreach ($depts as $dept) {
             $this->departments->push(
@@ -1544,24 +1538,6 @@ class DummyData
     private function bump(string $key): void
     {
         $this->counts[$key] = ($this->counts[$key] ?? 0) + 1;
-    }
-
-    public static function purgePlaceholderDepartments(): int
-    {
-        $realNames = array_column(self::dataset()['departments'] ?? [], 'name');
-        if (empty($realNames)) {
-            return 0;
-        }
-
-        $placeholderDepts = Department::whereNotIn('name', $realNames)->get();
-        $count = $placeholderDepts->count();
-        foreach ($placeholderDepts as $placeholder) {
-            AccountApplication::where('department_id', $placeholder->id)->delete();
-            Profile::where('department_id', $placeholder->id)->update(['department_id' => null]);
-            $placeholder->delete();
-        }
-
-        return $count;
     }
 
     /**

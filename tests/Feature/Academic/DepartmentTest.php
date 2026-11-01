@@ -13,7 +13,6 @@ use App\Modules\Academic\Domain\Department\Livewire\Forms\DepartmentForm;
 use App\Modules\Academic\Domain\Department\Models\Department;
 use App\Modules\Academic\Domain\Department\Policies\DepartmentPolicy;
 use App\Modules\Core\Exceptions\RejectedException;
-use App\Modules\Core\Support\DummyData;
 use App\Modules\User\Domain\Dashboard\Listeners\ClearDashboardCacheOnDepartmentChange;
 use App\Modules\User\Domain\Profile\Models\Profile;
 use App\Modules\User\Models\User;
@@ -279,15 +278,5 @@ describe('4HWSB: departments', function (): void {
 
         expect($rules['name'])->toContain('max:255')
             ->and($rules['description'])->toContain('max:1000');
-    });
-
-    test('4HWSB-FR-DEPT-020: dummy data purges placeholder departments leaving only 8 official SMKN 2 Klaten competencies', function (): void {
-        Department::factory()->create(['name' => 'Placeholder Jurusan 1']);
-        Department::factory()->create(['name' => 'Placeholder Jurusan 2']);
-
-        DummyData::purgePlaceholderDepartments();
-
-        expect(Department::where('name', 'Placeholder Jurusan 1')->exists())->toBeFalse()
-            ->and(Department::where('name', 'Placeholder Jurusan 2')->exists())->toBeFalse();
     });
 });
