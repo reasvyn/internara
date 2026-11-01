@@ -21,6 +21,7 @@ This index provides a structured map of all documentation in the Internara proje
 
 ## Product & Vision
 
+- **[Product Requirement Document (PRD)](prd.md)** — Comprehensive platform specification, covering all 19 modules, functional & non-functional requirements, and the full PKL lifecycle
 - **[Foundation Index](guides/index.md)** — Browse all foundation documents
 - **[README](../README.md)** — Project overview: pitch, features, requirements, installation, deployment, status (deep product definition in `project-vision.md`)
 - **[Internara Project Spec](https://github.com/reasvyn/internara/issues/442)** (`[QLHDO]`, `label:spec`) — Functional, non-functional, and UI/UX requirements
