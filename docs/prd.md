@@ -164,9 +164,13 @@ The application centers around three primary operational pillars that replace ma
 
 ### 4.3 Pillar 3: Assessment, Grading & Certificate Issuance (*Penilaian & Penerbitan Sertifikat*)
 
-- **FR-ASM-001 (Multi-Dimensional Competency Rubric Authoring)**:
+- **FR-ASM-001 (Multi-Dimensional Competency Rubric Authoring & Default Weights)**:
   - Allows school administrators and departments to define flexible assessment rubrics tailored to specific vocational specializations.
-  - Evaluates both technical competence (*hard skills*, e.g., code quality, machine maintenance, network design) and professional work ethics (*soft skills*, e.g., punctuality, discipline, teamwork, communication).
+  - Aligns with national vocational curriculum (Kurikulum Merdeka SMK) standards with standardized default workplace assessment weights (total 100%):
+    1. **Internalisasi Soft Skills** (Bobot Asesmen ~20%): Budaya kerja industri, etika profesi, kedisiplinan kehadiran, kepatuhan K3, dan komunikasi tim.
+    2. **Penerapan Hard Skills** (Bobot Asesmen ~60%): Penguasaan kompetensi teknis kejuruan, ketepatan penyelesaian tugas spesifik, dan pemecahan masalah praktis.
+    3. **Penyiapan Kewirausahaan** (Bobot Asesmen ~20%): Pemahaman alur proses bisnis industri, inisiatif mandiri, kreativitas, dan efisiensi kerja berorientasi wirausaha.
+  - Administrators maintain full authority to adjust and configure criteria weights per department or internship program.
 - **FR-ASM-002 (Dual Evaluation Framework)**:
   - Implements independent assessment portals for the School Supervising Teacher and the Industry Field Supervisor.
   - Prevents premature grade exposure between mentors until evaluation deadlines conclude.
@@ -174,9 +178,12 @@ The application centers around three primary operational pillars that replace ma
   - Generates secure, encrypted, single-use, time-limited magic links dispatched via email or direct link sharing.
   - Enables busy external company supervisors to complete and submit student competency assessments directly from any device without requiring account registration, username/password management, or school portal onboarding friction.
 - **FR-RPT-001 (Admin-Configurable Composite Score Aggregation Engine)**:
-  - Automatically aggregates disparate evaluation components into a single composite score.
-  - Allows administrators to configure component weights per program or department (Industry Supervisor Evaluation, School Teacher Assessment, Daily Activity Logbooks / Attendance, and Final Assignment / Exam), with automated 100% total sum validation.
-  - If unconfigured or reset by the administrator, the system defaults proportionally across all active evaluation components (e.g., equal 25% distribution across all four components).
+  - Automatically aggregates disparate evaluation components into a single composite final score (*Nilai Akhir PKL*).
+  - Enforces standard default final grade weighting (total 100%):
+    - **Pelaksanaan Magang di DUDI / Tempat Kerja** (hasil asesmen Soft Skills, Hard Skills, Kewirausahaan + Logbook): **70%**
+    - **Penyusunan Laporan dan Presentasi Akademis-Praktis** (Bimbingan, penulisan laporan PKL, dan ujian presentasi/sidang di hadapan guru sekolah): **30%**
+  - Allows administrators to customize component weights per program or department, with automated 100% total sum validation.
+  - If unconfigured or reset by the administrator, the system defaults to the proportional standard above (70% Pelaksanaan DUDI : 30% Laporan & Presentasi Sekolah).
 - **FR-RPT-002 (Letter Grade Conversion & Coordinator Sign-off)**:
   - Converts numerical composite scores (0–100) into institutional letter grades (e.g., A ≥ 85, B ≥ 75, C ≥ 65, D < 65) based on school grading thresholds.
   - Provides the PKL Coordinator with a cohort-wide review dashboard to inspect grades, verify completion, and execute a formal digital sign-off that locks records against further alteration.

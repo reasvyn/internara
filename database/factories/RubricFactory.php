@@ -21,19 +21,19 @@ class RubricFactory extends Factory
             'structure' => [
                 'criteria' => [
                     [
-                        'name' => 'Disiplin',
+                        'name' => 'Internalisasi Soft Skills',
                         'weight' => 20,
-                        'description' => 'Kehadiran dan kepatuhan aturan',
+                        'description' => 'Internalisasi karakter kerja, etika profesi, kedisiplinan kehadiran, kepatuhan K3, dan komunikasi tim',
                     ],
                     [
-                        'name' => 'Keterampilan',
-                        'weight' => 50,
-                        'description' => 'Kemampuan menyelesaikan tugas',
+                        'name' => 'Penerapan Hard Skills',
+                        'weight' => 60,
+                        'description' => 'Penerapan kompetensi teknis kejuruan, ketepatan penyelesaian tugas spesifik, dan pemecahan masalah praktis',
                     ],
                     [
-                        'name' => 'Sikap',
-                        'weight' => 30,
-                        'description' => 'Kerjasama dan komunikasi',
+                        'name' => 'Penyiapan Kewirausahaan',
+                        'weight' => 20,
+                        'description' => 'Pemahaman alur proses bisnis industri, inisiatif mandiri, kreativitas, dan efisiensi kerja berorientasi wirausaha',
                     ],
                 ],
             ],

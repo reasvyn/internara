@@ -29,7 +29,15 @@ This specification governs the academic evaluation, multi-stakeholder competency
 
 ### Goals
 
-- **Configurable Multi-Component Assessment Engine** — Blend three distinct scoring components into a final composite grade: Daily Journal & Attendance Quality Score ($W_{\text{journal}}$, default 30%), School Teacher Score ($W_{\text{teacher}}$, default 35%), and Corporate Workplace Supervisor Score ($W_{\text{supervisor}}$, default 35%), with administrative weight customization and proportional redistribution. *Why:* Guarantees mathematical accuracy and accommodates varying school curricula.
+- **Configurable Multi-Component Assessment Engine with Standardized Defaults** — Blend evaluation components into a final composite grade (*Nilai Akhir PKL*) adhering to vocational curriculum (Kurikulum Merdeka SMK) default weights:
+  1. **Workplace Field Assessment (Asesmen DUDI / Capaian Pembelajaran Lapangan - Bobot Asesmen 100%)**:
+     - *Internalisasi Soft Skills* (Bobot Asesmen ~20%): Karakter, budaya kerja industri, etika profesi, kedisiplinan kehadiran, kepatuhan K3, dan komunikasi tim.
+     - *Penerapan Hard Skills* (Bobot Asesmen ~60%): Penguasaan kompetensi teknis kejuruan, ketepatan penyelesaian tugas spesifik, dan pemecahan masalah praktis di lini kerja.
+     - *Penyiapan Kewirausahaan* (Bobot Asesmen ~20%): Pemahaman alur proses bisnis industri, inisiatif mandiri, kreativitas, dan efisiensi kerja berorientasi wirausaha.
+  2. **School Final Grade Composite (Komposisi Nilai Akhir Sekolah - Bobot 100%)**:
+     - *Pelaksanaan Magang di DUDI / Tempat Kerja* (Soft Skills, Hard Skills, Kewirausahaan + Logbook): **70%**
+     - *Penyusunan Laporan dan Presentasi Akademis-Praktis* (Bimbingan, penulisan laporan PKL, dan ujian presentasi/sidang di hadapan guru sekolah): **30%**
+  3. **Admin Configurable with Proportional Redistribution**: Administrators maintain full authority to customize weights per department or internship program, with automated 100% total sum validation and proportional redistribution. *Why:* Guarantees mathematical accuracy, pedagogical alignment with SMK curriculum, and institutional flexibility.
 - **Structured Competency Rubrics** — Model rubrics with hierarchical competencies and weighted performance indicators, normalizing raw indicator scores (0–100) and automatically redistributing weights across active competencies via `AssessmentResult`. *Why:* Replaces subjective guesswork with measurable vocational competency standards.
 - **Passwordless Corporate Magic Links** — Enable workplace supervisors to evaluate apprentices via expiring, signed magic links (`AssessmentMagicLink`, default 7-day validity) rendering a simplified mobile-friendly grading interface. *Why:* Eliminates login friction and accelerates corporate evaluation turnaround.
 - **Strict Three-Gate Certificate Eligibility Engine** — Enforce that no certificate can be generated unless `ReadCertificateEligibilityAction` verifies: (1) Finalized competency assessment (`finalized_at !== null`), (2) Verified placement plotting (`placement_id !== null`), and (3) Acknowledged PKL Student Handbook and Integrity Pact. *Why:* Guarantees that certificates are awarded only to fully compliant students.
@@ -82,11 +90,12 @@ This specification governs the academic evaluation, multi-stakeholder competency
 - **Preconditions**: Teacher scores and partner supervisor scores are recorded.
 - **Flow**:
   1. `AutoCalculateAssessmentAction` aggregates scores:
-     - Retrieves daily journal attendance score ($S_{\text{journal}}$).
-     - Calculates teacher rubric score ($S_{\text{teacher}}$) via `AssessmentResult::calculateFinalScore()`.
-     - Calculates workplace mentor score ($S_{\text{supervisor}}$).
-     - Computes weighted composite:
-       $$\text{Final Score} = (S_{\text{journal}} \times W_{\text{journal}}) + (S_{\text{teacher}} \times W_{\text{teacher}}) + (S_{\text{supervisor}} \times W_{\text{supervisor}})$$
+     - Calculates workplace mentor rubric score ($S_{\text{field}}$) based on:
+       $$S_{\text{field}} = (S_{\text{soft\_skills}} \times 0.20) + (S_{\text{hard\_skills}} \times 0.60) + (S_{\text{entrepreneurship}} \times 0.20)$$
+     - Calculates school report & presentation score ($S_{\text{school}}$) via `AssessmentResult::calculateFinalScore()`.
+     - Computes weighted final composite grade (*Nilai Akhir PKL*):
+       $$\text{Final Score} = (S_{\text{field}} \times 0.70) + (S_{\text{school}} \times 0.30)$$
+     - If custom weights are configured by the administrator, the action dynamically uses the configured percentages.
   2. Administrator inspects summary on `AssessmentGrading` Livewire component.
   3. Administrator clicks "Finalize Assessment".
   4. `FinalizeAssessmentAction` sets `finalized_at = now()`, dispatches `AssessmentFinalized` event, and locks scores.
@@ -135,10 +144,11 @@ This specification governs the academic evaluation, multi-stakeholder competency
 | FR-ASM-004 | `SubmitPartnerAssessmentAction` validates token, stores indicator scores, and redeems magic link | P0 | F | Full |
 | FR-ASM-005 | `AssessmentResult::calculateFinalScore()` normalizes indicator scores (0–100) and applies weights | P0 | U | Full |
 | FR-ASM-006 | Unscored competencies have weights dynamically redistributed across scored competencies | P0 | U | Full |
-| FR-ASM-007 | `AutoCalculateAssessmentAction` blends journal score, teacher score, and supervisor score by weight | P0 | F | Full |
-| FR-ASM-008 | Admin can configure component weights ($W_{\text{journal}}, W_{\text{teacher}}, W_{\text{supervisor}}$) with proportional defaults | P1 | F | Full |
-| FR-ASM-009 | `FinalizeAssessmentAction` sets `finalized_at`, locks scores, and dispatches `AssessmentFinalized` | P0 | F | Full |
-| FR-ASM-010 | Finalized assessments reject subsequent score alterations via `AssessmentResult::isFinalized()` | P0 | U | Full |
+| FR-ASM-007 | `AutoCalculateAssessmentAction` blends workplace score (70%) and school presentation score (30%) | P0 | F | Full |
+| FR-ASM-008 | System defaults to curriculum standard weights: Soft Skills 20%, Hard Skills 60%, Kewirausahaan 20%, School 30% | P0 | F | Full |
+| FR-ASM-009 | Admin can configure custom component weights per department with automated 100% sum validation | P1 | F | Full |
+| FR-ASM-010 | `FinalizeAssessmentAction` sets `finalized_at`, locks scores, and dispatches `AssessmentFinalized` | P0 | F | Full |
+| FR-ASM-011 | Finalized assessments reject subsequent score alterations via `AssessmentResult::isFinalized()` | P0 | U | Full |
 | FR-CERT-001 | `CertificateTemplate` model stores customizable Blade template layouts and CSS styling | P1 | A | Full |
 | FR-CERT-002 | `CertificateStatus` enum governs lifecycle: `issued`, `revoked` | P0 | U | Full |
 | FR-CERT-003 | `CertificateEntity::composeSerial()` generates canonical serials: `<PREFIX>/<YEAR>/<0001>` | P0 | U | Full |
@@ -156,12 +166,24 @@ This specification governs the academic evaluation, multi-stakeholder competency
 
 ### 4.1 Assessment Math & Score Normalization
 
+#### FR-ASM-007 / FR-ASM-008 — Standardized Default Weighting Architecture
+- **Workplace Assessment Weighting (Asesmen Capaian Lapangan DUDI — 100%)**:
+  1. *Internalisasi Soft Skills* ($W_{\text{soft}}$): **20%** — Karakter kerja, etika profesi, kedisiplinan kehadiran, kepatuhan K3, dan komunikasi tim.
+  2. *Penerapan Hard Skills* ($W_{\text{hard}}$): **60%** — Penguasaan keterampilan teknis kejuruan, ketepatan penyelesaian tugas spesifik, dan pemecahan masalah praktis.
+  3. *Penyiapan Kewirausahaan* ($W_{\text{entrepreneur}}$): **20%** — Pemahaman alur proses bisnis industri, inisiatif mandiri, kreativitas, dan efisiensi kerja berorientasi wirausaha.
+  $$\text{Nilai Lapangan (Field Score)} = (S_{\text{soft}} \times 0.20) + (S_{\text{hard}} \times 0.60) + (S_{\text{entrepreneur}} \times 0.20)$$
+
+- **School Final Grade Composite Weighting (Nilai Akhir Sekolah — 100%)**:
+  1. *Pelaksanaan Magang di DUDI* ($W_{\text{field}}$): **70%** (berasal dari kalkulasi Nilai Lapangan di atas).
+  2. *Penyusunan Laporan dan Presentasi Akademis-Praktis* ($W_{\text{school}}$): **30%** (bimbingan penulisan laporan PKL dan ujian sidang presentasi di sekolah).
+  $$\text{Nilai Akhir Kelulusan PKL} = (\text{Nilai Lapangan} \times 0.70) + (\text{Nilai Laporan \& Presentasi} \times 0.30)$$
+
 #### FR-ASM-005 / FR-ASM-006 — Proportional Weight Redistribution
-- If an assessment rubric defines 3 competencies with weights $[30, 40, 30]$ (total 100), but Competency 3 was not applicable to the student's workplace tasks:
+- If an assessment rubric defines 3 competencies with weights $[20, 60, 20]$ (total 100), but Competency 3 (Penyiapan Kewirausahaan) was not applicable to a specific partner placement:
 - `AssessmentResult` redistributes weights proportionally across active competencies:
-  - Active weight sum: $30 + 40 = 70$.
-  - Effective Weight 1: $\frac{30}{70} \times 100 \approx 42.86\%$.
-  - Effective Weight 2: $\frac{40}{70} \times 100 \approx 57.14\%$.
+  - Active weight sum: $20 + 60 = 80$.
+  - Effective Weight 1 (Soft Skills): $\frac{20}{80} \times 100 = 25\%$.
+  - Effective Weight 2 (Hard Skills): $\frac{60}{80} \times 100 = 75\%$.
 - Guarantees that students are not penalized for unassigned industry competencies while preserving 100-point total scaling.
 
 ### 4.2 Three-Gate Certificate Eligibility

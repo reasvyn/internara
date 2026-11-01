@@ -1012,6 +1012,7 @@ class DummyData
                 [
                     'internship_id' => $this->activeInternship->id,
                     'name' => $rubricData['name'],
+                    'structure' => isset($rubricData['criteria']) ? ['criteria' => $rubricData['criteria']] : null,
                     'created_by' => $this->admin->id,
                 ],
                 'rubrics',

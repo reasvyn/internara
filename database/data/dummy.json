@@ -4375,56 +4375,36 @@
     ],
     "rubrics": [
         {
-            "name": "Rubrik Penilaian Pembimbing DUDI",
+            "name": "Rubrik Asesmen Tempat Kerja DUDI",
             "target": "supervisor",
-            "description": "Instrumen evaluasi performa kerja siswa di lingkungan industri nyata.",
+            "description": "Instrumen asesmen capaian pembelajaran dan performa kerja siswa di lingkungan industri mitra.",
             "criteria": [
                 {
-                    "name": "Kedisiplinan & Ketaatan SOP",
-                    "weight": 25,
-                    "description": "Ketepatan waktu kehadiran, kepatuhan jam kerja, dan pematuhan aturan K3 industri."
-                },
-                {
-                    "name": "Kualitas Keterampilan Teknis",
-                    "weight": 35,
-                    "description": "Kecakapan dan kecepatan dalam menyelesaikan penugasan teknis sesuai standar kualitas DUDI."
-                },
-                {
-                    "name": "Komunikasi & Kerjasama Tim",
+                    "name": "Internalisasi Soft Skills",
                     "weight": 20,
-                    "description": "Kemampuan berinteraksi dengan staf kantor, keaktifan berdiskusi, dan adaptasi sosial."
+                    "description": "Internalisasi karakter kerja, etika profesi, kedisiplinan kehadiran, kepatuhan K3, dan komunikasi tim (Bobot Asesmen ~20%)."
                 },
                 {
-                    "name": "Inisiatif & Problem Solving",
+                    "name": "Penerapan Hard Skills",
+                    "weight": 60,
+                    "description": "Penerapan kompetensi teknis kejuruan, ketepatan penyelesaian tugas spesifik, dan pemecahan masalah praktis (Bobot Asesmen ~60%)."
+                },
+                {
+                    "name": "Penyiapan Kewirausahaan",
                     "weight": 20,
-                    "description": "Daya tanggap saat menghadapi kendala kerja dan kemandirian dalam mencari solusi."
+                    "description": "Pemahaman alur proses bisnis industri, inisiatif mandiri, kreativitas, dan efisiensi kerja berorientasi wirausaha (Bobot Asesmen ~20%)."
                 }
             ]
         },
         {
-            "name": "Rubrik Penilaian Guru Pembimbing Sekolah",
+            "name": "Rubrik Asesmen Sekolah (Laporan & Presentasi)",
             "target": "teacher",
-            "description": "Instrumen penilaian bimbingan akademik dan pengesahan laporan ilmiah.",
+            "description": "Instrumen penilaian bimbingan akademik, penulisan laporan ilmiah, dan ujian presentasi praktis di sekolah (Bobot Nilai Akhir Sekolah 30%).",
             "criteria": [
                 {
-                    "name": "Sistematika Laporan PKL",
-                    "weight": 30,
-                    "description": "Kesesuaian tata tulis ilmiah dengan buku pedoman sekolah dan kelengkapan lampiran."
-                },
-                {
-                    "name": "Korelasi Kurikulum Kejuruan",
-                    "weight": 35,
-                    "description": "Kesesuaian capaian kompetensi praktik di industri dengan standar kurikulum vokasi."
-                },
-                {
-                    "name": "Konsistensi Jurnal / Logbook",
-                    "weight": 20,
-                    "description": "Ketertiban pengisian logbook harian dan validitas paraf verifikasi mentor."
-                },
-                {
-                    "name": "Etika & Sikap Siswa",
-                    "weight": 15,
-                    "description": "Integritas dan kepatuhan norma selama masa penugasan di luar lingkungan sekolah."
+                    "name": "Penyusunan Laporan dan Presentasi Akademis-Praktis",
+                    "weight": 100,
+                    "description": "Sistematika penulisan laporan ilmiah PKL, penguasaan materi saat presentasi sidang, dan relevansi kurikulum vokasi (Kontribusi 30% terhadap Nilai Akhir Sekolah)."
                 }
             ]
         }
