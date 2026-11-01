@@ -43,6 +43,7 @@ This index provides a structured map of all documentation in the Internara proje
 - **[Registration & Document Checklist Spec](specs/registration-and-document-checklist.md)** — Feature specification covering PKL registration, placement plotting, and pre-PKL document checklist ([MBB5R], [7H5D6])
 - **[Daily Journal & Attendance Spec](specs/daily-journal-and-attendance.md)** — Core Pillar 1 specification covering GPS attendance, reflective logbooks, and absence requests ([1KSWL])
 - **[Guidance & Field Monitoring Spec](specs/guidance-and-monitoring.md)** — Core Pillar 2 specification covering teacher monitoring visits, supervision logs, and cross-role proxy ([2EHSE])
+- **[Assessment & Certification Spec](specs/assessment-and-certification.md)** — Core Pillar 3 specification covering rubrics, magic-link grading, 3-gate eligibility, and QR verification ([AXKZW], [J0M04])
 
 ---
 
