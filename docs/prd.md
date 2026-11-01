@@ -10,27 +10,43 @@
 
 ## 1. Executive Summary & Vision
 
-### 1.1 Context & Problem Statement
-Indonesian vocational high schools (SMK) are legally mandated by the Ministry of Education to conduct compulsory industrial fieldwork (*Praktik Kerja Lapangan* / PKL) for every student. In a typical school, managing a PKL cohort entails coordinating 500 to 1,000 students across 150 to 300 partner companies (*Dunia Usaha dan Dunia Industri* / DUDI) for 90 to 180 days.
+### 1.1 Context
+Indonesian vocational high schools (*Sekolah Menengah Kejuruan* / SMK) are legally mandated by the Ministry of Education to conduct compulsory industrial fieldwork (*Praktik Kerja Lapangan* / PKL) for every student. In a typical school, managing a PKL cohort entails coordinating 500 to 1,000 students across 150 to 300 partner companies (*Dunia Usaha dan Dunia Industri* / DUDI) for 90 to 180 days.
 
-Historically, this operations pipeline relied on fragmented, error-prone manual tools:
-- **Physical Paperwork & Forms**: Lost paper attendance sheets, handwritten logbooks, and physical permission slips.
-- **Unstructured Messaging**: WhatsApp chat groups for task submissions, incident reporting, and coordination, leading to untracked requests and missed deadlines.
-- **Disjointed Spreadsheets**: Multiple conflicting Excel sheets across departments resulting in placement quota oversaturation and grading inconsistencies.
-- **Administrative Fatigue**: Teachers spending 60% to 80% of their fieldwork hours on data entry and 2 to 3 weeks compiling student grade cards at the end of each semester.
+### 1.2 Problem Statement: The Operational Reality of Paper-Based PKL
+Historically, schools have managed PKL through manual, paper-based systems supplemented by informal messaging apps. This operational paradigm creates severe vulnerabilities, high material costs, and extreme administrative overhead:
 
-### 1.2 Product Vision
+- **Fragility and Vulnerability of Physical Paper Records**:
+  - **Daily Physical Attendance Sheets**: Paper attendance logs and physical signature sheets (*lembar paraf presensi*) kept at industrial sites are highly prone to loss, tearing, coffee spills, and signature forgery (*titip paraf*). Schools have zero real-time visibility into whether a student actually arrived at the job site.
+  - **Physical Journal Books (*Buku Jurnal/Logbook Cetak*)**: Heavy, printed physical logbooks require substantial printing and binding budgets each semester. Students frequently engage in "retroactive cramming" — handwriting 60 to 90 days worth of entries in a single panic-filled weekend right before final submission. Mentor teachers cannot read hurried handwriting or inspect photographic proof of work.
+  - **Physical Administrative Letters**: Physical parent consent forms (*surat izin orang tua*), formal introduction letters (*surat pengantar*), and company acceptance confirmation slips (*surat balasan/penerimaan*) pass through multiple hands, frequently getting lost in student backpacks or delayed in transit, stalling student onboarding.
+
+- **Absence of Real-Time Supervision & Field Blindspots**:
+  - Under paper-based workflows, school mentor teachers only inspect physical logbooks and attendance sheets once or twice during the entire 3-to-6 month period, or only upon return to school.
+  - If a student encounters workplace harassment, unexcused absenteeism, safety hazards, or tasks completely unrelated to their vocational competency curriculum, the school learns of it weeks or months too late to intervene.
+
+- **Manual Assessment Bottlenecks & Transcription Errors**:
+  - **Delayed Physical Score Sheets**: Industry supervisors are asked to fill out physical rubric evaluation forms, stamp them with company seals, and mail or hand them back via students. These forms often sit forgotten on corporate desks for weeks, delaying graduation clearance.
+  - **Manual Spreadsheet Re-keying**: School administrative staff and teachers must collect hundreds of physical score sheets and manually type handwritten scores into disconnected Excel spreadsheets. This manual transcription introduces pervasive human errors, formula mistakes, and version conflicts between department coordinators.
+  - **Weeks of Administrative Lockout**: Compiling, verifying, and calculating final composite grade cards (*Kartu Nilai Akhir*) for a cohort of 800 students takes teachers 2 to 3 full weeks of overtime, taking them away from instructional teaching.
+
+- **Physical Archival & Regulatory Compliance Burdens**:
+  - Indonesian educational regulations mandate that schools retain student academic, attendance, and fieldwork records for a minimum of 5 years for institutional accreditation and ministry audits.
+  - Paper archives require physical warehouse storage rooms, filing cabinets, and document binders. Over time, physical records degrade due to humidity, mold, ink fading, or pest damage. Retrieving a past student's certificate or verifying an internship record from three years ago requires digging through physical boxes for hours or days.
+  - When paper certificates are lost or damaged, reissuing them requires manual verification against paper ledger archives with no instantaneous cryptographic verification mechanism.
+
+### 1.3 Product Vision
 > *Every vocational school operates its compulsory fieldwork programs with the rigor and efficiency of an enterprise-grade institution — hosted on school-controlled infrastructure, audit-ready by default, free from paperwork, and without turning educators into administrative clerks.*
 
-Internara is a dedicated, single-purpose web application specifically designed to digitize, streamline, and govern the entire PKL lifecycle: from company partnership onboarding and quota-based placement, to GPS-verified attendance, reflective daily logbooks, teacher monitoring visits, rubrics-based dual evaluation, automated grade card calculation, and cryptographically verifiable digital certificates.
+Internara is a dedicated, single-purpose web application specifically designed to replace physical paper-based operations with a canonical digital record: from company partnership onboarding and quota-based placement, to GPS-verified attendance, reflective daily logbooks, teacher monitoring visits, rubrics-based dual evaluation, automated grade card calculation, and cryptographically verifiable digital certificates.
 
-### 1.3 Key Strategic Principles
+### 1.4 Key Strategic Principles
 - **Education First, Technology Second**: Workflows mirror real Indonesian SMK operational realities (such as dual mentors, supervisor magic links, and placement change appeals) rather than forcing schools into generic corporate HR paradigms.
 - **Progressive Infrastructure ($5/month Baseline)**: Operates out-of-the-box on inexpensive shared hosting or basic VPS (PHP 8.5, SQLite/MySQL, local filesystem, file-based cache and sync queue) without mandatory cloud subscriptions, with a seamless growth path to Redis, S3, and async workers when scale demands.
 - **Data Sovereignty & Privacy by Design**: 100% self-hosted, single-tenant architecture. No telemetry, no third-party tracking, role-scoped permissions, immutable audit logging, PII masking, and built-in GDPR-compliant data export and erasure routines.
 - **Zero-Admin Experience**: Automated score calculations, one-click PDF generation, batch CSV workflows, and instant public QR verification.
 
-### 1.4 Product Boundaries & Explicit Non-Goals
+### 1.5 Product Boundaries & Explicit Non-Goals
 To preserve platform reliability, low operational overhead, and maintainability, the following capabilities are explicitly out of scope:
 - **Multi-Tenant SaaS / Commercial Subscriptions**: Internara is strictly single-tenant and self-hosted per school. No tenant isolation overhead or payment gateways.
 - **General Enterprise HR / Payroll**: Does not manage employee payroll, corporate hiring funnels, or post-graduation job boards.
