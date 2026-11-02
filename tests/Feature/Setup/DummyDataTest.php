@@ -10,6 +10,7 @@ use App\Modules\Enrollment\Domain\Placement\Models\Placement;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Evaluation\Models\EvaluationForm;
 use App\Modules\Partner\Domain\Company\Models\Company;
+use App\Modules\Program\Domain\Internship\Enums\InternshipStatus;
 use App\Modules\Program\Domain\Internship\Models\Internship;
 use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroup;
 use App\Modules\SysAdmin\Domain\Announcement\Models\Announcement;
@@ -89,6 +90,7 @@ describe('3UOZP: dummy dataset', function (): void {
         }
 
         expect(Internship::where('status', 'active')->count())->toBe(1);
+        expect(Internship::where('status', 'published')->count())->toBe(1);
         expect(Internship::where('status', 'completed')->count())->toBe(1);
     });
 
@@ -163,5 +165,23 @@ describe('3UOZP: dummy dataset', function (): void {
 
     test('3UOZP-DD-SEED-001/002/003/004/005/006/007/008/009/010/011: non-functional and design decision contracts', function (): void {
         expect(is_subclass_of(DummySeeder::class, Seeder::class))->toBeTrue();
+    });
+
+    test('dummy dataset provisions both an active (running) and a published (open for registration) PKL program', function (): void {
+        DummyData::make()->run();
+
+        $activeYear = AcademicYear::where('is_active', true)->firstOrFail();
+        $internships = Internship::where('academic_year_id', $activeYear->id)->get();
+
+        expect($internships)->toHaveCount(2);
+
+        $running = $internships->firstWhere('status', InternshipStatus::ACTIVE);
+        $opened = $internships->firstWhere('status', InternshipStatus::PUBLISHED);
+
+        expect($running)->not->toBeNull()
+            ->and($opened)->not->toBeNull()
+            ->and($opened->asInternshipPeriod()->isAcceptingRegistrations())->toBeTrue()
+            ->and($opened->placements()->count())->toBeGreaterThanOrEqual(10)
+            ->and($opened->placements()->where('filled_quota', 0)->count())->toBeGreaterThanOrEqual(10);
     });
 });

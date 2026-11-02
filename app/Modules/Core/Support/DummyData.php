@@ -96,10 +96,15 @@ class DummyData
 
     private ?Internship $activeInternship = null;
 
+    private ?Internship $openInternship = null;
+
     private ?Internship $completedInternship = null;
 
     /** @var Collection<int, Placement> */
     private Collection $activePlacements;
+
+    /** @var Collection<int, Placement> */
+    private Collection $openPlacements;
 
     /** @var Collection<int, Placement> */
     private Collection $completedPlacements;
@@ -475,8 +480,10 @@ class DummyData
         $this->students = collect();
         $this->admin = null;
         $this->activeInternship = null;
+        $this->openInternship = null;
         $this->completedInternship = null;
         $this->activePlacements = collect();
+        $this->openPlacements = collect();
         $this->completedPlacements = collect();
         $this->activeRegistrations = collect();
         $this->pendingRegistrations = collect();
@@ -617,17 +624,45 @@ class DummyData
 
     private function seedInternships(): void
     {
+        $activeName = 'PKL Tahun Ajaran '.$this->activeYear->name.' (Gelombang 1 - Berjalan)';
+        $legacyActive = Internship::where('name', 'PKL Tahun Ajaran '.$this->activeYear->name)->first();
+        if ($legacyActive !== null) {
+            $legacyActive->update(['name' => $activeName]);
+        }
+
         $this->activeInternship = $this->firstOrCreate(
             Internship::factory(),
-            ['name' => 'PKL Tahun Ajaran '.$this->activeYear->name],
+            ['name' => $activeName],
             [
-                'name' => 'PKL Tahun Ajaran '.$this->activeYear->name,
+                'name' => $activeName,
                 'academic_year_id' => $this->activeYear->id,
-                'start_date' => $this->activeYear->start_date->addMonths(2)->toDateString(),
-                'end_date' => $this->activeYear->end_date->subMonths(2)->toDateString(),
+                'start_date' => $this->activeYear->start_date->addMonths(1)->toDateString(),
+                'end_date' => $this->activeYear->start_date->addMonths(7)->toDateString(),
+                'registration_start_date' => $this->activeYear->start_date->toDateString(),
+                'registration_end_date' => $this->activeYear->end_date->toDateString(),
                 'status' => InternshipStatus::ACTIVE->value,
                 'phases' => $this->internshipPhases(),
                 'grading_weights' => ['supervisor' => 40, 'teacher' => 20, 'assignment' => 20, 'exam' => 20],
+                'description' => 'Program PKL Gelombang 1 yang sedang berjalan.',
+            ],
+            'internships',
+        );
+
+        $openName = 'PKL Tahun Ajaran '.$this->activeYear->name.' (Gelombang 2 - Baru Terbuka)';
+        $this->openInternship = $this->firstOrCreate(
+            Internship::factory(),
+            ['name' => $openName],
+            [
+                'name' => $openName,
+                'academic_year_id' => $this->activeYear->id,
+                'start_date' => now()->addMonths(2)->toDateString(),
+                'end_date' => now()->addMonths(8)->toDateString(),
+                'registration_start_date' => now()->subDays(7)->toDateString(),
+                'registration_end_date' => now()->addDays(30)->toDateString(),
+                'status' => InternshipStatus::PUBLISHED->value,
+                'phases' => $this->internshipPhases(),
+                'grading_weights' => ['supervisor' => 40, 'teacher' => 20, 'assignment' => 20, 'exam' => 20],
+                'description' => 'Program PKL Gelombang 2 baru dibuka untuk pendaftaran siswa.',
             ],
             'internships',
         );
@@ -674,6 +709,23 @@ class DummyData
                     'placements',
                 ),
             );
+
+            if ($this->openInternship) {
+                $this->openPlacements->push(
+                    $this->firstOrCreate(
+                        Placement::factory(),
+                        ['company_id' => $company->id, 'internship_id' => $this->openInternship->id],
+                        [
+                            'company_id' => $company->id,
+                            'internship_id' => $this->openInternship->id,
+                            'name' => $name,
+                            'quota' => $quota,
+                            'description' => $description,
+                        ],
+                        'placements',
+                    ),
+                );
+            }
 
             if ($this->completedInternship) {
                 $this->completedPlacements->push(
@@ -954,6 +1006,9 @@ class DummyData
         ];
         $requiredIds = $this->documents->whereIn('slug', $requiredSlugs)->pluck('id')->all();
         $this->activeInternship->update(['required_document_ids' => $requiredIds]);
+        if ($this->openInternship) {
+            $this->openInternship->update(['required_document_ids' => $requiredIds]);
+        }
         if ($this->completedInternship) {
             $this->completedInternship->update(['required_document_ids' => $requiredIds]);
         }
