@@ -29,6 +29,7 @@ RUN --mount=type=cache,target=/root/.npm \
 
 COPY . .
 RUN composer dump-autoload --no-dev --optimize \
+    && php artisan livewire:publish --assets \
     && npm run build \
     && php artisan storage:link \
     && chown -R www-data:www-data storage bootstrap/cache public/storage \

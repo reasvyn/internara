@@ -489,6 +489,9 @@ Adjust the `/var/lib/docker/volumes/...` prefixes to the paths printed by `docke
 Compiled assets are served from the `app_data` volume; uploaded media lives in `storage_data`
 (`/app/storage/app/public`), which the `/storage/` alias exposes directly.
 
+> [!NOTE]
+> Ensure the host web server worker (e.g. `www-data`) has directory traversal permissions (`o+x`, mode `0711`) across `/var/lib/docker` and its volumes hierarchy. By default on Debian/Ubuntu, `/var/lib/docker` is mode `0710 root:root`, which causes Nginx to fail with `13: Permission denied` (HTTP 404/403) when serving static assets directly. Persist this via `/etc/tmpfiles.d/docker-permissions.conf` with `z /var/lib/docker 0711 root root -`.
+
 **3. TLS certificate covering apex + `www`:**
 
 Let's Encrypt single-domain certs only cover the apex. Re-issue with both names (using the VPS's
