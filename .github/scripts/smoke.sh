@@ -15,4 +15,7 @@ php artisan migrate --force
 echo "==> Verifying routes resolve"
 php artisan route:list --json > /dev/null
 
+echo "==> Verifying frontend asset integrity"
+vendor/bin/pest tests/Unit/Core/AssetIntegrityTest.php
+
 echo "==> Smoke test passed"

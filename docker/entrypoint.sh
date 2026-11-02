@@ -13,6 +13,7 @@ fi
 # /app/public is an app_data volume that persists between deploys; refresh it from
 # the image every boot. Runtime uploads (branding, media) remain in the volume.
 cp -a /opt/app-public/. /app/public/
+chmod -R u+rwX,g+rX,o+rX /app/public
 
 umask 0002
 
@@ -22,6 +23,9 @@ chmod -R u+rwX,g+rwX /app/storage/framework /app/storage/logs /app/bootstrap/cac
 
 echo "[entrypoint] clearing application cache"
 su -s /bin/sh www-data -c "php /app/artisan optimize:clear"
+
+echo "[entrypoint] synchronizing Livewire frontend assets"
+su -s /bin/sh www-data -c "php /app/artisan livewire:publish --assets" 2>/dev/null || true
 
 echo "[entrypoint] running migrations"
 su -s /bin/sh www-data -c "php /app/artisan migrate --force"

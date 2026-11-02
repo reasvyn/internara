@@ -155,6 +155,11 @@ if [ -n "$APP_CONTAINER_ID" ]; then
     docker cp "$APP_CONTAINER_ID:/app/public/build/." "$DEPLOY_DIR/public/build/" || true
 fi
 
+# Ensure host web server (e.g. www-data) can traverse Docker root to serve assets from app_data volume
+if [ -d /var/lib/docker ]; then
+    chmod o+x /var/lib/docker /var/lib/docker/volumes 2>/dev/null || true
+fi
+
 echo "==> Waiting for health check (max 120s)"
 HEALTH_CHECK_PASSED=false
 HEALTH_TMP="${TMPDIR:-/tmp}/internara-health-body"
@@ -167,6 +172,40 @@ for i in {1..60}; do
     fi
     sleep 2
 done
+
+if [ "$HEALTH_CHECK_PASSED" = true ]; then
+    echo "==> Verifying static assets are reachable and healthy..."
+    ASSET_ERRORS=0
+
+    # Ensure Livewire published assets warning is absent
+    if grep -q "published Livewire assets are out of date" "$HEALTH_TMP"; then
+        echo "::error::Livewire published assets are out of date on $HEALTH_URL" >&2
+        ASSET_ERRORS=$((ASSET_ERRORS + 1))
+    fi
+
+    # Extract CSS and JS URLs from homepage HTML and test each
+    ASSET_URLS=$(grep -oE '(src|href)="([^"]+\.(css|js)[^"]*)"' "$HEALTH_TMP" | sed -E 's/^(src|href)="([^"]+)"/\2/' | sort -u || true)
+    for asset_path in $ASSET_URLS; do
+        case "$asset_path" in
+            http://*|https://*) TARGET_URL="$asset_path" ;;
+            /*) TARGET_URL="${HEALTH_URL%/}$asset_path" ;;
+            *) TARGET_URL="${HEALTH_URL%/}/$asset_path" ;;
+        esac
+
+        ASSET_CODE=$(curl -sSL -o /dev/null -w "%{http_code}" -m 10 "$TARGET_URL" 2>/dev/null || echo "000")
+        if [ "$ASSET_CODE" != "200" ]; then
+            echo "::error::Asset check failed ($ASSET_CODE): $TARGET_URL" >&2
+            ASSET_ERRORS=$((ASSET_ERRORS + 1))
+        else
+            echo "==> Asset OK ($ASSET_CODE): $TARGET_URL"
+        fi
+    done
+
+    if [ "$ASSET_ERRORS" -gt 0 ]; then
+        echo "::error::Deploy FAILED: $ASSET_ERRORS static asset check(s) failed on $HEALTH_URL" >&2
+        HEALTH_CHECK_PASSED=false
+    fi
+fi
 
 if [ "$HEALTH_CHECK_PASSED" = false ]; then
     echo "==> Deploy FAILED: $HEALTH_URL not healthy after 120s (http=${HTTP_CODE})" >&2
